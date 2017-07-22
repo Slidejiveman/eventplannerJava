@@ -3,12 +3,14 @@ package eventplannerPD;
 import java.util.*;
 
 /**
- * The class representing a Guest in the system. The guest is an individual that will attend the event.
+ * The class representing a Guest in the system. 
+ * The guest is an individual that will attend the event.
  */
 public class Guest {
 
     /**
-     * The guest ID is a unique identifier that is used to ensure that the guest has a unique location in the guest list.
+     * The guest ID is a unique identifier that is used to ensure 
+     * that the guest has a unique location in the guest list.
      */
     private Integer id;
     /**
@@ -16,10 +18,11 @@ public class Guest {
      */
     private String name;
     /**
-     * The descriptor associated with this guest. Example descriptors include the following:
-     * Mother of the Bride
-     * Father of the Groom
-     * Husband of Gertrude
+     * The descriptor associated with this guest. 
+     * Example descriptors include the following:
+     *     Mother of the Bride
+     *     Father of the Groom
+     *     Husband of Gertrude
      */
     private String relationshipDescriptor;
     /**
@@ -75,8 +78,7 @@ public class Guest {
      * The default constructor for a guest. This is required for the JPA database.
      */
     public Guest() {
-        // TODO - implement Guest.Guest
-        throw new UnsupportedOperationException();
+        // No argument constructor for JPA storage.
     }
 
     /**

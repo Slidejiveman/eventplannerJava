@@ -55,17 +55,18 @@ public class Customer {
     }
 
     /**
-     * The default constructor for a customer. This is required for JPA persistence.
+     * The default constructor for a customer. 
+     * This is required for JPA persistence.
      */
     public Customer() {
-        // TODO - implement Customer.Customer
-        throw new UnsupportedOperationException();
+        // No argument constructor for JPA persistence
     }
 
     /**
-     * This method is used to determine whether it is okay to delete a customer or not. The customer may be deleted if they are not associated with any event in the system.
+     * This method is used to determine whether it is okay to delete a customer or not. 
+     * The customer may be deleted if they are not associated with any event in the system.
      * @return True: The customer may be deleted.
-     * False: The customer may not be deleted.
+     *         False: The customer may not be deleted.
      */
     public boolean isOkToDelete() {
         // TODO - implement Customer.isOkToDelete

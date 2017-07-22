@@ -3,7 +3,8 @@ package eventplannerPD;
 import java.util.*;
 
 /**
- * The guest list is a collection of guests associated with a single event. The guest list is received from the customer as an Excel file and imported into the system.
+ * The guest list is a collection of guests associated with a single event. 
+ * The guest list is received from the customer as an Excel file and imported into the system.
  */
 public class GuestList {
 
@@ -12,7 +13,8 @@ public class GuestList {
      */
     private Collection<Guest> guests;
     /**
-     * The unique identifier of the guest list. This allows the guest list to take up a single row in the database.
+     * The unique identifier of the guest list. 
+     * This allows the guest list to take up a single row in the database.
      */
     private Integer id;
     /**
@@ -48,8 +50,7 @@ public class GuestList {
      * The default constructor for a Guest.
      */
     public GuestList() {
-        // TODO - implement GuestList.GuestList
-        throw new UnsupportedOperationException();
+        // No argument constructor to be used if the Guest List is persisted.
     }
 
     /**
