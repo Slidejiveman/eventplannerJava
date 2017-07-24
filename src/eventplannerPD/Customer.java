@@ -1,26 +1,44 @@
 package eventplannerPD;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 /**
  * The Customer object represents the customer who commissioned Eagle Event Planning to host the event.
  */
+@Entity(name = "customer")
 public class Customer {
 
+	/**
+	 * Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = 2312995381938814489L;
     /**
      * The name of the customer.
      */
+	@Column(name = "customer_name", nullable = false)
     private String name;
     /**
      * The email of the customer is needed for confirmation emails.
      */
+	@Column(name = "customer_email", nullable = false)
     private String email;
     /**
      * The phone number of the customer, which is necessary to contact the customer when necessary.
      */
+	@Column(name = "customer_phone", nullable = true)
     private String phoneNumber;
     /**
      * The ID number is used to uniquely identify customers in the database.
      */
-    private Integer id;
+	@Id // signifies primary key
+	@Column(name = "customer_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     public String getName() {
         return this.name;
@@ -46,11 +64,15 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getId() {
+    public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public int getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

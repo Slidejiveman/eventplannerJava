@@ -1,6 +1,7 @@
 package eventplannerPD;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.GregorianCalendar;
 
 import eventplannerPD.enums.EventStatus;
 
@@ -21,6 +22,11 @@ public class Event {
      */
     private GuestList guestList;
     /**
+     * The seating arrangement is the assignment of guests to tables.
+     */
+    private SeatingArrangement seatingAssigment;
+
+	/**
      * The date is the day and time the event is being held.
      */
     private GregorianCalendar date;
@@ -87,7 +93,15 @@ public class Event {
     public void setGuestList(GuestList guestList) {
         this.guestList = guestList;
     }
+    
+    public SeatingArrangement getSeatingAssigment() {
+		return seatingAssigment;
+	}
 
+	public void setSeatingAssigment(SeatingArrangement seatingAssigment) {
+		this.seatingAssigment = seatingAssigment;
+	}
+	
     public GregorianCalendar getDate() {
         return this.date;
     }
