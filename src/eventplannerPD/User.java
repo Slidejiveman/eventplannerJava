@@ -4,6 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import eventplannerPD.enums.EmployeeRole;
 
@@ -41,24 +47,32 @@ public class User implements Serializable {
      * then the user is granted access. This assumes the user has also 
      * provided the correct username.
      */
+	@Column(name = "user_password", nullable = false)
     private String password;
     /**
      * The unique identifier of a user. This ensures each user has 
      * its own unique entry in the database table of users.
      */
-    private Integer id;
+	@Id
+	@Column(name = "user_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     /**
      * Represents whether the user is an active employee.
      */
+	@Column(name = "user_is_active", nullable = false)
     private boolean isActive = true;
     /**
      * The employee's system permission level.
      */
-    private EmployeeRole employeeRole;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "user_role", nullable = false)
+    private EmployeeRole userRole;
     /**
      * The authentication token associated with the actively logged in user.
      */
-    private String token;
+	@Transient
+    private transient String token;
 
     public String getName() {
         return this.name;
@@ -84,11 +98,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -105,19 +119,18 @@ public class User implements Serializable {
     }
     
     public EmployeeRole getEmployeeRole() {
-		return employeeRole;
+		return userRole;
 	}
 
 	public void setEmployeeRole(EmployeeRole employeeRole) {
-		this.employeeRole = employeeRole;
+		userRole = employeeRole;
 	}
     /**
      * The default constructor for a user. 
      * This is required for the JPA database to provide persistence.
      */
     public User() {
-        // TODO - implement User.User
-        throw new UnsupportedOperationException();
+        
     }
 
     /**
