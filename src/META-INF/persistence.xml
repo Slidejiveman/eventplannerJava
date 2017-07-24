@@ -8,6 +8,9 @@
          <class>eventplannerPD.Event</class>
          <class>eventplannerPD.Guest</class>
          <class>eventplannerPD.User</class>
+         <class>eventplannerPD.GuestList</class>
+         <class>eventplannerPD.SeatingArrangement</class>
+         <class>eventplannerPD.Table</class>
          
          
         <properties>

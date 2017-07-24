@@ -1,7 +1,20 @@
 package eventplannerPD;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import eventplannerPD.enums.EventStatus;
 
@@ -10,13 +23,22 @@ import eventplannerPD.enums.EventStatus;
  * It contains the necessary information needed to generate seating assignments. 
  * The event class represents the event Eagle Event Planning is hosting for the customer.
  */
-public class Event {
+@Entity(name = "event")
+public class Event implements Serializable {
 
     /**
+	 * Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = 2332808667862489187L;
+	/**
      * The ID is the unique identifier used in the database to 
      * ensure that each of the events have their own unique row.
      */
-    private Integer id;
+	@Id
+	@Column(name = "event_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     /**
      * The guestList is a collection of guests that are attending the event.
      */
@@ -29,6 +51,8 @@ public class Event {
 	/**
      * The date is the day and time the event is being held.
      */
+    @Column(name = "event_date", columnDefinition = "DATETIME")
+    @Temporal(TemporalType.TIMESTAMP)
     private GregorianCalendar date;
     /**
      * The location is the venue for the event. 
@@ -36,28 +60,37 @@ public class Event {
      * It is up to human intuition and experience to know whether or not a 
      * venue is large enough for the guest list provided.
      */
+    @Column(name = "event_location", nullable = false)
     private String location;
     /**
      * The menu represents the food that will be provided at the event in the system. 
      * This is of little consequence to the seating problem.
      */
+    @Column(name = "event_menu", nullable = true)
     private String menu;
     /**
      * This attribute represents the name of the event in the system.
      */
+    @Column(name = "event_name", nullable = false)
     private String name;
     /**
      * The customer that commissioned Eagle Event Planning to host this event.
      */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_customer_id", nullable = false, referencedColumnName = "customer_id")
     private Customer customer;
     /**
      * The Eagle Event Planning employee charged with planning the event.
      */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_user_id", nullable = false, referencedColumnName = "user_id")
     private User assignedUser;
     /**
      * The current status of the event, whether it is in the planning process, 
      * newly opened, canceled, or over. See the EventStatus enumeration for more details.
      */
+    @Enumerated(EnumType.STRING)
+	@Column(name = "event_status", nullable = false)
     private EventStatus eventStatus;
     /**
      * The collection of tables at the event. 
@@ -72,17 +105,19 @@ public class Event {
      * determine the number of seats that should be available at the event. 
      * This will in turn be used to determine the number of tables at the event.
      */
+    @Column(name = "event_percent_seats_empty", nullable = false)
     private double percentSeatsEmpty;
     /**
      * The total seats are the number of seats at the event based on the number of tables at the event.
      */
+    @Column(name = "event_total_seats", nullable = false)
     private int totalSeats;
 
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
