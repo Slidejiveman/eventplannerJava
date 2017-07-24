@@ -71,8 +71,7 @@ public class SeatingArrangement {
      * The result can then be printed with iTxtPDF.
      */
     public void sortByTableNumber() {
-        // TODO - implement SeatingArrangement.sortByTableNumber
-        throw new UnsupportedOperationException();
+        //test GIT
     }
 
 }
