@@ -1,5 +1,10 @@
 package eventplannerPD;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
 import eventplannerPD.enums.EmployeeRole;
 
 /**
@@ -11,20 +16,24 @@ import eventplannerPD.enums.EmployeeRole;
  * administrator privileges. The only difference between the two is the 
  * ability to add, update, and delete user information in the system.
  */
-public class User {
+@Entity(name = "user")
+public class User implements Serializable {
 
+	
     /**
-     * A boolean used to determine if this user is an administrator, 
-     * meaning this user has the ability to add/update/delete user data in the system.
-     */
-    private boolean isAdmin = false;
+	 * Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = 7349073660808331450L;
     /**
      * The name of the user held in the system.
      */
+	@Column(name = "user_name", nullable = false)
     private String name;
     /**
      * The username of the user. This is used to identify a user in the system.
      */
+	@Column(name = "user_username", nullable = false)
     private String username;
     /**
      * The private access phrase or word used by the user during login. 
@@ -50,14 +59,6 @@ public class User {
      * The authentication token associated with the actively logged in user.
      */
     private String token;
-
-    public boolean isIsAdmin() {
-        return this.isAdmin;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
 
     public String getName() {
         return this.name;

@@ -1,5 +1,7 @@
 package eventplannerPD;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import javax.persistence.Id;
  * The Customer object represents the customer who commissioned Eagle Event Planning to host the event.
  */
 @Entity(name = "customer")
-public class Customer {
+public class Customer implements Serializable {
 
 	/**
 	 * Allows Serialization so that the item may be stored in the
