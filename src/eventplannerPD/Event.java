@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
@@ -106,6 +107,8 @@ public class Event implements Serializable {
      * Seat numbers begin from the leftmost upper corner of rectangular 
      * tables or the twelve o'clock position of elliptical tables.
      */
+    @OneToMany(targetEntity = Table.class, mappedBy = "event")
+    @Column(name = "event_tables", nullable = true)
     private Collection<Table> tables;
     /**
      * The percentage of seats allowed to be vacant at a table. 

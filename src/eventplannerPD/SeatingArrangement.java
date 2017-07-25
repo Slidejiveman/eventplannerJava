@@ -1,10 +1,14 @@
 package eventplannerPD;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -23,9 +27,14 @@ import javax.persistence.PrimaryKeyJoinColumn;
 // with guests assigned to those tables.
 // I'll leave it up to Augustin as he solves that problem.
 @Entity(name = "seatingarrangement")
-public class SeatingArrangement {
+public class SeatingArrangement implements Serializable {
 
     /**
+	 * Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = 1628049267895624425L;
+	/**
      * The  unique identifier for a seating arrangement. 
      * These will be used to ensure that the database provides a 
      * unique row in the seating arrangement table for each arrangement.
@@ -40,8 +49,27 @@ public class SeatingArrangement {
     @OneToOne(mappedBy="seatingAssigment")
     @PrimaryKeyJoinColumn
     private Event event;
+    
+    /**
+     * The collection of tables at the with the seating assignments updated 
+     * for a given event. 
+     * Each table knows its size and shape. 
+     * Seat numbers begin from the leftmost upper corner of rectangular 
+     * tables or the twelve o'clock position of elliptical tables.
+     */
+    @OneToMany(targetEntity = Table.class, mappedBy = "seatingArrangement")
+    @Column(name = "seatingarrangement_tables", nullable = true)
+    private Collection<Table> tables;
 
-    public int getId() {
+    public Collection<Table> getTables() {
+		return tables;
+	}
+
+	public void setTables(Collection<Table> tables) {
+		this.tables = tables;
+	}
+
+	public int getId() {
         return this.id;
     }
 

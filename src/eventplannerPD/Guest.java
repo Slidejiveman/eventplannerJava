@@ -54,7 +54,7 @@ public class Guest implements Serializable {
      * The collection of Guests that this Guest must not sit with.
      */
 	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
-	@Column(name = "guest_guests_to_avoid", nullable = false)
+	@Column(name = "guest_guests_to_avoid", nullable = true)
     private Collection<Guest> guestsToAvoid;
 
     /**
@@ -66,6 +66,12 @@ public class Guest implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "guest_theGuest_id", nullable = true, referencedColumnName = "guest_id")
     private Guest theGuest;
+    /**
+     * The table the guest is sitting at.
+     */
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "guest_table_number", nullable = true, referencedColumnName = "table_number")
+    private Table table;
     
     public Guest getTheGuest() {
 		return theGuest;
@@ -115,7 +121,19 @@ public class Guest implements Serializable {
         this.guestsToAvoid = guestsToAvoid;
     }
 
-    /**
+    public Table getTable() {
+		return table;
+	}
+
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	/**
      * The default constructor for a guest. This is required for the JPA database.
      */
     public Guest() {
