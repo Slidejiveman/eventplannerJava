@@ -4,15 +4,19 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  * The guest list is a collection of guests associated with a single event. 
  * The guest list is received from the customer as an Excel file and imported into the system.
  */
+@Entity(name = "guestlist")
 public class GuestList implements Serializable{
 
     /**
@@ -39,8 +43,22 @@ public class GuestList implements Serializable{
      */
     @Column(name = "guestlist_size", nullable = true)
     private int size;
+    /**
+     * This is the Event that the guest list is associated with.
+     */
+    @OneToOne(mappedBy="guestList")
+    @PrimaryKeyJoinColumn
+    private Event event;
 
-    public Collection<Guest> getGuests() {
+    public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	public Collection<Guest> getGuests() {
         return this.guests;
     }
 

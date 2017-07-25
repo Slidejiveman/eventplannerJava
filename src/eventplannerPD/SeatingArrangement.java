@@ -1,5 +1,13 @@
 package eventplannerPD;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+
 /**
  * The seating arrangement is a table of guests assigned to tables at the event. 
  * The guests at the tables should only be those who they are required to set 
@@ -14,6 +22,7 @@ package eventplannerPD;
 // Or, this can hold the collection of Tables that are currently in Event
 // with guests assigned to those tables.
 // I'll leave it up to Augustin as he solves that problem.
+@Entity(name = "seatingarrangement")
 public class SeatingArrangement {
 
     /**
@@ -21,10 +30,15 @@ public class SeatingArrangement {
      * These will be used to ensure that the database provides a 
      * unique row in the seating arrangement table for each arrangement.
      */
+	@Id
+	@Column(name = "seatingarrangement_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * The event the seating arrangement is associated with.
      */
+    @OneToOne(mappedBy="seatingAssigment")
+    @PrimaryKeyJoinColumn
     private Event event;
 
     public int getId() {

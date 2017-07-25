@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -42,10 +44,16 @@ public class Event implements Serializable {
     /**
      * The guestList is a collection of guests that are attending the event.
      */
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	@Column(name = "event_guestlist")
     private GuestList guestList;
     /**
      * The seating arrangement is the assignment of guests to tables.
      */
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	@Column(name = "event_seatingarrangement")
     private SeatingArrangement seatingAssigment;
 
 	/**
