@@ -2,17 +2,22 @@ package eventplannerREST;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import eventplannerDAO.CustomerDAO;
 import eventplannerDAO.EM;
 import eventplannerPD.Customer;
+import eventplannerUT.Message;
 
 /**
  * This class handles all of the RESTful services related
@@ -39,7 +44,7 @@ public class CustomerService {
      public List<Customer> getCustomers(
 	      @DefaultValue("0") @QueryParam("page") String page,
           @DefaultValue("10") @QueryParam("per_page") String perPage){
-          return CustomerDAO.listCustomers();
+          return CustomerDAO.listCustomers(); // add a list customer's method that takes the parameters in DAO
      }
 	
 	/**
@@ -55,5 +60,16 @@ public class CustomerService {
 		Customer customer = CustomerDAO.findCustomerById(Integer.parseInt(customerId));
 		EM.getEntityManager().refresh(customer);
 		return customer;
+	}
+	
+	@POST
+	@Path("/customer/{customer_id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Message> addCustomer(
+			Customer customer, @Context final HttpServletResponse response
+			) throws Exception {
+				return null;
+		
 	}
 }
