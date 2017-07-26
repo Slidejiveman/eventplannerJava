@@ -2,6 +2,7 @@ package eventplannerPD;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.persistence.Column;
@@ -62,7 +63,7 @@ public class Event implements Serializable {
      */
     @Column(name = "event_date", columnDefinition = "DATETIME")
     @Temporal(TemporalType.TIMESTAMP)
-    private GregorianCalendar date;
+    private Date date;
     /**
      * The location is the venue for the event. 
      * This has little impact on the system's calculations. 
@@ -148,11 +149,11 @@ public class Event implements Serializable {
 		this.seatingAssigment = seatingAssigment;
 	}
 	
-    public GregorianCalendar getDate() {
+    public Date getDate() {
         return this.date;
     }
 
-    public void setDate(GregorianCalendar date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
