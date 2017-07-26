@@ -8,7 +8,7 @@ public class EM {
 	static EntityManager em;
 	
 	public static void initEM() {
-		entityManagerFactory = Persistence.createEntityManagerFactory("courierdb");
+		entityManagerFactory = Persistence.createEntityManagerFactory("eventplannerdb");
 		em = entityManagerFactory.createEntityManager();
 	}
 	
