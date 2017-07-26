@@ -1,8 +1,10 @@
 package eventplannerDAO;
 
 import java.util.List;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import eventplannerPD.Table;
+
 
 public class TableDAO {
 	/**
@@ -40,6 +42,19 @@ public class TableDAO {
 		Table Table = EM.getEntityManager().find(Table.class, new Integer(id));
 		return Table;
 	}
+	
+	/**
+	 * Returns the table specified by the given Table number for the event.
+	 * @param tableNum - the number of the table, which uniquely identifies it at event scope
+	 * @return table - the table specified by the given number
+	 */
+	public static Table findTableByNumber(String tableNum)
+    {
+      String qString = "SELECT table FROM table table  WHERE table.table_number ="+tableNum;
+      Query query = EM.getEntityManager().createQuery(qString);
+      Table table = (Table)query.getSingleResult();
+      return table;
+    }
 	
 	/**
 	 * Removes the given Table from the database.
