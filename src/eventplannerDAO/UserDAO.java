@@ -1,8 +1,12 @@
 package eventplannerDAO;
 
 import java.util.List;
+
 import javax.persistence.TypedQuery;
+
+import eventplannerPD.Company;
 import eventplannerPD.User;
+
 
 public class UserDAO {
 	/**
@@ -29,6 +33,18 @@ public class UserDAO {
 	public static List<User> listUsers() {
 		TypedQuery<User> query = EM.getEntityManager().createQuery("SELECT user FROM user user", User.class);
 		return query.getResultList();
+	}
+	
+	/**
+	 * Returns the list of users in the company with a maximum and minimum page range.
+	 * @param company - the company that employs the users
+	 * @param page - the starting user to fetch
+	 * @param perPage - the last user that is grabbed
+	 * @return the list of users between page and perPage's values
+	 */
+	public static List<User> getAllUsersForCompany(Company company, int page, int perPage) {
+		TypedQuery<User> query = EM.getEntityManager().createQuery("SELECT user FROM user user", User.class);
+	      return query.setFirstResult(page).setMaxResults(perPage).getResultList();
 	}
 	
 	/**
