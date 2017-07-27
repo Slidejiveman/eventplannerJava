@@ -1,5 +1,20 @@
 package eventplannerPD;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import eventplannerPD.enums.EmployeeRole;
 
 /**
@@ -11,20 +26,25 @@ import eventplannerPD.enums.EmployeeRole;
  * administrator privileges. The only difference between the two is the 
  * ability to add, update, and delete user information in the system.
  */
-public class User {
+@XmlRootElement(name = "user")
+@Entity(name = "user")
+public class User implements Serializable {
 
+	
     /**
-     * A boolean used to determine if this user is an administrator, 
-     * meaning this user has the ability to add/update/delete user data in the system.
-     */
-    private boolean isAdmin = false;
+	 * Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = 7349073660808331450L;
     /**
      * The name of the user held in the system.
      */
+	@Column(name = "user_name", nullable = false)
     private String name;
     /**
      * The username of the user. This is used to identify a user in the system.
      */
+	@Column(name = "user_username", nullable = false)
     private String username;
     /**
      * The private access phrase or word used by the user during login. 
@@ -32,37 +52,42 @@ public class User {
      * then the user is granted access. This assumes the user has also 
      * provided the correct username.
      */
+	@Column(name = "user_password", nullable = false)
     private String password;
     /**
      * The unique identifier of a user. This ensures each user has 
      * its own unique entry in the database table of users.
      */
-    private Integer id;
+	@Id
+	@Column(name = "user_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     /**
      * Represents whether the user is an active employee.
      */
+	@Column(name = "user_is_active", nullable = false)
     private boolean isActive = true;
     /**
      * The employee's system permission level.
      */
-    private EmployeeRole employeeRole;
-    /**
+	@Enumerated(EnumType.STRING)
+	@Column(name = "user_role", nullable = false)
+    private EmployeeRole userRole;
+    
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "user_company", nullable = false, referencedColumnName = "company_id")
+	private Company company;
+	/**
      * The authentication token associated with the actively logged in user.
      */
-    private String token;
-
-    public boolean isIsAdmin() {
-        return this.isAdmin;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
+	@Transient
+    private transient String token;
 
     public String getName() {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -71,6 +96,7 @@ public class User {
         return this.username;
     }
 
+    @XmlElement
     public void setUsername(String username) {
         this.username = username;
     }
@@ -79,15 +105,16 @@ public class User {
         return this.password;
     }
 
+    @XmlElement
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -95,6 +122,7 @@ public class User {
         return this.isActive;
     }
 
+    @XmlElement
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
@@ -103,20 +131,34 @@ public class User {
         return this.token;
     }
     
-    public EmployeeRole getEmployeeRole() {
-		return employeeRole;
+    public void setToken(String token) {
+		this.token = token;
 	}
 
-	public void setEmployeeRole(EmployeeRole employeeRole) {
-		this.employeeRole = employeeRole;
+	public EmployeeRole getEmployeeRole() {
+		return userRole;
 	}
-    /**
+
+    @XmlElement
+	public void setEmployeeRole(EmployeeRole employeeRole) {
+		userRole = employeeRole;
+	}
+    
+    public Company getCompany() {
+		return company;
+	}
+
+    @XmlElement
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+	/**
      * The default constructor for a user. 
      * This is required for the JPA database to provide persistence.
      */
     public User() {
-        // TODO - implement User.User
-        throw new UnsupportedOperationException();
+        
     }
 
     /**

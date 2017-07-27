@@ -1,6 +1,25 @@
 package eventplannerPD;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import eventplannerPD.enums.EventStatus;
 
@@ -9,49 +28,81 @@ import eventplannerPD.enums.EventStatus;
  * It contains the necessary information needed to generate seating assignments. 
  * The event class represents the event Eagle Event Planning is hosting for the customer.
  */
-public class Event {
+@XmlRootElement(name = "event")
+@Entity(name = "event")
+public class Event implements Serializable {
 
     /**
+	 * Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = 2332808667862489187L;
+	/**
      * The ID is the unique identifier used in the database to 
      * ensure that each of the events have their own unique row.
      */
-    private Integer id;
+	@Id
+	@Column(name = "event_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     /**
      * The guestList is a collection of guests that are attending the event.
      */
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	@Column(name = "event_guestlist")
     private GuestList guestList;
     /**
+     * The seating arrangement is the assignment of guests to tables.
+     */
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	@Column(name = "event_seatingarrangement")
+    private SeatingArrangement seatingAssigment;
+
+	/**
      * The date is the day and time the event is being held.
      */
-    private GregorianCalendar date;
+    @Column(name = "event_date", columnDefinition = "DATETIME")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
     /**
      * The location is the venue for the event. 
      * This has little impact on the system's calculations. 
      * It is up to human intuition and experience to know whether or not a 
      * venue is large enough for the guest list provided.
      */
+    @Column(name = "event_location", nullable = false)
     private String location;
     /**
      * The menu represents the food that will be provided at the event in the system. 
      * This is of little consequence to the seating problem.
      */
+    @Column(name = "event_menu", nullable = true)
     private String menu;
     /**
      * This attribute represents the name of the event in the system.
      */
+    @Column(name = "event_name", nullable = false)
     private String name;
     /**
      * The customer that commissioned Eagle Event Planning to host this event.
      */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_customer_id", nullable = false, referencedColumnName = "customer_id")
     private Customer customer;
     /**
      * The Eagle Event Planning employee charged with planning the event.
      */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_user_id", nullable = false, referencedColumnName = "user_id")
     private User assignedUser;
     /**
      * The current status of the event, whether it is in the planning process, 
      * newly opened, canceled, or over. See the EventStatus enumeration for more details.
      */
+    @Enumerated(EnumType.STRING)
+	@Column(name = "event_status", nullable = false)
     private EventStatus eventStatus;
     /**
      * The collection of tables at the event. 
@@ -59,6 +110,8 @@ public class Event {
      * Seat numbers begin from the leftmost upper corner of rectangular 
      * tables or the twelve o'clock position of elliptical tables.
      */
+    @OneToMany(targetEntity = Table.class, mappedBy = "event")
+    @Column(name = "event_tables", nullable = true)
     private Collection<Table> tables;
     /**
      * The percentage of seats allowed to be vacant at a table. 
@@ -66,17 +119,19 @@ public class Event {
      * determine the number of seats that should be available at the event. 
      * This will in turn be used to determine the number of tables at the event.
      */
+    @Column(name = "event_percent_seats_empty", nullable = false)
     private double percentSeatsEmpty;
     /**
      * The total seats are the number of seats at the event based on the number of tables at the event.
      */
+    @Column(name = "event_total_seats", nullable = false)
     private int totalSeats;
 
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -84,15 +139,26 @@ public class Event {
         return this.guestList;
     }
 
+    @XmlElement
     public void setGuestList(GuestList guestList) {
         this.guestList = guestList;
     }
+    
+    public SeatingArrangement getSeatingAssigment() {
+		return seatingAssigment;
+	}
 
-    public GregorianCalendar getDate() {
+    @XmlElement
+	public void setSeatingAssigment(SeatingArrangement seatingAssigment) {
+		this.seatingAssigment = seatingAssigment;
+	}
+	
+    public Date getDate() {
         return this.date;
     }
 
-    public void setDate(GregorianCalendar date) {
+    @XmlElement
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -100,6 +166,7 @@ public class Event {
         return this.location;
     }
 
+    @XmlElement
     public void setLocation(String location) {
         this.location = location;
     }
@@ -108,6 +175,7 @@ public class Event {
         return this.menu;
     }
 
+    @XmlElement
     public void setMenu(String menu) {
         this.menu = menu;
     }
@@ -116,6 +184,7 @@ public class Event {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -124,6 +193,7 @@ public class Event {
         return this.customer;
     }
 
+    @XmlElement
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
@@ -132,6 +202,7 @@ public class Event {
         return this.assignedUser;
     }
 
+    @XmlElement
     public void setAssignedUser(User assignedUser) {
         this.assignedUser = assignedUser;
     }
@@ -140,6 +211,7 @@ public class Event {
         return this.eventStatus;
     }
 
+    @XmlElement
     public void setEventStatus(EventStatus eventStatus) {
         this.eventStatus = eventStatus;
     }
@@ -156,6 +228,7 @@ public class Event {
         return this.percentSeatsEmpty;
     }
 
+    @XmlElement
     public void setPercentSeatsEmpty(double percentSeatsEmpty) {
         this.percentSeatsEmpty = percentSeatsEmpty;
     }
@@ -164,6 +237,7 @@ public class Event {
         return this.totalSeats;
     }
 
+    @XmlElement
     public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
     }

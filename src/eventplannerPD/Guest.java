@@ -1,21 +1,44 @@
 package eventplannerPD;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.Collection;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The class representing a Guest in the system. 
  * The guest is an individual that will attend the event.
  */
-public class Guest {
+@XmlRootElement(name = "guest")
+@Entity(name = "guest")
+public class Guest implements Serializable {
 
     /**
+	 *  Allows Serialization so that the item may be stored in the
+	 * database
+	 */
+	private static final long serialVersionUID = -2752663033462674926L;
+	/**
      * The guest ID is a unique identifier that is used to ensure 
      * that the guest has a unique location in the guest list.
      */
-    private Integer id;
+	@Id
+	@Column(name = "guest_id", updatable = false, nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     /**
      * The name of the guest.
      */
+	@Column(name = "guest_name", nullable = false)
     private String name;
     /**
      * The descriptor associated with this guest. 
@@ -24,21 +47,64 @@ public class Guest {
      *     Father of the Groom
      *     Husband of Gertrude
      */
+	@Column(name = "guest_relationship_descriptor", nullable = true)
     private String relationshipDescriptor;
     /**
      * A collection of the Guests this Guest is required to sit with in the same table.
      */
+	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
+	@Column(name = "guest_guests_to_sit_with", nullable = true)
     private Collection<Guest> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
+	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
+	@Column(name = "guest_guests_to_avoid", nullable = true)
     private Collection<Guest> guestsToAvoid;
 
-    public Integer getId() {
+    /**
+     * Added so the JPA works. This is a special bidirectional case.
+     * The class references itself, so it must have a field to reference.
+     * This field should represent the guest that the must sit with or avoid
+     * the guests in these two collections.
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "guest_theGuest_id", nullable = true, referencedColumnName = "guest_id")
+    private Guest theGuest;
+    /**
+     * The table the guest is sitting at.
+     */
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "guest_table_number", nullable = true, referencedColumnName = "table_number")
+    private Table table;
+    
+    @ManyToOne(optional = false) 
+    @JoinColumn(name = "guest_guestlist", nullable = false, referencedColumnName = "guestlist_id")  
+    private GuestList guestlist;
+    
+    public GuestList getGuestlist() {
+		return guestlist;
+	}
+    
+    @XmlElement
+	public void setGuestlist(GuestList guestlist) {
+		this.guestlist = guestlist;
+	}
+
+	public Guest getTheGuest() {
+		return theGuest;
+	}
+
+    @XmlElement
+	public void setTheGuest(Guest theGuest) {
+		this.theGuest = theGuest;
+	}
+
+	public int getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -46,6 +112,7 @@ public class Guest {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -54,6 +121,7 @@ public class Guest {
         return this.relationshipDescriptor;
     }
 
+    @XmlElement
     public void setRelationshipDescriptor(String relationshipDescriptor) {
         this.relationshipDescriptor = relationshipDescriptor;
     }
@@ -62,6 +130,7 @@ public class Guest {
         return this.guestsToSitWith;
     }
 
+    @XmlElement
     public void setGuestsToSitWith(Collection<Guest> guestsToSitWith) {
         this.guestsToSitWith = guestsToSitWith;
     }
@@ -70,11 +139,25 @@ public class Guest {
         return this.guestsToAvoid;
     }
 
+    @XmlElement
     public void setGuestsToAvoid(Collection<Guest> guestsToAvoid) {
         this.guestsToAvoid = guestsToAvoid;
     }
 
-    /**
+    public Table getTable() {
+		return table;
+	}
+
+    @XmlElement
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	/**
      * The default constructor for a guest. This is required for the JPA database.
      */
     public Guest() {
