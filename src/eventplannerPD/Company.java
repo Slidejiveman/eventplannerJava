@@ -24,7 +24,7 @@ import eventplannerDAO.UserDAO;
  * @author rdnot
  *
  */
-@XmlRootElement(name = "school")
+@XmlRootElement(name = "company")
 @Entity(name = "company")
 public class Company implements Serializable {
 
@@ -58,7 +58,9 @@ public class Company implements Serializable {
 	/**
 	 * Default no-argument constructor
 	 */
-	public Company() {};
+	public Company() {
+		
+	}
 
 	/**
 	 * Constructor that accepts the Company name.
