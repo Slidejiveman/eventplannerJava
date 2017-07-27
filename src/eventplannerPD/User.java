@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import eventplannerPD.enums.EmployeeRole;
@@ -68,7 +70,11 @@ public class User implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_role", nullable = false)
     private EmployeeRole userRole;
-    /**
+    
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "user_company", nullable = false, referencedColumnName = "company_id")
+	private Company company;
+	/**
      * The authentication token associated with the actively logged in user.
      */
 	@Transient
@@ -125,7 +131,15 @@ public class User implements Serializable {
 	public void setEmployeeRole(EmployeeRole employeeRole) {
 		userRole = employeeRole;
 	}
-    /**
+    public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+	/**
      * The default constructor for a user. 
      * This is required for the JPA database to provide persistence.
      */

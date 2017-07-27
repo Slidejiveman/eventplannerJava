@@ -43,6 +43,12 @@ public class Message implements Serializable {
 		this.attributeName = attributeName;
 	}
 	
+	public Message(int code, String message, String attributeName) {
+		this.code = String.valueOf(code);
+		this.message = message;
+		this.attributeName = attributeName;
+	}
+	
 	public String getCode() {
 		return code;
 	}

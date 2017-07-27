@@ -1,7 +1,9 @@
 package eventplannerREST;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -29,6 +31,8 @@ import eventplannerUT.Message;
 @Path("/customerservices")
 public class CustomerService {
 
+	List<Message> messages = new ArrayList<Message>();
+	
 	/**
 	 * Returns all customers.
 	 * 
@@ -69,7 +73,29 @@ public class CustomerService {
 	public List<Message> addCustomer(
 			Customer customer, @Context final HttpServletResponse response
 			) throws Exception {
-				return null;
+		
+		try {
+			int newCustomerId = customer.getId();
+			Customer possibleCustomer = CustomerDAO.findCustomerById(newCustomerId);
+			// If possibleCustomer isn't null, the ID already exists
+			if(possibleCustomer != null) {
+				response.setStatus(HttpServletResponse.SC_CONFLICT); // 409
+				try {
+					response.flushBuffer();
+				} catch (Exception ex) {}
+				messages.add(new Message(HttpServletResponse.SC_CONFLICT, "A Customer with this ID already exists.", "CustomerService"));
+			    return messages;
+			} else { // if the value is null, we can add the customer
+				EntityTransaction userTransaction = EM.getEntityManager().getTransaction();
+				userTransaction.begin();
+				CustomerDAO.addCustomer(possibleCustomer);
+				userTransaction.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return messages;
 		
 	}
 }
