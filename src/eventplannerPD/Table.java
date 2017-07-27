@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import eventplannerPD.enums.TableShape;
 import eventplannerPD.enums.TableSize;
@@ -20,6 +22,7 @@ import eventplannerPD.enums.TableSize;
 /**
  * The table class represents the table at which guests sit during an event.
  */
+@XmlRootElement(name = "table")
 @Entity(name = "table")
 public class Table  implements Serializable {
 
@@ -94,6 +97,7 @@ public class Table  implements Serializable {
 		return event;
 	}
 
+	@XmlElement
 	public void setEvent(Event event) {
 		this.event = event;
 	}
@@ -102,6 +106,7 @@ public class Table  implements Serializable {
         return this.size;
     }
 
+	@XmlElement
     public void setSize(TableSize size) {
         this.size = size;
     }
@@ -110,6 +115,7 @@ public class Table  implements Serializable {
         return this.shape;
     }
 
+    @XmlElement
     public void setShape(TableShape shape) {
         this.shape = shape;
     }
@@ -118,6 +124,7 @@ public class Table  implements Serializable {
         return this.number;
     }
 
+    @XmlElement
     public void setNumber(int number) {
         this.number = number;
     }

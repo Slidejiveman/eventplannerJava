@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import eventplannerPD.enums.EmployeeRole;
 
@@ -24,6 +26,7 @@ import eventplannerPD.enums.EmployeeRole;
  * administrator privileges. The only difference between the two is the 
  * ability to add, update, and delete user information in the system.
  */
+@XmlRootElement(name = "user")
 @Entity(name = "user")
 public class User implements Serializable {
 
@@ -84,6 +87,7 @@ public class User implements Serializable {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -92,6 +96,7 @@ public class User implements Serializable {
         return this.username;
     }
 
+    @XmlElement
     public void setUsername(String username) {
         this.username = username;
     }
@@ -100,6 +105,7 @@ public class User implements Serializable {
         return this.password;
     }
 
+    @XmlElement
     public void setPassword(String password) {
         this.password = password;
     }
@@ -116,6 +122,7 @@ public class User implements Serializable {
         return this.isActive;
     }
 
+    @XmlElement
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
@@ -124,17 +131,24 @@ public class User implements Serializable {
         return this.token;
     }
     
-    public EmployeeRole getEmployeeRole() {
+    public void setToken(String token) {
+		this.token = token;
+	}
+
+	public EmployeeRole getEmployeeRole() {
 		return userRole;
 	}
 
+    @XmlElement
 	public void setEmployeeRole(EmployeeRole employeeRole) {
 		userRole = employeeRole;
 	}
+    
     public Company getCompany() {
 		return company;
 	}
 
+    @XmlElement
 	public void setCompany(Company company) {
 		this.company = company;
 	}

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The seating arrangement is a table of guests assigned to tables at the event. 
@@ -26,6 +28,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 // Or, this can hold the collection of Tables that are currently in Event
 // with guests assigned to those tables.
 // I'll leave it up to Augustin as he solves that problem.
+@XmlRootElement(name = "seatingarrangement")
 @Entity(name = "seatingarrangement")
 public class SeatingArrangement implements Serializable {
 
@@ -73,6 +76,7 @@ public class SeatingArrangement implements Serializable {
         return this.id;
     }
 
+	@XmlElement
     public void setId(int id) {
         this.id = id;
     }

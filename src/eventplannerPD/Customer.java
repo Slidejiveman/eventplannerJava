@@ -7,10 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The Customer object represents the customer who commissioned Eagle Event Planning to host the event.
  */
+@XmlRootElement(name = "customer")
 @Entity(name = "customer")
 public class Customer implements Serializable {
 
@@ -46,6 +49,7 @@ public class Customer implements Serializable {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -54,6 +58,7 @@ public class Customer implements Serializable {
         return this.email;
     }
 
+    @XmlElement
     public void setEmail(String email) {
         this.email = email;
     }
@@ -62,6 +67,7 @@ public class Customer implements Serializable {
         return this.phoneNumber;
     }
 
+    @XmlElement
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }

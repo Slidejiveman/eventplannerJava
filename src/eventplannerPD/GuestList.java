@@ -11,11 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The guest list is a collection of guests associated with a single event. 
  * The guest list is received from the customer as an Excel file and imported into the system.
  */
+@XmlRootElement(name = "guestlist")
 @Entity(name = "guestlist")
 public class GuestList implements Serializable{
 
@@ -70,6 +73,7 @@ public class GuestList implements Serializable{
         return this.id;
     }
 
+    @XmlElement
     public void setId(int id) {
         this.id = id;
     }
@@ -78,6 +82,7 @@ public class GuestList implements Serializable{
         return this.size;
     }
 
+    @XmlElement
     public void setSize(int size) {
         this.size = size;
     }

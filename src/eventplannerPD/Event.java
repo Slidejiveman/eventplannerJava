@@ -3,7 +3,6 @@ package eventplannerPD;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +18,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import eventplannerPD.enums.EventStatus;
 
@@ -27,6 +28,7 @@ import eventplannerPD.enums.EventStatus;
  * It contains the necessary information needed to generate seating assignments. 
  * The event class represents the event Eagle Event Planning is hosting for the customer.
  */
+@XmlRootElement(name = "event")
 @Entity(name = "event")
 public class Event implements Serializable {
 
@@ -137,6 +139,7 @@ public class Event implements Serializable {
         return this.guestList;
     }
 
+    @XmlElement
     public void setGuestList(GuestList guestList) {
         this.guestList = guestList;
     }
@@ -145,6 +148,7 @@ public class Event implements Serializable {
 		return seatingAssigment;
 	}
 
+    @XmlElement
 	public void setSeatingAssigment(SeatingArrangement seatingAssigment) {
 		this.seatingAssigment = seatingAssigment;
 	}
@@ -153,6 +157,7 @@ public class Event implements Serializable {
         return this.date;
     }
 
+    @XmlElement
     public void setDate(Date date) {
         this.date = date;
     }
@@ -161,6 +166,7 @@ public class Event implements Serializable {
         return this.location;
     }
 
+    @XmlElement
     public void setLocation(String location) {
         this.location = location;
     }
@@ -169,6 +175,7 @@ public class Event implements Serializable {
         return this.menu;
     }
 
+    @XmlElement
     public void setMenu(String menu) {
         this.menu = menu;
     }
@@ -177,6 +184,7 @@ public class Event implements Serializable {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -185,6 +193,7 @@ public class Event implements Serializable {
         return this.customer;
     }
 
+    @XmlElement
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
@@ -193,6 +202,7 @@ public class Event implements Serializable {
         return this.assignedUser;
     }
 
+    @XmlElement
     public void setAssignedUser(User assignedUser) {
         this.assignedUser = assignedUser;
     }
@@ -201,6 +211,7 @@ public class Event implements Serializable {
         return this.eventStatus;
     }
 
+    @XmlElement
     public void setEventStatus(EventStatus eventStatus) {
         this.eventStatus = eventStatus;
     }
@@ -217,6 +228,7 @@ public class Event implements Serializable {
         return this.percentSeatsEmpty;
     }
 
+    @XmlElement
     public void setPercentSeatsEmpty(double percentSeatsEmpty) {
         this.percentSeatsEmpty = percentSeatsEmpty;
     }
@@ -225,6 +237,7 @@ public class Event implements Serializable {
         return this.totalSeats;
     }
 
+    @XmlElement
     public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
     }

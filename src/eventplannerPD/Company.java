@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The company class is a container class for the others. It can be refreshed
@@ -19,6 +21,7 @@ import javax.persistence.OneToMany;
  * @author rdnot
  *
  */
+@XmlRootElement(name = "school")
 @Entity(name = "company")
 public class Company implements Serializable {
 
@@ -75,16 +78,13 @@ public class Company implements Serializable {
 		return name;
 	}
 
+	@XmlElement
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	public Collection<User> getUsers() {
 		return users;
-	}
-
-	public void setUsers(Collection<User> users) {
-		this.users = users;
 	}
 
 	public static long getSerialversionuid() {

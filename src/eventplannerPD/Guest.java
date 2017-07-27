@@ -4,17 +4,22 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The class representing a Guest in the system. 
  * The guest is an individual that will attend the event.
  */
+@XmlRootElement(name = "guest")
+@Entity(name = "guest")
 public class Guest implements Serializable {
 
     /**
@@ -73,10 +78,24 @@ public class Guest implements Serializable {
     @JoinColumn(name = "guest_table_number", nullable = true, referencedColumnName = "table_number")
     private Table table;
     
-    public Guest getTheGuest() {
+    @ManyToOne(optional = false) 
+    @JoinColumn(name = "guest_guestlist", nullable = false, referencedColumnName = "guestlist_id")  
+    private GuestList guestlist;
+    
+    public GuestList getGuestlist() {
+		return guestlist;
+	}
+    
+    @XmlElement
+	public void setGuestlist(GuestList guestlist) {
+		this.guestlist = guestlist;
+	}
+
+	public Guest getTheGuest() {
 		return theGuest;
 	}
 
+    @XmlElement
 	public void setTheGuest(Guest theGuest) {
 		this.theGuest = theGuest;
 	}
@@ -93,6 +112,7 @@ public class Guest implements Serializable {
         return this.name;
     }
 
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -101,6 +121,7 @@ public class Guest implements Serializable {
         return this.relationshipDescriptor;
     }
 
+    @XmlElement
     public void setRelationshipDescriptor(String relationshipDescriptor) {
         this.relationshipDescriptor = relationshipDescriptor;
     }
@@ -109,6 +130,7 @@ public class Guest implements Serializable {
         return this.guestsToSitWith;
     }
 
+    @XmlElement
     public void setGuestsToSitWith(Collection<Guest> guestsToSitWith) {
         this.guestsToSitWith = guestsToSitWith;
     }
@@ -117,6 +139,7 @@ public class Guest implements Serializable {
         return this.guestsToAvoid;
     }
 
+    @XmlElement
     public void setGuestsToAvoid(Collection<Guest> guestsToAvoid) {
         this.guestsToAvoid = guestsToAvoid;
     }
@@ -125,6 +148,7 @@ public class Guest implements Serializable {
 		return table;
 	}
 
+    @XmlElement
 	public void setTable(Table table) {
 		this.table = table;
 	}
