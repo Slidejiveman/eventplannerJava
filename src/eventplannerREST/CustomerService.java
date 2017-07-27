@@ -90,6 +90,7 @@ public class CustomerService {
 				userTransaction.begin();
 				CustomerDAO.addCustomer(possibleCustomer);
 				userTransaction.commit();
+				messages.add(new Message(HttpServletResponse.SC_OK, "The Customer was added to the database.", "CustomerService"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
