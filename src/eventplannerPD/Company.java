@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -52,7 +53,7 @@ public class Company implements Serializable {
 	 * The collection of people who work for the company
 	 */
 	@OneToMany(mappedBy = "company", targetEntity = User.class, fetch = FetchType.EAGER)
-	@Column(name = "company_employees", nullable = true)
+	@JoinColumn(name = "company_employees", nullable = true)
 	private Collection<User> users;
 	
 	/**

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -31,7 +32,7 @@ public class GuestList implements Serializable{
      * The collection of guests that make up the guest list.
      */
 	@OneToMany(targetEntity = Guest.class)
-	@Column(name = "guestlist_guests", nullable = true)
+	@JoinColumn(name = "guestlist_guests", nullable = true)
     private Collection<Guest> guests;
     /**
      * The unique identifier of the guest list. 

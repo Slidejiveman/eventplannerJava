@@ -53,13 +53,13 @@ public class Guest implements Serializable {
      * A collection of the Guests this Guest is required to sit with in the same table.
      */
 	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
-	@Column(name = "guest_guests_to_sit_with", nullable = true)
+	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true)
     private Collection<Guest> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
 	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
-	@Column(name = "guest_guests_to_avoid", nullable = true)
+	@JoinColumn(name = "guest_guests_to_avoid", nullable = true)
     private Collection<Guest> guestsToAvoid;
 
     /**
