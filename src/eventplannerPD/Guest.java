@@ -52,30 +52,21 @@ public class Guest implements Serializable {
     /**
      * A collection of the Guests this Guest is required to sit with in the same table.
      */
-	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
+	@OneToMany(mappedBy = "guestToSitWith")
 	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true)
-    private Collection<Guest> guestsToSitWith;
+    private Collection<GuestGuestSitWithBridge> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
-	@OneToMany(targetEntity = Guest.class, mappedBy = "theGuest")
+	@OneToMany(mappedBy = "guestToAvoid")
 	@JoinColumn(name = "guest_guests_to_avoid", nullable = true)
-    private Collection<Guest> guestsToAvoid;
+    private Collection<GuestGuestAvoidBridge> guestsToAvoid;
 
-    /**
-     * Added so the JPA works. This is a special bidirectional case.
-     * The class references itself, so it must have a field to reference.
-     * This field should represent the guest that the must sit with or avoid
-     * the guests in these two collections.
-     */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "guest_theGuest_id", nullable = true, referencedColumnName = "guest_id")
-    private Guest theGuest;
     /**
      * The table the guest is sitting at.
      */
     @ManyToOne(optional = true)
-    @JoinColumn(name = "guest_table_number", nullable = true, referencedColumnName = "table_number")
+    @JoinColumn(name = "guest_table_id", nullable = true, referencedColumnName = "table_id")
     private Table table;
     
     @ManyToOne(optional = false) 
@@ -89,15 +80,6 @@ public class Guest implements Serializable {
     @XmlElement
 	public void setGuestlist(GuestList guestlist) {
 		this.guestlist = guestlist;
-	}
-
-	public Guest getTheGuest() {
-		return theGuest;
-	}
-
-    @XmlElement
-	public void setTheGuest(Guest theGuest) {
-		this.theGuest = theGuest;
 	}
 
 	public int getId() {
@@ -126,21 +108,21 @@ public class Guest implements Serializable {
         this.relationshipDescriptor = relationshipDescriptor;
     }
 
-    public Collection<Guest> getGuestsToSitWith() {
+    public Collection<GuestGuestSitWithBridge> getGuestsToSitWith() {
         return this.guestsToSitWith;
     }
 
     @XmlElement
-    public void setGuestsToSitWith(Collection<Guest> guestsToSitWith) {
+    public void setGuestsToSitWith(Collection<GuestGuestSitWithBridge> guestsToSitWith) {
         this.guestsToSitWith = guestsToSitWith;
     }
 
-    public Collection<Guest> getGuestsToAvoid() {
+    public Collection<GuestGuestAvoidBridge> getGuestsToAvoid() {
         return this.guestsToAvoid;
     }
 
     @XmlElement
-    public void setGuestsToAvoid(Collection<Guest> guestsToAvoid) {
+    public void setGuestsToAvoid(Collection<GuestGuestAvoidBridge> guestsToAvoid) {
         this.guestsToAvoid = guestsToAvoid;
     }
 

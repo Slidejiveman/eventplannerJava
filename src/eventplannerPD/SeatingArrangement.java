@@ -45,13 +45,13 @@ public class SeatingArrangement implements Serializable {
      */
 	@Id
 	@Column(name = "seatingarrangement_id", updatable = false, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * The event the seating arrangement is associated with.
      */
     @OneToOne(mappedBy="seatingAssigment")
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "seatingarrangement_event", nullable = false)
     private Event event;
     
     /**

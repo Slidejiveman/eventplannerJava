@@ -12,6 +12,8 @@
          <class>eventplannerPD.SeatingArrangement</class>
          <class>eventplannerPD.Table</class>
          <class>eventplannerPD.Company</class>
+         <class>eventplannerPD.GuestGuestSitWithBridge</class>
+         <class>eventplannerPD.GuestGuestAvoidBridge</class>
          
          
         <properties>

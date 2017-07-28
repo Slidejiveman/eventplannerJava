@@ -23,7 +23,7 @@ import eventplannerPD.enums.TableSize;
  * The table class represents the table at which guests sit during an event.
  */
 @XmlRootElement(name = "table")
-@Entity(name = "table")
+@Entity(name = "\"table\"")
 public class Table  implements Serializable {
 
 	/**

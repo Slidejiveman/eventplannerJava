@@ -3,6 +3,7 @@ package eventplannerPD;
 import java.io.Serializable;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +32,8 @@ public class GuestList implements Serializable{
 	/**
      * The collection of guests that make up the guest list.
      */
-	@OneToMany(targetEntity = Guest.class)
-	@JoinColumn(name = "guestlist_guests", nullable = true)
+	@OneToMany(targetEntity = Guest.class, mappedBy = "guestlist")
+	@JoinColumn(name = "guestlist_guests", nullable = false)
     private Collection<Guest> guests;
     /**
      * The unique identifier of the guest list. 
@@ -50,8 +51,8 @@ public class GuestList implements Serializable{
     /**
      * This is the Event that the guest list is associated with.
      */
-    @OneToOne(mappedBy="guestList")
-    @PrimaryKeyJoinColumn
+    @OneToOne(mappedBy="guestList", cascade = CascadeType.ALL)
+    @JoinColumn(name = "guestlist_event", nullable = false)
     private Event event;
 
     public Event getEvent() {
