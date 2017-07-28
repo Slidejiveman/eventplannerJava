@@ -20,10 +20,9 @@ public class GuestGuestAvoidBridge implements Serializable {
 	 */
 	private static final long serialVersionUID = 7270632053724473363L;
 
-//	@Id
-//	@Column(name = "guesttoavoid_table_id")
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	private int guestAvoidBridgeId;
+	@Id
+	@Column(name = "guesttoavoid_table_id")
+	private int guestAvoidBridgeId;
 	
 	@Id
 	@Column(name = "guest_id")
@@ -45,13 +44,13 @@ public class GuestGuestAvoidBridge implements Serializable {
 		
 	}
 	
-//	public int getTableId() {
-//		return guestAvoidBridgeId;
-//	}
-//
-//	public void setTableId(int tableId) {
-//		this.guestAvoidBridgeId = tableId;
-//	}
+	public int getTableId() {
+		return guestAvoidBridgeId;
+	}
+
+	public void setTableId(int tableId) {
+		this.guestAvoidBridgeId = tableId;
+	}
 
 	public int getGuestId() {
 		return guestId;

@@ -52,14 +52,14 @@ public class Guest implements Serializable {
     /**
      * A collection of the Guests this Guest is required to sit with in the same table.
      */
-	@OneToMany(mappedBy = "guestToSitWith")
-	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true)
+	@OneToMany(mappedBy = "guest")
+	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true, referencedColumnName = "guesttositwith_table_id")
     private Collection<GuestGuestSitWithBridge> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
-	@OneToMany(mappedBy = "guestToAvoid")
-	@JoinColumn(name = "guest_guests_to_avoid", nullable = true)
+	@OneToMany(mappedBy = "guest")
+	@JoinColumn(name = "guest_guests_to_avoid", nullable = true, referencedColumnName = "guesttoavoid_table_id")
     private Collection<GuestGuestAvoidBridge> guestsToAvoid;
 
     /**
