@@ -118,10 +118,20 @@ INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
 VALUES (1,'Circle','Four',2,2);
 INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
                     `table_event_id`, `table_seatingarrangement_id`)
-VALUES (2,'Circle','Four',2,2)
+VALUES (2,'Circle','Four',2,2);
 
 -- Default Events to add into the system
-
+INSERT INTO `event`(`event_date`, `event_status`, `event_location`,
+                    `event_menu`, `event_name`, `event_percent_seats_empty`,
+                    `event_total_seats`, `event_user_id`, `event_customer_id`,
+                    `event_guestlist`, `event_seatingarrangement`)
+VALUES ('2010-11-12','Open','The PEC','Hot Dogs','Slamfest',10.0,4,1,1,1,1);
+INSERT INTO `event`(`event_date`, `event_status`, `event_location`,
+                    `event_menu`, `event_name`, `event_percent_seats_empty`,
+                    `event_total_seats`, `event_user_id`, `event_customer_id`,
+                    `event_guestlist`, `event_seatingarrangement`)
+VALUES ('2010-10-11','Open','The World','Easy Mac','Cheeze-a-palooaz',25.0,8,2,
+        2,2,2);
 -- Turn the FOREIGN_KEY_CHECKS back on so the database
 -- uses this data integrity feature.
 SET FOREIGN_KEY_CHECKS=1;
