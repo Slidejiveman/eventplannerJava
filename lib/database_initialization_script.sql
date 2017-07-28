@@ -42,6 +42,86 @@ VALUES (3);
 INSERT INTO `guestlist`(`guestlist_size`)
 VALUES (6);
 
+-- Insert the default Guests. There needs to be 9 to match the guestlist sizes.
+-- The first 3 guests should be associated with event 1, which should have
+-- table size of 2. The first two guests are associated with table 1.
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Jon Jonz', 'Father of the Bride', 1, 1); -- 1
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Jane Jonz', 'Mother of the Bride', 1, 1); -- 2
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Dolph Mulligan', 'Some Random Guy', 1, 2); -- 3
+-- The guests for event two, associated with guestlist 2. Here, There
+-- Will also be two tables of size 4. This will leave 2 unused seats.
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Krusty the Klown', 'Sells Hamburgers', 2, 1); -- 4
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Bart Simpson', 'Skateboards near Homer', 2, 1); -- 5
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Homer Simpson', 'Eats Hamburgers', 2, 1); -- 6
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Hank Hill', 'Sells propane and propane accessories', 2, 2); -- 7
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Peggy Hill', 'Makes Spapeggy and meatballs', 2, 2); -- 8
+INSERT INTO `guest`(`guest_name`, `guest_relationship_descriptor`,
+                    `guest_guestlist`, `guest_table_id`)
+VALUES ('Bobby Hill', 'Got dang it, Bobby!', 2, 2); -- 9
+
+-- These bridge entities may change: auto_increment issue? Need Event?
+-- Guest to sit with bridge table
+-- The initial section will handle the first 3 guests for event 1
+INSERT INTO `guesttositwith`(`guest_id`, `guest_sitwith_id`)
+VALUES (1,2); -- Jon sits with Jane
+INSERT INTO `guesttositwith`(`guest_id`, `guest_sitwith_id`)
+VALUES (2,1); -- Jane sits with Jon
+INSERT INTO `guesttositwith`(`guest_id`, `guest_sitwith_id`)
+VALUES (6,5); -- Homer sits with Bart
+INSERT INTO `guesttositwith`(`guest_id`, `guest_sitwith_id`)
+VALUES (5,6); -- Bart sits with Homer
+INSERT INTO `guesttositwith`(`guest_id`, `guest_sitwith_id`)
+VALUES (7,8); -- Hank sits with Peggy
+INSERT INTO `guesttositwith`(`guest_id`, `guest_sitwith_id`)
+VALUES (8,9); -- Peggy sits with Bobby
+
+-- Guest to avoid bridge table
+INSERT INTO `guesttoavoid`(`guest_avoid_id`, `guest_id`)
+VALUES (3,1); -- Jon avoids Dolph
+INSERT INTO `guesttoavoid`(`guest_avoid_id`, `guest_id`)
+VALUES (6,7); -- Hank avoids Homer
+
+-- Seating Arrangements to load by default in the database
+-- Creates a 1 and a 2 which will be associated with the events
+INSERT INTO `seatingarrangement`()
+VALUES(); -- 1
+INSERT INTO `seatingarrangement`()
+VALUES(); -- 2
+
+-- Default Tables to load into the system
+-- Event 1 and 2 have 2 tables each. Event 1 has size 2
+-- Event 2 has size 4.
+INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+                    `table_event_id`, `table_seatingarrangement_id`)
+VALUES (1,'Square','Two',1,1);
+INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+                    `table_event_id`, `table_seatingarrangement_id`)
+VALUES (2,'Square','Two',1,1);
+INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+                    `table_event_id`, `table_seatingarrangement_id`)
+VALUES (1,'Circle','Four',2,2);
+INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+                    `table_event_id`, `table_seatingarrangement_id`)
+VALUES (2,'Circle','Four',2,2)
+
+-- Default Events to add into the system
+
 -- Turn the FOREIGN_KEY_CHECKS back on so the database
 -- uses this data integrity feature.
 SET FOREIGN_KEY_CHECKS=1;

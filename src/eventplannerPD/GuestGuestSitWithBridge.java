@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity(name = "guesttositwith")
-@IdClass(GuestGuestSitWithBridgeId.class)
+//@IdClass(GuestGuestSitWithBridgeId.class)
 public class GuestGuestSitWithBridge implements Serializable {
 
 	/**
@@ -22,13 +22,14 @@ public class GuestGuestSitWithBridge implements Serializable {
 	
 	@Id
 	@Column(name = "guesttositwith_table_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int guestSitWithBridgeId;
 	
-	@Id
+	//@Id
 	@Column(name = "guest_id")
 	private int guestId;
 	
-	@Id
+	//@Id
 	@Column(name = "guest_sitwith_id")
 	private int guestSitWithId;
 
@@ -37,7 +38,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	private Guest guest;
 	
 	@ManyToOne
-	@PrimaryKeyJoinColumn(name = "guest_sitwith_id", referencedColumnName = "guest_sitwith_id")
+	@PrimaryKeyJoinColumn(name = "guest_sitwith_id", referencedColumnName = "guest_id")
 	private Guest guestToSitWith;
 
 	public GuestGuestSitWithBridge() {

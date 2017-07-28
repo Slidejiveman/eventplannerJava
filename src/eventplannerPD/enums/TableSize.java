@@ -5,7 +5,8 @@ package eventplannerPD.enums;
  * The values grow from 4 to 12 in increments of 2.
  */
 public enum TableSize {
-    /**
+    Two,
+	/**
      * The value for a four seat table.
      */
     Four,
