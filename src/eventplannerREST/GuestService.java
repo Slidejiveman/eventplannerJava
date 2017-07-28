@@ -23,7 +23,7 @@ import eventplannerDAO.EM;
 import eventplannerDAO.GuestDAO;
 import eventplannerPD.Guest;
 
-@Path("/userservice")
+@Path("/guestservice")
 public class GuestService {
 	public List<Guest> getguests(
 			@DefaultValue("0") @QueryParam("page") String page,
