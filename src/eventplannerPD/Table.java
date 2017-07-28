@@ -23,7 +23,7 @@ import eventplannerPD.enums.TableSize;
  * The table class represents the table at which guests sit during an event.
  */
 @XmlRootElement(name = "table")
-@Entity(name = "table")
+@Entity(name = "\"table\"")
 public class Table  implements Serializable {
 
 	/**
@@ -62,7 +62,7 @@ public class Table  implements Serializable {
      * of the guest collection and the table size.
      */
 	@OneToMany(targetEntity = Guest.class, mappedBy = "table")
-	@Column(name = "table_guests", nullable = true)
+	@JoinColumn(name = "table_guests", nullable = true)
     private Collection<Guest> guests;
     /**
      * The event the table is associated with.

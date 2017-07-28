@@ -49,15 +49,13 @@ public class Event implements Serializable {
      * The guestList is a collection of guests that are attending the event.
      */
 	@OneToOne
-	@PrimaryKeyJoinColumn
-	@Column(name = "event_guestlist")
+	@JoinColumn(name = "event_guestlist")
     private GuestList guestList;
     /**
      * The seating arrangement is the assignment of guests to tables.
      */
 	@OneToOne
-	@PrimaryKeyJoinColumn
-	@Column(name = "event_seatingarrangement")
+	@JoinColumn(name = "event_seatingarrangement")
     private SeatingArrangement seatingAssigment;
 
 	/**
@@ -111,7 +109,7 @@ public class Event implements Serializable {
      * tables or the twelve o'clock position of elliptical tables.
      */
     @OneToMany(targetEntity = Table.class, mappedBy = "event")
-    @Column(name = "event_tables", nullable = true)
+    @JoinColumn(name = "event_tables", nullable = true)
     private Collection<Table> tables;
     /**
      * The percentage of seats allowed to be vacant at a table. 

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -44,13 +45,13 @@ public class SeatingArrangement implements Serializable {
      */
 	@Id
 	@Column(name = "seatingarrangement_id", updatable = false, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * The event the seating arrangement is associated with.
      */
     @OneToOne(mappedBy="seatingAssigment")
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "seatingarrangement_event", nullable = false)
     private Event event;
     
     /**
@@ -61,7 +62,7 @@ public class SeatingArrangement implements Serializable {
      * tables or the twelve o'clock position of elliptical tables.
      */
     @OneToMany(targetEntity = Table.class, mappedBy = "seatingArrangement")
-    @Column(name = "seatingarrangement_tables", nullable = true)
+    @JoinColumn(name = "seatingarrangement_tables", nullable = true)
     private Collection<Table> tables;
 
     public Collection<Table> getTables() {
