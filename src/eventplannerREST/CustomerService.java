@@ -1,14 +1,17 @@
 package eventplannerREST;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,84 +22,75 @@ import javax.ws.rs.core.MediaType;
 import eventplannerDAO.CustomerDAO;
 import eventplannerDAO.EM;
 import eventplannerPD.Customer;
-import eventplannerUT.Message;
 
-/**
- * This class handles all of the RESTful services related
- * to customers. JQuery will be used to call these services
- * through the backend.
- * @author rdnot
- *
- */
-@Path("/customerservices")
+@Path("/customerservice")
 public class CustomerService {
-
-	List<Message> messages = new ArrayList<Message>();
-	
-	/**
-	 * Returns all customers.
-	 * 
-	 * Currently, this does not implement the pagination feature.
-	 * 
-	 * @param page
-	 * @param perPage
-	 * @return
-	 */
-     @GET
-     @Path("/customers")
-     @Produces(MediaType.APPLICATION_JSON)
-     public List<Customer> getCustomers(
-	      @DefaultValue("0") @QueryParam("page") String page,
-          @DefaultValue("10") @QueryParam("per_page") String perPage){
-          return CustomerDAO.listCustomers(); // add a list customer's method that takes the parameters in DAO
-     }
-	
-	/**
-	 * Gets a customer by the customer's ID number in the database.
-	 * @param customerId - the customers unique identifier
-	 * @return the customer associated with the ID number
-	 * @throws Exception - the general exception if anything goes wrong
-	 */
-	@GET
-	@Path("/customer/{customer_id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Customer getCustomerById(@PathParam("customer_id") String customerId) throws Exception {
-		Customer customer = CustomerDAO.findCustomerById(Integer.parseInt(customerId));
-		EM.getEntityManager().refresh(customer);
-		return customer;
+	public List<Customer> getCustomers(
+			@DefaultValue("0") @QueryParam("page") String page,
+			@DefaultValue("10") @QueryParam("per_page") String perPage){
+		return CustomerDAO.listCustomers();
 	}
-	
+	@GET
+	@Path("/customers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Customer getCustomer(@PathParam("id") String id){
+		return CustomerDAO.findCustomerById(Integer.parseInt(id));
+	}
 	@POST
-	@Path("/customer/{customer_id}")
+	@Path("/customers")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public List<Message> addCustomer(
-			Customer customer, @Context final HttpServletResponse response
-			) throws Exception {
-		
-		try {
-			int newCustomerId = customer.getId();
-			Customer possibleCustomer = CustomerDAO.findCustomerById(newCustomerId);
-			// If possibleCustomer isn't null, the ID already exists
-			if(possibleCustomer != null) {
-				response.setStatus(HttpServletResponse.SC_CONFLICT); // 409
-				try {
-					response.flushBuffer();
-				} catch (Exception ex) {}
-				messages.add(new Message(HttpServletResponse.SC_CONFLICT, "A Customer with this ID already exists.", "CustomerService"));
-			    return messages;
-			} else { // if the value is null, we can add the customer
-				EntityTransaction userTransaction = EM.getEntityManager().getTransaction();
-				userTransaction.begin();
-				CustomerDAO.addCustomer(possibleCustomer);
-				userTransaction.commit();
-				messages.add(new Message(HttpServletResponse.SC_OK, "The Customer was added to the database.", "CustomerService"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	public void addCustomer(Customer customer, @Context final HttpServletResponse response)throws IOException{
+		if(customer.equals(null)){
+			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+			try{
+				response.flushBuffer();
+			}catch(Exception e){}
+		}else{
+			EntityTransaction customerTransaction = EM.getEntityManager().getTransaction();
+			customerTransaction.begin();
+			CustomerDAO.addCustomer(customer);
+			customerTransaction.commit();
 		}
-
-		return messages;
-		
+	}
+	@PUT
+	@Path("/customers/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updatecustomer(Customer customer, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+		Customer customerToUpdate = CustomerDAO.findCustomerById(Integer.parseInt (id));
+		if(customerToUpdate.equals(null)){
+			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+			try{
+				response.flushBuffer();
+			}catch(Exception e){}
+		}
+		EntityTransaction customerTransaction = EM.getEntityManager().getTransaction();
+		customerTransaction.begin();
+		CustomerDAO.saveCustomer(customer);
+		customerTransaction.commit();	
+	}
+	@DELETE
+	@Path("/customers/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void deletecustomer(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+		Customer customerToDelete = CustomerDAO.findCustomerById(Integer.parseInt(id));
+		if(customerToDelete.equals(null)){
+			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+			try{
+				response.flushBuffer();
+			}catch(Exception e){}
+		}else{
+			EntityTransaction customerTransaction = EM.getEntityManager().getTransaction();
+			customerTransaction.begin();
+			CustomerDAO.deleteCustomer(customerToDelete);
+			customerTransaction.commit();
+		}
+	}
+	@OPTIONS
+	@Path("/customers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getSupportedOperations(){
+		return ("{ {'POST' : { 'description' : 'add a customer'}} {'GET' : {'description' : 'get a customer'}}}");
 	}
 }
