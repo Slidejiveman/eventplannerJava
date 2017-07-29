@@ -128,7 +128,7 @@ public class Event implements Serializable {
     public int getId() {
         return this.id;
     }
-
+    @XmlElement
     public void setId(int id) {
         this.id = id;
     }

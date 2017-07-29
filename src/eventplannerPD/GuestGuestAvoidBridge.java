@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name = "guesttoavoid")
 @Entity(name = "guesttoavoid")
@@ -74,7 +75,7 @@ public class GuestGuestAvoidBridge implements Serializable {
 	public Guest getGuest() {
 		return guest;
 	}
-	@XmlElement
+	@XmlTransient
 	public void setGuest(Guest guest) {
 		this.guest = guest;
 	}
@@ -82,7 +83,7 @@ public class GuestGuestAvoidBridge implements Serializable {
 	public Guest getGuestToAvoid() {
 		return guestToAvoid;
 	}
-	@XmlElement
+	@XmlTransient
 	public void setGuestToAvoid(Guest guestToAvoid) {
 		this.guestToAvoid = guestToAvoid;
 	}
