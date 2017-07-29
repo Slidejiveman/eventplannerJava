@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerPD.enums.TableShape;
 import eventplannerPD.enums.TableSize;
@@ -23,7 +24,7 @@ import eventplannerPD.enums.TableSize;
  * The table class represents the table at which guests sit during an event.
  */
 @XmlRootElement(name = "table")
-@Entity(name = "\"table\"")
+@Entity(name = "\"table\"") // Table is a reserved word. Escape it.
 public class Table  implements Serializable {
 
 	/**
@@ -80,15 +81,15 @@ public class Table  implements Serializable {
     public int getId() {
 		return id;
 	}
-
+    @XmlElement
 	public void setId(int id) {
 		this.id = id;
 	}
-    
+   
     public SeatingArrangement getSeatingArrangement() {
 		return seatingArrangement;
 	}
-
+    @XmlElement
 	public void setSeatingArrangement(SeatingArrangement seatingArrangement) {
 		this.seatingArrangement = seatingArrangement;
 	}
@@ -132,7 +133,7 @@ public class Table  implements Serializable {
     public Collection<Guest> getGuests() {
         return this.guests;
     }
-
+    @XmlTransient
     public void setGuests(Collection<Guest> guests) {
         this.guests = guests;
     }

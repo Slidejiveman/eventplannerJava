@@ -7,10 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "guesttositwith")
 @Entity(name = "guesttositwith")
 //@IdClass(GuestGuestSitWithBridgeId.class)
 public class GuestGuestSitWithBridge implements Serializable {
@@ -48,7 +50,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public int getTableId() {
 		return guestSitWithBridgeId;
 	}
-
+	@XmlElement
 	public void setTableId(int tableId) {
 		this.guestSitWithBridgeId = tableId;
 	}
@@ -56,7 +58,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public int getGuestId() {
 		return guestId;
 	}
-
+	@XmlElement
 	public void setGuestId(int guestId) {
 		this.guestId = guestId;
 	}
@@ -64,7 +66,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public int getGuestSitWithId() {
 		return guestSitWithId;
 	}
-
+	@XmlElement
 	public void setGuestSitWithId(int guestSitWithId) {
 		this.guestSitWithId = guestSitWithId;
 	}
@@ -72,7 +74,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public Guest getGuest() {
 		return guest;
 	}
-
+	@XmlElement
 	public void setGuest(Guest guest) {
 		this.guest = guest;
 	}
@@ -80,7 +82,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public Guest getGuestToSitWith() {
 		return guestToSitWith;
 	}
-
+	@XmlElement
 	public void setGuestToSitWith(Guest guestToSitWith) {
 		this.guestToSitWith = guestToSitWith;
 	}

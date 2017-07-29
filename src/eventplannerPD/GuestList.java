@@ -12,9 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * The guest list is a collection of guests associated with a single event. 
@@ -58,7 +58,7 @@ public class GuestList implements Serializable{
     public Event getEvent() {
 		return event;
 	}
-
+    @XmlTransient
 	public void setEvent(Event event) {
 		this.event = event;
 	}
@@ -66,7 +66,7 @@ public class GuestList implements Serializable{
 	public Collection<Guest> getGuests() {
         return this.guests;
     }
-
+	@XmlTransient
     public void setGuests(Collection<Guest> guests) {
         this.guests = guests;
     }

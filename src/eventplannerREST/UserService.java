@@ -25,6 +25,7 @@ import eventplannerDAO.EM;
 import eventplannerDAO.UserDAO;
 import eventplannerPD.Company;
 import eventplannerPD.User;
+import eventplannerUT.Log;
 import eventplannerUT.Message;
 
 @Path("/userservice")
@@ -38,7 +39,12 @@ public class UserService {
 	/**
 	 * The company object that holds a list of users.
 	 */
-	Company company = (Company) (CompanyDAO.listCompany().get(0));
+	Company company = (Company)(CompanyDAO.listCompany().get(0));
+	
+	/**
+	 * logger
+	 */
+	Log log = new Log();
 	
 	@GET
 	@Path("/users")
@@ -47,8 +53,9 @@ public class UserService {
 			@DefaultValue("0") @QueryParam("page") String page,
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
 		EM.getEntityManager().refresh(company);
-		return company.getAllUsers(Integer.parseInt(page), Integer.parseInt(perPage));
-				//company.getUsers();
+		List<User> users = company.getAllUsers(Integer.parseInt(page), Integer.parseInt(perPage));
+		log.log(users.toString());
+		return users;
 	}
 	@GET
 	@Path("/users/{id}")

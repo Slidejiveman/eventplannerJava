@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerDAO.UserDAO;
 
@@ -75,7 +76,8 @@ public class Company implements Serializable {
 	public int getId() {
 		return id;
 	}
-
+    
+	@XmlElement
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -92,6 +94,7 @@ public class Company implements Serializable {
 	public List<User> getUsers() {
 		return (List<User>) users;
 	}
+	@XmlTransient
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}

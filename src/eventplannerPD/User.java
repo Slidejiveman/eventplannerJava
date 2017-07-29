@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerPD.enums.EmployeeRole;
 
@@ -113,7 +114,7 @@ public class User implements Serializable {
     public int getId() {
         return this.id;
     }
-
+    @XmlElement
     public void setId(int id) {
         this.id = id;
     }
@@ -130,7 +131,7 @@ public class User implements Serializable {
     public String getToken() {
         return this.token;
     }
-    
+    @XmlTransient
     public void setToken(String token) {
 		this.token = token;
 	}

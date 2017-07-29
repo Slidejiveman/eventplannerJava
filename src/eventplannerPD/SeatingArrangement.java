@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * The seating arrangement is a table of guests assigned to tables at the event. 
@@ -68,7 +69,7 @@ public class SeatingArrangement implements Serializable {
     public Collection<Table> getTables() {
 		return tables;
 	}
-
+    @XmlTransient
 	public void setTables(Collection<Table> tables) {
 		this.tables = tables;
 	}
@@ -85,7 +86,7 @@ public class SeatingArrangement implements Serializable {
     public Event getEvent() {
         return this.event;
     }
-
+    @XmlTransient
     public void setEvent(Event event) {
         this.event = event;
     }

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * The class representing a Guest in the system. 
@@ -85,7 +86,7 @@ public class Guest implements Serializable {
 	public int getId() {
         return this.id;
     }
-
+	@XmlElement
     public void setId(int id) {
         this.id = id;
     }
@@ -112,7 +113,7 @@ public class Guest implements Serializable {
         return this.guestsToSitWith;
     }
 
-    @XmlElement
+    @XmlTransient
     public void setGuestsToSitWith(Collection<GuestGuestSitWithBridge> guestsToSitWith) {
         this.guestsToSitWith = guestsToSitWith;
     }
@@ -121,7 +122,7 @@ public class Guest implements Serializable {
         return this.guestsToAvoid;
     }
 
-    @XmlElement
+    @XmlTransient
     public void setGuestsToAvoid(Collection<GuestGuestAvoidBridge> guestsToAvoid) {
         this.guestsToAvoid = guestsToAvoid;
     }

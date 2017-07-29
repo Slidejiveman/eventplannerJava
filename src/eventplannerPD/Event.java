@@ -15,11 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerPD.enums.EventStatus;
 
@@ -217,7 +217,7 @@ public class Event implements Serializable {
     public Collection<Table> getTables() {
         return this.tables;
     }
-
+    @XmlTransient
     public void setTables(Collection<Table> tables) {
         this.tables = tables;
     }
