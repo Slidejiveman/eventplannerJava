@@ -2,12 +2,18 @@ package eventplannerDAO;
 
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import eventplannerPD.Company;
 import eventplannerPD.User;
 
-
+/**
+ * Database Access object for the User PD class.
+ * Allows things to be returned from the database.
+ * @author rdnot
+ *
+ */
 public class UserDAO {
 	/**
 	 * Add the given User to the database
@@ -56,7 +62,20 @@ public class UserDAO {
 		User user = EM.getEntityManager().find(User.class, new Integer(id));
 		return user;
 	}
-	
+	/**
+	 * Returns a user by the specified Id number.
+	 * Since the idNumber is the primary key of user, this is the same
+	 * as findUserById.
+	 * @param idNumber - The id number of the desired User
+	 * @return user with the specified Id number
+	 */
+	public static User findUserByIdNumber(String idNumber)
+    {
+      String qString = "SELECT user FROM user user  WHERE user.id ="+idNumber;
+      Query query = EM.getEntityManager().createQuery(qString);
+      User user = (User)query.getSingleResult();
+      return user;
+    }
 	/**
 	 * Removes the given User from the database.
 	 * @param User

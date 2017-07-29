@@ -89,8 +89,11 @@ public class Company implements Serializable {
 		this.name = name;
 	}
 
-	public Collection<User> getUsers() {
-		return users;
+	public List<User> getUsers() {
+		return (List<User>) users;
+	}
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 	/**
@@ -130,6 +133,7 @@ public class Company implements Serializable {
 	 */
 	public List<User> getAllUsers(int page, int perPage) {
 		List <User> userList = UserDAO.getAllUsersForCompany(this, page, perPage);
+		setUsers(userList);
 		return userList;
 	}
 	

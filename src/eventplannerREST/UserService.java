@@ -1,6 +1,7 @@
 package eventplannerREST;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
@@ -19,22 +20,43 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import eventplannerDAO.CompanyDAO;
 import eventplannerDAO.EM;
 import eventplannerDAO.UserDAO;
+import eventplannerPD.Company;
 import eventplannerPD.User;
+import eventplannerUT.Message;
 
 @Path("/userservice")
 public class UserService {
-	public List<User> getUsers(
-			@DefaultValue("0") @QueryParam("page") String page,
-			@DefaultValue("10") @QueryParam("per_page") String perPage){
-		return UserDAO.listUsers();
-	}
+	
+	/**
+	 *  The list of messages to deliver to the user.
+	 */
+	ArrayList<Message> messages = new ArrayList<Message>();
+	
+	/**
+	 * The company object that holds a list of users.
+	 */
+	Company company = (Company) (CompanyDAO.listCompany().get(0));
+	
 	@GET
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
+	public List<User> getUsers(
+			@DefaultValue("0") @QueryParam("page") String page,
+			@DefaultValue("10") @QueryParam("per_page") String perPage){
+		EM.getEntityManager().refresh(company);
+		return company.getAllUsers(Integer.parseInt(page), Integer.parseInt(perPage));
+				//company.getUsers();
+	}
+	@GET
+	@Path("/users/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public User getUser(@PathParam("id") String id){
-		return UserDAO.findUserById(Integer.parseInt(id));
+		User user = company.findUserByIdNumber(Integer.parseInt(id));
+		EM.getEntityManager().refresh(user);
+		return user;
 	}
 	@POST
 	@Path("/users")
