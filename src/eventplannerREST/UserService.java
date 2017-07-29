@@ -55,6 +55,7 @@ public class UserService {
 		EM.getEntityManager().refresh(company);
 		List<User> users = company.getAllUsers(Integer.parseInt(page), Integer.parseInt(perPage));
 		log.log(users.toString());
+		log.logJAXB();
 		return users;
 	}
 	@GET
