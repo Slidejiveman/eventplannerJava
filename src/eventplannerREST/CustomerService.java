@@ -1,6 +1,7 @@
 package eventplannerREST;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
@@ -21,17 +22,32 @@ import javax.ws.rs.core.MediaType;
 
 import eventplannerDAO.CustomerDAO;
 import eventplannerDAO.EM;
+import eventplannerDAO.EventDAO;
 import eventplannerPD.Customer;
+import eventplannerPD.Event;
+import eventplannerUT.Log;
+import eventplannerUT.Message;
 
 @Path("/customerservice")
 public class CustomerService {
+	//The list of messages to deliver to the user.
+	ArrayList<Message> messages = new ArrayList<Message>();
+	//logger
+	Log log = new Log();
+	
+	@GET
+	@Path("/customers")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Customer> getCustomers(
 			@DefaultValue("0") @QueryParam("page") String page,
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
-		return CustomerDAO.listCustomers();
+		List<Customer>customers=CustomerDAO.listCustomers();
+		log.log(customers.toString());
+		log.logJAXB();
+		return customers;
 	}
 	@GET
-	@Path("/customers")
+	@Path("/customers/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Customer getCustomer(@PathParam("id") String id){
 		return CustomerDAO.findCustomerById(Integer.parseInt(id));
