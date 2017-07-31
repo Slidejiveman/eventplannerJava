@@ -20,10 +20,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.owlike.genson.Genson;
+
 import eventplannerDAO.EM;
-import eventplannerDAO.EventDAO;
 import eventplannerDAO.GuestDAO;
-import eventplannerPD.Event;
 import eventplannerPD.Guest;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
@@ -42,6 +42,12 @@ public class GuestService {
 			@DefaultValue("0") @QueryParam("page") String page,
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
 		List<Guest>guests=GuestDAO.listGuests();
+		Genson gen = new Genson();
+		for(Guest guest:guests){
+			String txt = gen.serialize(guest);
+			System.out.println(txt);
+		}
+
 		log.log(guests.toString());
 		log.logJAXB();
 		return guests;
