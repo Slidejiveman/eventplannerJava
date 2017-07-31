@@ -1,6 +1,7 @@
 package eventplannerREST;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
@@ -20,18 +21,33 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import eventplannerDAO.EM;
+import eventplannerDAO.EventDAO;
 import eventplannerDAO.GuestDAO;
+import eventplannerPD.Event;
 import eventplannerPD.Guest;
+import eventplannerUT.Log;
+import eventplannerUT.Message;
 
 @Path("/guestservice")
 public class GuestService {
+	//The list of messages to deliver to the user.
+	ArrayList<Message> messages = new ArrayList<Message>();
+	//logger
+	Log log = new Log();
+	
+	@GET
+	@Path("/guests")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Guest> getguests(
 			@DefaultValue("0") @QueryParam("page") String page,
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
-		return GuestDAO.listGuests();
+		List<Guest>guests=GuestDAO.listGuests();
+		log.log(guests.toString());
+		log.logJAXB();
+		return guests;
 	}
 	@GET
-	@Path("/guests")
+	@Path("/guests/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Guest getguest(@PathParam("id") String id){
 		return GuestDAO.findGuestById(Integer.parseInt(id));
