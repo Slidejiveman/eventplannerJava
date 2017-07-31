@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
 /**
  * The guest list is a collection of guests associated with a single event. 
  * The guest list is received from the customer as an Excel file and imported into the system.
@@ -51,21 +53,24 @@ public class GuestList implements Serializable{
     /**
      * This is the Event that the guest list is associated with.
      */
+    @JsonIgnore
     @OneToOne(mappedBy="guestList", cascade = CascadeType.ALL)
     @JoinColumn(name = "guestlist_event", nullable = false)
     private Event event;
-
+    @JsonIgnore
     public Event getEvent() {
 		return event;
 	}
+    @JsonIgnore
     @XmlTransient
 	public void setEvent(Event event) {
 		this.event = event;
 	}
-
+    
 	public Collection<Guest> getGuests() {
         return this.guests;
     }
+    
 	@XmlTransient
     public void setGuests(Collection<Guest> guests) {
         this.guests = guests;
@@ -101,7 +106,7 @@ public class GuestList implements Serializable{
      */
     public boolean isOkayToDelete() {
         // TODO - implement GuestList.isOkayToDelete
-        throw new UnsupportedOperationException();
+        return true;
     }
 
 }

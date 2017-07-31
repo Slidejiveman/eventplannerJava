@@ -1,8 +1,12 @@
 package eventplannerDAO;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.TypedQuery;
+
 import eventplannerPD.Guest;
+import eventplannerPD.GuestGuestAvoidBridge;
 
 public class GuestDAO {
 	/**
@@ -28,6 +32,21 @@ public class GuestDAO {
 	 */
 	public static List<Guest> listGuests() {
 		TypedQuery<Guest> query = EM.getEntityManager().createQuery("SELECT guest FROM guest guest", Guest.class);
+		return query.getResultList();
+	}
+	
+	public static List<Guest> listGuestsToAvoid(Guest guest) {
+		TypedQuery<GuestGuestAvoidBridge> query = EM.getEntityManager().createQuery("SELECT guestGuestAvoidBridge FROM guesttoavoid WHERE guest_id="+guest.getId(), GuestGuestAvoidBridge.class);
+		List<Guest> guestsToAvoid = new ArrayList<Guest>();
+		for(GuestGuestAvoidBridge row : query.getResultList()) {
+		    Guest g = findGuestById(row.getGuestAvoidId());
+		    guestsToAvoid.add(g);
+		}
+		return guestsToAvoid;
+	}
+	
+    public static List<Guest> listGuestsToSitWith() {
+    	TypedQuery<Guest> query = EM.getEntityManager().createQuery("SELECT guest FROM guest guest", Guest.class);
 		return query.getResultList();
 	}
 	

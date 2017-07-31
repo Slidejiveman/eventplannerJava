@@ -71,7 +71,7 @@ public class UserDAO {
 	 */
 	public static User findUserByIdNumber(String idNumber)
     {
-      String qString = "SELECT user FROM user user  WHERE user.id ="+idNumber;
+      String qString = "SELECT user FROM user user WHERE user.id ="+idNumber;
       Query query = EM.getEntityManager().createQuery(qString);
       User user = (User)query.getSingleResult();
       return user;

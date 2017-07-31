@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "guesttositwith")
 @Entity(name = "guesttositwith")
 //@IdClass(GuestGuestSitWithBridgeId.class)
 public class GuestGuestSitWithBridge implements Serializable {
@@ -51,7 +50,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public int getTableId() {
 		return guestSitWithBridgeId;
 	}
-	@XmlElement
+	
 	public void setTableId(int tableId) {
 		this.guestSitWithBridgeId = tableId;
 	}
@@ -59,7 +58,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public int getGuestId() {
 		return guestId;
 	}
-	@XmlElement
+	
 	public void setGuestId(int guestId) {
 		this.guestId = guestId;
 	}
@@ -67,7 +66,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public int getGuestSitWithId() {
 		return guestSitWithId;
 	}
-	@XmlElement
+	
 	public void setGuestSitWithId(int guestSitWithId) {
 		this.guestSitWithId = guestSitWithId;
 	}
@@ -75,7 +74,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public Guest getGuest() {
 		return guest;
 	}
-	@XmlTransient
+	
 	public void setGuest(Guest guest) {
 		this.guest = guest;
 	}
@@ -83,7 +82,7 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public Guest getGuestToSitWith() {
 		return guestToSitWith;
 	}
-	@XmlTransient
+	
 	public void setGuestToSitWith(Guest guestToSitWith) {
 		this.guestToSitWith = guestToSitWith;
 	}

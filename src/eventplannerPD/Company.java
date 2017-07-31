@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
 import eventplannerDAO.UserDAO;
 
 /**
@@ -53,6 +55,7 @@ public class Company implements Serializable {
 	/**
 	 * The collection of people who work for the company
 	 */
+	@JsonIgnore
 	@OneToMany(mappedBy = "company", targetEntity = User.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "company_employees", nullable = true)
 	private Collection<User> users;
@@ -90,10 +93,11 @@ public class Company implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	@JsonIgnore
 	public List<User> getUsers() {
 		return (List<User>) users;
 	}
+	@JsonIgnore
 	@XmlTransient
 	public void setUsers(List<User> users) {
 		this.users = users;

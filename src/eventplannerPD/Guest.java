@@ -15,6 +15,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
+import eventplannerDAO.GuestDAO;
+
 /**
  * The class representing a Guest in the system. 
  * The guest is an individual that will attend the event.
@@ -53,12 +57,14 @@ public class Guest implements Serializable {
     /**
      * A collection of the Guests this Guest is required to sit with in the same table.
      */
+	@JsonIgnore
 	@OneToMany(mappedBy = "guest")
 	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true, referencedColumnName = "guesttositwith_table_id")
     private Collection<GuestGuestSitWithBridge> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
+	@JsonIgnore
 	@OneToMany(mappedBy = "guest")
 	@JoinColumn(name = "guest_guests_to_avoid", nullable = true, referencedColumnName = "guesttoavoid_table_id")
     private Collection<GuestGuestAvoidBridge> guestsToAvoid;
@@ -66,18 +72,22 @@ public class Guest implements Serializable {
     /**
      * The table the guest is sitting at.
      */
+	@JsonIgnore
     @ManyToOne(optional = true)
     @JoinColumn(name = "guest_table_id", nullable = true, referencedColumnName = "table_id")
     private Table table;
     
+    @JsonIgnore
     @ManyToOne(optional = false) 
     @JoinColumn(name = "guest_guestlist", nullable = false, referencedColumnName = "guestlist_id")  
     private GuestList guestlist;
     
+    @JsonIgnore
     public GuestList getGuestlist() {
 		return guestlist;
 	}
     
+    @JsonIgnore
     @XmlElement
 	public void setGuestlist(GuestList guestlist) {
 		this.guestlist = guestlist;
@@ -108,34 +118,43 @@ public class Guest implements Serializable {
     public void setRelationshipDescriptor(String relationshipDescriptor) {
         this.relationshipDescriptor = relationshipDescriptor;
     }
-
+    @JsonIgnore
     public Collection<GuestGuestSitWithBridge> getGuestsToSitWith() {
         return this.guestsToSitWith;
     }
-
+    @JsonIgnore
     @XmlTransient
     public void setGuestsToSitWith(Collection<GuestGuestSitWithBridge> guestsToSitWith) {
         this.guestsToSitWith = guestsToSitWith;
     }
-
+    @JsonIgnore
     public Collection<GuestGuestAvoidBridge> getGuestsToAvoid() {
         return this.guestsToAvoid;
     }
-
+    @JsonIgnore
     @XmlTransient
     public void setGuestsToAvoid(Collection<GuestGuestAvoidBridge> guestsToAvoid) {
         this.guestsToAvoid = guestsToAvoid;
     }
-
+    @JsonIgnore
     public Table getTable() {
 		return table;
 	}
-
+    @JsonIgnore
     @XmlElement
 	public void setTable(Table table) {
 		this.table = table;
 	}
-
+    
+    /**
+     * Gets the guests to avoid out of the database so that JSON can be generated
+     * with this information in it.
+     * @return The guests to avoid sitting with
+     */
+    public Collection<Guest> findGuestsToAvoid() {
+    	return GuestDAO.listGuestsToAvoid(this);
+    }
+    
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
