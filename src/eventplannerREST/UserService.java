@@ -20,10 +20,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.owlike.genson.Genson;
+
 import eventplannerDAO.CompanyDAO;
 import eventplannerDAO.EM;
 import eventplannerDAO.UserDAO;
 import eventplannerPD.Company;
+import eventplannerPD.Customer;
 import eventplannerPD.User;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
@@ -54,6 +57,11 @@ public class UserService {
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
 		EM.getEntityManager().refresh(company);
 		List<User> users = company.getAllUsers(Integer.parseInt(page), Integer.parseInt(perPage));
+		Genson gen = new Genson();
+		for(User user:users){
+			String txt = gen.serialize(user);
+			System.out.println(txt);
+		}
 		log.log(users.toString());
 		log.logJAXB();
 		return users;
