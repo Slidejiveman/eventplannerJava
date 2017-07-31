@@ -152,8 +152,7 @@ public class Guest implements Serializable {
      * A guest may only be deleted if associated with an Open or Canceled event. Otherwise the event is under review or has been approved. In these circumstances, the guest list should not be changed.
      */
     public boolean isOkToDelete() {
-        // TODO - implement Guest.isOkToDelete
-        throw new UnsupportedOperationException();
+       return true;
     }
 
     /**
@@ -162,8 +161,7 @@ public class Guest implements Serializable {
      * @return The string containing the name and the relationship descriptor of the guest.
      */
     public String toString() {
-        // TODO - implement Guest.toString
-        throw new UnsupportedOperationException();
+        return "";
     }
 
 }

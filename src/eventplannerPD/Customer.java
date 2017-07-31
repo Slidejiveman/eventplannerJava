@@ -99,8 +99,7 @@ public class Customer implements Serializable {
      *         False: The customer may not be deleted.
      */
     public boolean isOkToDelete() {
-        // TODO - implement Customer.isOkToDelete
-        throw new UnsupportedOperationException();
+        return true;
     }
 
 }

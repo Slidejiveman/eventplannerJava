@@ -255,8 +255,7 @@ public class Event implements Serializable {
      *         False: The event may not be deleted and removed from the database.
      */
     public boolean isOkToDelete() {
-        // TODO - implement Event.isOkToDelete
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     /**
@@ -276,8 +275,7 @@ public class Event implements Serializable {
      * @return The number of tables needed to accommodate the guest list with the required ratio of empty seats.
      */
     public int calculateNumTables(double pse, Table table, GuestList gl) {
-        // TODO - implement Event.calculateNumTables
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     /**
@@ -287,8 +285,7 @@ public class Event implements Serializable {
      * This method will multiply the number of seats by the number of tables.
      */
     public int calculateTotalSeats() {
-        // TODO - implement Event.calculateTotalSeats
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
 }
