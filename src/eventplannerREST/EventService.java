@@ -20,6 +20,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.owlike.genson.Genson;
+
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
 import eventplannerPD.Event;
@@ -40,6 +42,12 @@ public class EventService {
 			@DefaultValue("0") @QueryParam("page") String page,
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
 		List<Event>events=EventDAO.listEvents();
+		Genson gen = new Genson();
+		for(Event event:events){
+			String txt = gen.serialize(event);
+			System.out.println(txt);
+		}
+
 		log.log(events.toString());
 		log.logJAXB();
 		return events;
