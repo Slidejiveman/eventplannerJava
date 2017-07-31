@@ -20,6 +20,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.owlike.genson.Genson;
+
 import eventplannerDAO.CustomerDAO;
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
@@ -44,6 +46,11 @@ public class CustomerService {
 		List<Customer>customers=CustomerDAO.listCustomers();
 		log.log(customers.toString());
 		log.logJAXB();
+		Genson gen = new Genson();
+		for(Customer customer:customers){
+			String txt = gen.serialize(customer);
+			System.out.println(txt);
+		}
 		return customers;
 	}
 	@GET
@@ -68,6 +75,10 @@ public class CustomerService {
 			CustomerDAO.addCustomer(customer);
 			customerTransaction.commit();
 		}
+		Genson gen = new Genson();
+		String txt = gen.serialize(customer);
+		System.out.println(txt);
+		
 	}
 	@PUT
 	@Path("/customers/{id}")
