@@ -35,6 +35,7 @@ public class GuestDAO {
 		return query.getResultList();
 	}
 	
+	
 	public static List<Guest> listGuestsToAvoid(Guest guest) {
 		TypedQuery<GuestGuestAvoidBridge> query = EM.getEntityManager().createQuery("SELECT guestGuestAvoidBridge FROM guesttoavoid WHERE guest_id="+guest.getId(), GuestGuestAvoidBridge.class);
 		List<Guest> guestsToAvoid = new ArrayList<Guest>();
