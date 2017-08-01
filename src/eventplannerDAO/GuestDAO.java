@@ -37,6 +37,16 @@ public class GuestDAO {
 	}
 	
 	/**
+	 * Guests need to be returned by Event in order to get all of the guests that are on
+	 * the same guest list. This will be more relevant than getting all guests.
+	 * @return All guests who are going to the same event: based on Guest List
+	 */
+	public static List<Guest> listGuestsByGuestList(int guestlistId) {
+		TypedQuery<Guest> query = EM.getEntityManager().createQuery("SELECT guest FROM guest guest WHERE guest.guestlist.id="+guestlistId, Guest.class);
+		return query.getResultList();
+	}
+	
+	/**
 	 * This method is needed to get the guests that a given guest is supposed
 	 * to avoid setting with
 	 * 
@@ -72,11 +82,6 @@ public class GuestDAO {
 		    guestsToSitWith.add(g);
 		}
 		return guestsToSitWith;
-	}
-	
-    public static List<Guest> listGuestsToSitWith() {
-    	TypedQuery<Guest> query = EM.getEntityManager().createQuery("SELECT guest FROM guest guest", Guest.class);
-		return query.getResultList();
 	}
 	
 	/**

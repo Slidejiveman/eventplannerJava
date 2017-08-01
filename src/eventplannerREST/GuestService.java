@@ -60,6 +60,21 @@ public class GuestService {
 		EM.getEntityManager().refresh(guest);
 		return guest;
 	}
+	/**
+	 * Fetches all of the guests associated with the same guest list in the database.
+	 * This also means they are associated with the same event.
+	 * 
+	 * @param id - the guestlist id
+	 * @return The guests on the same guest list
+	 */
+	@GET
+	@Path("/guestsbyguestlist/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Guest> getGuestsByGuestList(@PathParam("id") String id) {
+		List<Guest> guestsAtEvent = GuestDAO.listGuestsByGuestList(Integer.parseInt(id));
+		return guestsAtEvent;
+	}
+	
 	@POST
 	@Path("/guests")
 	@Produces(MediaType.APPLICATION_JSON)
