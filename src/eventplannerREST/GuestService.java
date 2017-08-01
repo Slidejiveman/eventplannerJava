@@ -56,57 +56,96 @@ public class GuestService {
 	@Path("/guests/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Guest getguest(@PathParam("id") String id){
-		return GuestDAO.findGuestById(Integer.parseInt(id));
+		Guest guest =  GuestDAO.findGuestById(Integer.parseInt(id));
+		EM.getEntityManager().refresh(guest);
+		return guest;
 	}
 	@POST
 	@Path("/guests")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addguest(Guest guest, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> addguest(Guest guest, @Context final HttpServletResponse response)throws IOException{
 		if(guest.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Add"));
+			return messages;
 		}else{
+			List<Message> errMessages = guest.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 			EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
 			guestTransaction.begin();
 			GuestDAO.addGuest(guest);
 			guestTransaction.commit();
+			messages.add(new Message("rest001", "Success Operation", "Add"));
+			return messages;
 		}
 	}
 	@PUT
 	@Path("/guests/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateguest(Guest guest, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> updateguest(Guest guest, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Guest guestToUpdate = GuestDAO.findGuestById(Integer.parseInt (id));
 		if(guestToUpdate.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Update"));
+			return messages;
+		} else {
+			List<Message> errMessages = guest.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 		}
 		EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
 		guestTransaction.begin();
-		GuestDAO.saveGuest(guest);
+		Boolean result = guestToUpdate.update(guest);
 		guestTransaction.commit();	
+		if (result) {
+			messages.add(new Message("rest001", "Success Operation", "Update"));
+			return messages;
+		} else {
+			try {
+			    response.flushBuffer();
+			}catch (Exception e) {}	 
+		messages.add(new Message("rest002", "Fail Operation", "Update"));
+		return messages;
+		}
 	}
 	@DELETE
 	@Path("/guests/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void deleteguest(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> deleteguest(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Guest guestToDelete = GuestDAO.findGuestById(Integer.parseInt(id));
 		if(guestToDelete.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Delete"));
+			return messages;
 		}else{
 			EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
 			guestTransaction.begin();
 			GuestDAO.deleteGuest(guestToDelete);
 			guestTransaction.commit();
+			messages.add(new Message("rest001", "Success Operation", "Delete"));
+			return messages;
 		}
 	}
 	@OPTIONS

@@ -24,9 +24,7 @@ import com.owlike.genson.Genson;
 
 import eventplannerDAO.CustomerDAO;
 import eventplannerDAO.EM;
-import eventplannerDAO.EventDAO;
 import eventplannerPD.Customer;
-import eventplannerPD.Event;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
 

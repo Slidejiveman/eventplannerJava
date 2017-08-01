@@ -1,7 +1,9 @@
 package eventplannerPD;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.owlike.genson.annotation.JsonIgnore;
 
 import eventplannerDAO.GuestDAO;
+import eventplannerUT.Message;
 
 /**
  * The class representing a Guest in the system. 
@@ -78,8 +81,8 @@ public class Guest implements Serializable {
     private Table table;
     
     @JsonIgnore
-    @ManyToOne(optional = false) 
-    @JoinColumn(name = "guest_guestlist", nullable = false, referencedColumnName = "guestlist_id")  
+    @ManyToOne(optional = true) 
+    @JoinColumn(name = "guest_guestlist", nullable = true, referencedColumnName = "guestlist_id")  
     private GuestList guestlist;
     
     @JsonIgnore
@@ -174,6 +177,38 @@ public class Guest implements Serializable {
        return true;
     }
 
+    /**
+     * The validation method creates JSON messages
+     * that are returned to the screen if an error occurs
+     * @return the error messages
+     */
+    public List<Message> validate() {
+    	List<Message> messages = new ArrayList<Message>();
+    	
+    	if (this.getName().equals(null) || this.getName().equals("")) {
+    		messages.add(new Message("Guest000", "Guest's name cannot be null or empty.", "Name"));
+    	}
+    	
+    	return messages;
+    }
+    
+    /**
+     * The update method re-initializes a guest's values
+     * with the values of another guest from the database.
+     * @param guest - the guest whose values to apply to this customer
+     * @return this guest updated with the given guest's values
+     */
+    public Boolean update(Guest guest) {
+    	this.setGuestlist(guest.getGuestlist());
+    	this.setGuestsToAvoid(guest.getGuestsToAvoid());
+    	this.setGuestsToSitWith(guest.getGuestsToSitWith());
+    	this.setId(guest.getId());
+    	this.setName(guest.getName());
+    	this.setRelationshipDescriptor(guest.getRelationshipDescriptor());
+    	this.setTable(guest.getTable());
+    	return true;
+    }
+    
     /**
      * Used to print out the Table Marker for this guest.
      * The toString() method is overwritten to display the name of the guest and the relationship descriptor of the guest.
