@@ -11,10 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.owlike.genson.annotation.JsonIgnore;
 
 /**
  * The seating arrangement is a table of guests assigned to tables at the event. 
@@ -51,6 +52,7 @@ public class SeatingArrangement implements Serializable {
     /**
      * The event the seating arrangement is associated with.
      */
+	@JsonIgnore
     @OneToOne(mappedBy="seatingAssigment")
     @JoinColumn(name = "seatingarrangement_event", nullable = false)
     private Event event;
@@ -62,13 +64,15 @@ public class SeatingArrangement implements Serializable {
      * Seat numbers begin from the leftmost upper corner of rectangular 
      * tables or the twelve o'clock position of elliptical tables.
      */
+	@JsonIgnore
     @OneToMany(targetEntity = Table.class, mappedBy = "seatingArrangement")
     @JoinColumn(name = "seatingarrangement_tables", nullable = true)
     private Collection<Table> tables;
-
+    @JsonIgnore
     public Collection<Table> getTables() {
 		return tables;
 	}
+    @JsonIgnore
     @XmlTransient
 	public void setTables(Collection<Table> tables) {
 		this.tables = tables;
@@ -82,10 +86,11 @@ public class SeatingArrangement implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
+	@JsonIgnore
     public Event getEvent() {
         return this.event;
     }
+	@JsonIgnore
     @XmlTransient
     public void setEvent(Event event) {
         this.event = event;
@@ -107,7 +112,7 @@ public class SeatingArrangement implements Serializable {
      */
     public boolean isOkToDelete() {
         // TODO - implement SeatingArrangement.isOkToDelete
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     /**
@@ -116,7 +121,7 @@ public class SeatingArrangement implements Serializable {
      */
     public void sortAlphabetically() {
         // TODO - implement SeatingArrangement.sortAlphabetically
-        throw new UnsupportedOperationException();
+        
     }
 
     /**

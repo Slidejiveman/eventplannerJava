@@ -1,6 +1,8 @@
 package eventplannerPD;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerPD.enums.EmployeeRole;
+import eventplannerUT.Message;
 
 /**
  * The user class represents an employee of 
@@ -192,6 +195,47 @@ public class User implements Serializable {
      */
     public boolean isAuthorized() {
         return true;
+    }
+    
+    /**
+     * The validation method creates JSON messages
+     * that are returned to the screen if an error orccurs
+     * @return the error messages
+     */
+    public List<Message> validate() {
+    	List<Message> messages = new ArrayList<Message>();
+    	
+    	if (this.getName().equals(null) || this.getName().equals("")) {
+    		messages.add(new Message("User000", "User's Name cannot be null or empty", "Name"));
+    	}
+    	if (this.getPassword().equals(null) || this.getPassword().equals("")) {
+    		messages.add(new Message("User001", "User's Password cannot be null or empty", "Password"));
+    	}
+    	if (this.getUsername().equals(null) || this.getUsername().equals("")) {
+    		messages.add(new Message("User002", "User's Username cannot be null or empty", "Username"));
+    	}
+    	if (!(this.getEmployeeRole().equals(EmployeeRole.Administrator) || this.getEmployeeRole().equals(EmployeeRole.Standard))) {
+    		messages.add(new Message("User003", "User's Role must be Standard or Administrator", "Employee Role"));
+    	}
+    	
+    	return messages;
+    }
+    
+    /**
+     * The update method re-initializes a user's values
+     * with the values of another user from the database.
+     * @param user - the user whose values to apply to this user
+     * @return this user updated with the given user's values
+     */
+    public Boolean update(User user) {
+    	this.setName(user.getName());
+    	this.setCompany(user.getCompany());
+    	this.setEmployeeRole(user.getEmployeeRole());
+    	this.setId(user.getId());
+    	this.setIsActive(user.isIsActive());
+    	this.setPassword(user.getPassword());
+    	this.setUsername(user.getUsername());
+    	return true;
     }
 
 }

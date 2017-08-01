@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
 import eventplannerPD.enums.TableShape;
 import eventplannerPD.enums.TableSize;
 
@@ -68,12 +70,14 @@ public class Table  implements Serializable {
     /**
      * The event the table is associated with.
      */
+	@JsonIgnore
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "table_event_id", nullable = false, referencedColumnName = "event_id")
     private Event event;
     /**
      * The seating arrangement the table is associated with
      */
+	@JsonIgnore
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "table_seatingarrangement_id", nullable = true, referencedColumnName = "seatingarrangement_id")
     private SeatingArrangement seatingArrangement;
@@ -85,19 +89,20 @@ public class Table  implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-   
+    @JsonIgnore
     public SeatingArrangement getSeatingArrangement() {
 		return seatingArrangement;
 	}
+    @JsonIgnore
     @XmlElement
 	public void setSeatingArrangement(SeatingArrangement seatingArrangement) {
 		this.seatingArrangement = seatingArrangement;
 	}
-
+    @JsonIgnore
 	public Event getEvent() {
 		return event;
 	}
-
+    @JsonIgnore
 	@XmlElement
 	public void setEvent(Event event) {
 		this.event = event;
