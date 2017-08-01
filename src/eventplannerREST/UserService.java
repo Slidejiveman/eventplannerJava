@@ -78,51 +78,107 @@ public class UserService {
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addUser(User User, @Context final HttpServletResponse response)throws IOException{
-		if(User.equals(null)){
+	public List<Message> addUser(User user, @Context final HttpServletResponse response)throws IOException{
+		if(user.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+				messages.add(new Message("rest002", "Fail Operation", "Add"));
+				return messages;
+			
 		}else{
+			
+			List<Message> errMessages = user.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+					
+				return errMessages;
+			}
+			
 			EntityTransaction UserTransaction = EM.getEntityManager().getTransaction();
 			UserTransaction.begin();
-			UserDAO.addUser(User);
+			Boolean result = company.addUser(user);
 			UserTransaction.commit();
-		}
+			if(result) {
+				messages.add(new Message("rest001", "Success Operation", "Add"));
+				return messages;
+			}
+			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+			try {
+				response.flushBuffer();
+			} catch (Exception e) {}
+			messages.add(new Message("rest002", "Fail Operation", ""));	
+			
+			return messages;
+		}		
 	}
+	
 	@PUT
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateUser(User User, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
-		User UserToUpdate = UserDAO.findUserById(Integer.parseInt (id));
-		if(UserToUpdate.equals(null)){
+	public List<Message> updateUser(User user, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+		User userToUpdate = UserDAO.findUserById(Integer.parseInt (id));
+		if(userToUpdate.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Update"));
+			return messages;
+		} else {
+			List<Message> errMessages = user.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 		}
 		EntityTransaction UserTransaction = EM.getEntityManager().getTransaction();
 		UserTransaction.begin();
-		UserDAO.saveUser(User);
+		Boolean result = userToUpdate.update(user);
 		UserTransaction.commit();	
+		if (result) {
+			messages.add(new Message("rest001", "Success Operation", "Update"));
+			return messages;
+		} else {
+			try {
+			    response.flushBuffer();
+			}catch (Exception e) {}	 
+		messages.add(new Message("rest002", "Fail Operation", "Update"));
+		return messages;
+		}	
 	}
 	@DELETE
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void deleteUser(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
-		User UserToDelete = UserDAO.findUserById(Integer.parseInt(id));
-		if(UserToDelete.equals(null)){
+	public List<Message> deleteUser(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+		User userToDelete = UserDAO.findUserById(Integer.parseInt(id));
+		if(userToDelete.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Delete"));
+			return messages;
 		}else{
 			EntityTransaction UserTransaction = EM.getEntityManager().getTransaction();
 			UserTransaction.begin();
-			UserDAO.deleteUser(UserToDelete);
+			Boolean result = company.removeUser(userToDelete);
 			UserTransaction.commit();
+			if(result) {
+				messages.add(new Message("rest001", "Success Operation", "Delete"));
+				return messages;
+			} else {
+				messages.add(new Message("rest002", "Fail Operation", "Delete"));
+				return messages;
+			}
 		}
 	}
 	@OPTIONS

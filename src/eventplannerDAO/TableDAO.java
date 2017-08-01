@@ -1,8 +1,11 @@
 package eventplannerDAO;
 
 import java.util.List;
+
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import eventplannerPD.Event;
 import eventplannerPD.Table;
 
 
@@ -30,6 +33,16 @@ public class TableDAO {
 	 */
 	public static List<Table> listTables() {
 		TypedQuery<Table> query = EM.getEntityManager().createQuery("SELECT table FROM table table", Table.class);
+		return query.getResultList();
+	}
+	
+	/**
+	 * Returns all Tables associated with an event.
+	 * @param event - the event we want the tables for
+	 * @return The tables for the event
+	 */
+	public static List<Table> findTablesByEvent(Event event) {
+		TypedQuery<Table> query = EM.getEntityManager().createQuery("table FROM table table WHERE table_event_id="+event.getId(), Table.class);
 		return query.getResultList();
 	}
 	
