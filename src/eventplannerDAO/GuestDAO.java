@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 
 import eventplannerPD.Guest;
 import eventplannerPD.GuestGuestAvoidBridge;
+import eventplannerPD.GuestGuestSitWithBridge;
 
 public class GuestDAO {
 	/**
@@ -35,7 +36,15 @@ public class GuestDAO {
 		return query.getResultList();
 	}
 	
-	
+	/**
+	 * This method is needed to get the guests that a given guest is supposed
+	 * to avoid setting with
+	 * 
+	 * Note: I may need to change this to accept only the ID to make it easier to use.
+	 * 
+	 * @param guest - the guest on the front end side we are interested in.
+	 * @return The list of guests this person should not sit with
+	 */
 	public static List<Guest> listGuestsToAvoid(Guest guest) {
 		TypedQuery<GuestGuestAvoidBridge> query = EM.getEntityManager().createQuery("SELECT guestGuestAvoidBridge FROM guesttoavoid WHERE guest_id="+guest.getId(), GuestGuestAvoidBridge.class);
 		List<Guest> guestsToAvoid = new ArrayList<Guest>();
@@ -44,6 +53,25 @@ public class GuestDAO {
 		    guestsToAvoid.add(g);
 		}
 		return guestsToAvoid;
+	}
+	
+	/**
+	 * This method is needed to get the guests that a given guest is supposed
+	 * to be sitting with
+	 * 
+	 * Note: I may need to change this to accept only the ID to make it easier to use.
+	 * 
+	 * @param guest - the guest on the front end side we are interested in.
+	 * @return The list of guests this person should sit with
+	 */
+	public static List<Guest> listGuestsToSitWith(Guest guest) {
+		TypedQuery<GuestGuestSitWithBridge> query = EM.getEntityManager().createQuery("SELECT guestGuestSitWithBridge FROM guesttositwith WHERE guest_id="+guest.getId(), GuestGuestSitWithBridge.class);
+		List<Guest> guestsToSitWith = new ArrayList<Guest>();
+		for(GuestGuestSitWithBridge row : query.getResultList()) {
+		    Guest g = findGuestById(row.getGuestSitWithId());
+		    guestsToSitWith.add(g);
+		}
+		return guestsToSitWith;
 	}
 	
     public static List<Guest> listGuestsToSitWith() {
