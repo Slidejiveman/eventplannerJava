@@ -55,8 +55,8 @@ public class GuestDAO {
 	 * @param guest - the guest on the front end side we are interested in.
 	 * @return The list of guests this person should not sit with
 	 */
-	public static List<Guest> listGuestsToAvoid(Guest guest) {
-		TypedQuery<GuestGuestAvoidBridge> query = EM.getEntityManager().createQuery("SELECT guestGuestAvoidBridge FROM guesttoavoid WHERE guest_id="+guest.getId(), GuestGuestAvoidBridge.class);
+	public static List<Guest> listGuestsToAvoid(int guestId) {
+		TypedQuery<GuestGuestAvoidBridge> query = EM.getEntityManager().createQuery("SELECT guesttoavoid FROM guesttoavoid guesttoavoid WHERE guesttoavoid.guestId="+guestId, GuestGuestAvoidBridge.class);
 		List<Guest> guestsToAvoid = new ArrayList<Guest>();
 		for(GuestGuestAvoidBridge row : query.getResultList()) {
 		    Guest g = findGuestById(row.getGuestAvoidId());
@@ -74,8 +74,8 @@ public class GuestDAO {
 	 * @param guest - the guest on the front end side we are interested in.
 	 * @return The list of guests this person should sit with
 	 */
-	public static List<Guest> listGuestsToSitWith(Guest guest) {
-		TypedQuery<GuestGuestSitWithBridge> query = EM.getEntityManager().createQuery("SELECT guestGuestSitWithBridge FROM guesttositwith WHERE guest_id="+guest.getId(), GuestGuestSitWithBridge.class);
+	public static List<Guest> listGuestsToSitWith(int guestId) {
+		TypedQuery<GuestGuestSitWithBridge> query = EM.getEntityManager().createQuery("SELECT guesttositwith FROM guesttositwith guesttositwith WHERE guesttositwith.guestId="+guestId, GuestGuestSitWithBridge.class);
 		List<Guest> guestsToSitWith = new ArrayList<Guest>();
 		for(GuestGuestSitWithBridge row : query.getResultList()) {
 		    Guest g = findGuestById(row.getGuestSitWithId());

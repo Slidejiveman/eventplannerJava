@@ -155,7 +155,7 @@ public class Guest implements Serializable {
      * @return The guests to avoid sitting with
      */
     public Collection<Guest> findGuestsToAvoid() {
-    	return GuestDAO.listGuestsToAvoid(this);
+    	return GuestDAO.listGuestsToAvoid(this.getId());
     }
     
 	public static long getSerialversionuid() {

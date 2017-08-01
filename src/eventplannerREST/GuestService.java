@@ -75,6 +75,22 @@ public class GuestService {
 		return guestsAtEvent;
 	}
 	
+	@GET
+	@Path("/gueststoavoid/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Guest> getGuestsToAvoidForGuestId(@PathParam("id") String id) {
+		List<Guest> guestsToAvoid = GuestDAO.listGuestsToAvoid(Integer.parseInt(id));
+		return guestsToAvoid;
+	}
+	
+	@GET
+	@Path("/gueststositwith/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Guest> getGuestsToSitWithForGuestId(@PathParam("id") String id) {
+		List<Guest> guestsToSitWith = GuestDAO.listGuestsToSitWith(Integer.parseInt(id));
+		return guestsToSitWith;
+	}
+	
 	@POST
 	@Path("/guests")
 	@Produces(MediaType.APPLICATION_JSON)
