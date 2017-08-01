@@ -57,61 +57,96 @@ public class CustomerService {
 	@Path("/customers/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Customer getCustomer(@PathParam("id") String id){
-		return CustomerDAO.findCustomerById(Integer.parseInt(id));
+		Customer customer = CustomerDAO.findCustomerById(Integer.parseInt(id));
+		EM.getEntityManager().refresh(customer);
+		return customer;
 	}
 	@POST
 	@Path("/customers")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addCustomer(Customer customer, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> addCustomer(Customer customer, @Context final HttpServletResponse response)throws IOException{
 		if(customer.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Add"));
+			return messages;
 		}else{
+			List<Message> errMessages = customer.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 			EntityTransaction customerTransaction = EM.getEntityManager().getTransaction();
 			customerTransaction.begin();
 			CustomerDAO.addCustomer(customer);
 			customerTransaction.commit();
+			messages.add(new Message("rest001", "Success Operation", "Add"));
+			return messages;
 		}
-		Genson gen = new Genson();
-		String txt = gen.serialize(customer);
-		System.out.println(txt);
-		
 	}
 	@PUT
 	@Path("/customers/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updatecustomer(Customer customer, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> updatecustomer(Customer customer, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Customer customerToUpdate = CustomerDAO.findCustomerById(Integer.parseInt (id));
 		if(customerToUpdate.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Update"));
+			return messages;
+		} else {
+			List<Message> errMessages = customer.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 		}
 		EntityTransaction customerTransaction = EM.getEntityManager().getTransaction();
 		customerTransaction.begin();
-		CustomerDAO.saveCustomer(customer);
-		customerTransaction.commit();	
+		Boolean result = customerToUpdate.update(customer);
+		customerTransaction.commit();
+		if (result) {
+			messages.add(new Message("rest001", "Success Operation", "Update"));
+			return messages;
+		} else {
+			try {
+			    response.flushBuffer();
+			}catch (Exception e) {}	 
+		messages.add(new Message("rest002", "Fail Operation", "Update"));
+		return messages;
+		}
 	}
 	@DELETE
 	@Path("/customers/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void deletecustomer(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> deletecustomer(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Customer customerToDelete = CustomerDAO.findCustomerById(Integer.parseInt(id));
 		if(customerToDelete.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Delete"));
+			return messages;
 		}else{
 			EntityTransaction customerTransaction = EM.getEntityManager().getTransaction();
 			customerTransaction.begin();
 			CustomerDAO.deleteCustomer(customerToDelete);
 			customerTransaction.commit();
+			messages.add(new Message("rest001", "Success Operation", "Delete"));
+			return messages;
 		}
 	}
 	@OPTIONS

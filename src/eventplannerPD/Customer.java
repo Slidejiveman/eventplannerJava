@@ -1,6 +1,8 @@
 package eventplannerPD;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import eventplannerUT.Message;
 
 /**
  * The Customer object represents the customer who commissioned Eagle Event Planning to host the event.
@@ -102,4 +106,38 @@ public class Customer implements Serializable {
         return true;
     }
 
+    /**
+     * The validation method creates JSON messages
+     * that are returned to the screen if an error occurs
+     * @return the error messages
+     */
+    public List<Message> validate() {
+    	List<Message> messages = new ArrayList<Message>();
+    	
+    	if (this.getEmail().equals(null) || this.getEmail().equals("")) {
+    		messages.add(new Message("Customer000", "Customer email can't be empty.", "Email"));
+    	}
+    	if (this.getName().equals(null) || this.getName().equals("")) {
+    		messages.add(new Message("Customer001", "Customer's name cannot be null or empty.", "Name"));
+    	}
+    	if (this.getPhoneNumber().equals(null) || this.getPhoneNumber().equals("")) {
+    		messages.add(new Message("Customer002", "Customer's phone number cannot be null or empty.", "Phone Number"));
+    	}
+    	
+    	return messages;
+    }
+    
+    /**
+     * The update method re-initializes a customer's values
+     * with the values of another customer from the database.
+     * @param customer - the customer whose values to apply to this customer
+     * @return this customer updated with the given customer's values
+     */
+    public Boolean update(Customer customer) {
+    	this.setEmail(customer.getEmail());
+    	this.setId(customer.getId());
+    	this.setName(customer.getName());
+    	this.setPhoneNumber(customer.getPhoneNumber());
+    	return true;
+    }
 }

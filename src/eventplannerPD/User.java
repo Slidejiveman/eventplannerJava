@@ -199,7 +199,7 @@ public class User implements Serializable {
     
     /**
      * The validation method creates JSON messages
-     * that are returned to the screen if an error orccurs
+     * that are returned to the screen if an error occurs
      * @return the error messages
      */
     public List<Message> validate() {
