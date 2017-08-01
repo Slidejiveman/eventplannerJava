@@ -43,11 +43,7 @@ public class EventService {
 			@DefaultValue("10") @QueryParam("per_page") String perPage){
 		List<Event>events=EventDAO.listEvents();
 		Genson gen = new Genson();
-		for(Event event:events){
-			String txt = gen.serialize(event);
-			System.out.println(txt);
-		}
-
+		gen.serialize(events);
 		log.log(events.toString());
 		log.logJAXB();
 		return events;
