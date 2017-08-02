@@ -52,23 +52,37 @@ public class EventService {
 	@Path("/events/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Event getEvent(@PathParam("id") String id){
-		return EventDAO.findEventById(Integer.parseInt(id));
+		Event event =  EventDAO.findEventById(Integer.parseInt(id));
+		EM.getEntityManager().refresh(event);
+		return event;
 	}
 	@POST
 	@Path("/events")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addEvent(Event event, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> addEvent(Event event, @Context final HttpServletResponse response)throws IOException{
 		if(event.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Add"));
+			return messages;
 		}else{
+			List<Message> errMessages = event.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 			EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
 			eventTransaction.begin();
 			EventDAO.addEvent(event);
 			eventTransaction.commit();
+			messages.add(new Message("rest001", "Success Operation", "Add"));
+			return messages;
 		}
 	}
 	@PUT

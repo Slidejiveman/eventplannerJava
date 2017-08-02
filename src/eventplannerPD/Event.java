@@ -1,8 +1,10 @@
 package eventplannerPD;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerPD.enums.EventStatus;
+import eventplannerUT.Message;
 
 /**
  * The Event is the primary problem domain class. 
@@ -286,6 +289,35 @@ public class Event implements Serializable {
      */
     public int calculateTotalSeats() {
         return 0;
+    }
+    
+    public List<Message> validate() {
+    	List<Message> messages = new ArrayList<Message>();
+    	
+    	if (this.getAssignedUser() == null) {
+    		messages.add(new Message("Event000","Events must have an assigned User","User"));
+    	}
+    	if (this.getCustomer() == null) {
+    		messages.add(new Message("Event001", "Events must have an assigned Customer","Customer"));
+    	}
+    	if (this.getDate() == null) {
+    		messages.add(new Message("Event002", "The Event date cannot be null.", "Date"));
+    	}
+    	if (!(this.getEventStatus().equals(EventStatus.Approved) || 
+    			this.getEventStatus().equals(EventStatus.Canceled) || 
+    			this.getEventStatus().equals(EventStatus.Closed) || 
+    			this.getEventStatus().equals(EventStatus.Open) || 
+    			this.getEventStatus().equals(EventStatus.ReadyForCustomerReview))) {
+    		messages.add(new Message("Event003", "The Event Status must be one of the enumerated types", "Event Status"));
+    	}
+    	if (this.getLocation().equals(null) || this.getLocation().equals("")) {
+    		messages.add(new Message("Event004", "The Event location cannot be null", "Location"));
+    	}
+    	if (this.getName().equals(null) || this.getName().equals("")) {
+    		messages.add(new Message("Event005", "The Event name cannot be null or empty.", "Name"));
+    	}
+    	
+    	return messages;
     }
 
 }
