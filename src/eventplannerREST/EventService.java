@@ -91,6 +91,9 @@ public class EventService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateEvent(Event event, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Event eventToUpdate = EventDAO.findEventById(Integer.parseInt (id));
+		Genson gen = new Genson();
+		gen.serialize(eventToUpdate);
+		gen.serialize(event);
 		if(eventToUpdate.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
@@ -99,7 +102,14 @@ public class EventService {
 		}
 		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
 		eventTransaction.begin();
-		EventDAO.saveEvent(event);
+		/*eventToUpdate.setName(event.getName());
+		eventToUpdate.setDate(event.getDate());
+		eventToUpdate.setCustomer(event.getCustomer());
+		eventToUpdate.setAssignedUser(event.getAssignedUser());
+		eventToUpdate.setEventStatus(event.getEventStatus());
+		eventToUpdate.setLocation(event.getLocation());
+		eventToUpdate.setMenu(event.getMenu());*/
+		EventDAO.saveEvent(eventToUpdate);
 		eventTransaction.commit();	
 	}
 	@DELETE
