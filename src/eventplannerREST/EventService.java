@@ -89,7 +89,7 @@ public class EventService {
 	@Path("/events/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateEvent(Event event, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> updateEvent(Event event, @PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Event eventToUpdate = EventDAO.findEventById(Integer.parseInt (id));
 		Genson gen = new Genson();
 		gen.serialize(eventToUpdate);
@@ -99,9 +99,21 @@ public class EventService {
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Update"));
+			return messages;
+		} else {
+			List<Message> errMessages = event.validate();
+			if (errMessages.size() != 0) {
+				response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				try {
+					response.flushBuffer();
+				} catch (Exception e) {}
+				return errMessages;
+			}
 		}
 		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
 		eventTransaction.begin();
+<<<<<<< Upstream, based on branch 'dev' of https://github.com/Slidejiveman/eventplannerJava
 		/*eventToUpdate.setName(event.getName());
 		eventToUpdate.setDate(event.getDate());
 		eventToUpdate.setCustomer(event.getCustomer());
@@ -111,22 +123,40 @@ public class EventService {
 		eventToUpdate.setMenu(event.getMenu());*/
 		EventDAO.saveEvent(eventToUpdate);
 		eventTransaction.commit();	
+=======
+		Boolean result = eventToUpdate.update(event);
+		eventTransaction.commit();
+		if (result) {
+			messages.add(new Message("rest001", "Success Operation", "Update"));
+			return messages;
+		} else {
+			try {
+			    response.flushBuffer();
+			}catch (Exception e) {}	 
+		messages.add(new Message("rest002", "Fail Operation", "Update"));
+		return messages;
+		}
+>>>>>>> 7812577 I forgot to commit this. Not sure what it is. lol
 	}
 	@DELETE
 	@Path("/events/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void deleteEvent(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+	public List<Message> deleteEvent(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
 		Event eventToDelete = EventDAO.findEventById(Integer.parseInt(id));
 		if(eventToDelete.equals(null)){
 			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			try{
 				response.flushBuffer();
 			}catch(Exception e){}
+			messages.add(new Message("rest002", "Fail Operation", "Delete"));
+			return messages;
 		}else{
 			EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
 			eventTransaction.begin();
 			EventDAO.deleteEvent(eventToDelete);
 			eventTransaction.commit();
+			messages.add(new Message("rest001", "Success Operation", "Delete"));
+			return messages;
 		}
 	}
 	@OPTIONS

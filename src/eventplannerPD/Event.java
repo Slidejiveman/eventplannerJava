@@ -291,6 +291,11 @@ public class Event implements Serializable {
         return 0;
     }
     
+    /**
+     * The validation method creates JSON messages
+     * that are returned to the screen if an error occurs
+     * @return the error messages
+     */
     public List<Message> validate() {
     	List<Message> messages = new ArrayList<Message>();
     	
@@ -320,4 +325,26 @@ public class Event implements Serializable {
     	return messages;
     }
 
+    /**
+     * The update method re-initializes an event's values
+     * with the values of another event from the database.
+     * @param event - the event whose values to apply to this customer
+     * @return this event updated with the given event's values
+     */
+    public Boolean update(Event event) {
+    	this.setAssignedUser(event.getAssignedUser());
+    	this.setCustomer(event.getCustomer());
+    	this.setDate(event.getDate());
+    	this.setEventStatus(event.getEventStatus());
+    	this.setGuestList(event.getGuestList());
+    	this.setId(event.getId());
+    	this.setLocation(event.getLocation());
+    	this.setMenu(event.getMenu());
+    	this.setName(event.getName());
+    	this.setPercentSeatsEmpty(event.getPercentSeatsEmpty());
+    	this.setSeatingAssigment(event.getSeatingAssigment());
+    	this.setTables(event.getTables());
+    	this.setTotalSeats(event.getTotalSeats());
+    	return true;
+    }
 }
