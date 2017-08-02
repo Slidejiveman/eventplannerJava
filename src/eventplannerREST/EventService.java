@@ -113,17 +113,6 @@ public class EventService {
 		}
 		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
 		eventTransaction.begin();
-<<<<<<< Upstream, based on branch 'dev' of https://github.com/Slidejiveman/eventplannerJava
-		/*eventToUpdate.setName(event.getName());
-		eventToUpdate.setDate(event.getDate());
-		eventToUpdate.setCustomer(event.getCustomer());
-		eventToUpdate.setAssignedUser(event.getAssignedUser());
-		eventToUpdate.setEventStatus(event.getEventStatus());
-		eventToUpdate.setLocation(event.getLocation());
-		eventToUpdate.setMenu(event.getMenu());*/
-		EventDAO.saveEvent(eventToUpdate);
-		eventTransaction.commit();	
-=======
 		Boolean result = eventToUpdate.update(event);
 		eventTransaction.commit();
 		if (result) {
@@ -136,7 +125,6 @@ public class EventService {
 		messages.add(new Message("rest002", "Fail Operation", "Update"));
 		return messages;
 		}
->>>>>>> 7812577 I forgot to commit this. Not sure what it is. lol
 	}
 	@DELETE
 	@Path("/events/{id}")
