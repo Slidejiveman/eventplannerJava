@@ -36,7 +36,7 @@ public class GuestList implements Serializable{
      */
 	@OneToMany(targetEntity = Guest.class, mappedBy = "guestlist")
 	@JoinColumn(name = "guestlist_guests", nullable = false)
-    private Collection<Guest> guests;
+    private Collection<Guest> guests ;
     /**
      * The unique identifier of the guest list. 
      * This allows the guest list to take up a single row in the database.
