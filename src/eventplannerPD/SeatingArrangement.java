@@ -2,6 +2,7 @@ package eventplannerPD;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.TreeMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -68,6 +69,11 @@ public class SeatingArrangement implements Serializable {
     @OneToMany(targetEntity = EventTable.class, mappedBy = "seatingArrangement")
     @JoinColumn(name = "seatingarrangement_tables", nullable = true)
     private Collection<EventTable> tables;
+	
+	@JsonIgnore
+	private TreeMap<Guest,EventTable> seatingAssignments;
+	@JsonIgnore
+	private Integer arrangementScore;
     @JsonIgnore
     public Collection<EventTable> getTables() {
 		return tables;
@@ -103,7 +109,11 @@ public class SeatingArrangement implements Serializable {
     public SeatingArrangement() {
         // Needed if this is persisted.
     }
-
+    public SeatingArrangement(Integer score) {
+        this.setArrangementScore(score);
+        this.seatingAssignments= new TreeMap<Guest,EventTable>();
+    }
+    
     /**
      * The seating arrangement may be deleted if the event is in the Open or Canceled state. 
      * Otherwise, the seating arrangement is under review or has been approved. It cannot be deleted after that.
@@ -131,5 +141,15 @@ public class SeatingArrangement implements Serializable {
     public void sortByTableNumber() {
         //test GIT
     }
+    public TreeMap<Guest,EventTable>getSeatingAssignments(){
+    	return this.seatingAssignments;
+    }
+	public void setArrangementScore(int score) {
+		this.arrangementScore= score;
+		
+	}
+	public Integer getArrangementScore(){
+		return this.arrangementScore;
+	}
 
 }
