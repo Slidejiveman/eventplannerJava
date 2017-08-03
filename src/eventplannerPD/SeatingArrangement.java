@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -70,10 +71,14 @@ public class SeatingArrangement implements Serializable {
     @JoinColumn(name = "seatingarrangement_tables", nullable = true)
     private Collection<EventTable> tables;
 	
+	@Transient
 	@JsonIgnore
 	private TreeMap<Guest,EventTable> seatingAssignments;
+	
+	@Transient
 	@JsonIgnore
 	private Integer arrangementScore;
+	
     @JsonIgnore
     public Collection<EventTable> getTables() {
 		return tables;

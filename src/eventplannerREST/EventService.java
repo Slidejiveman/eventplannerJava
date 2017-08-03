@@ -159,10 +159,41 @@ public class EventService {
 			return messages;
 		}
 	}
+	
+	/**
+	 * Returns a string. Used to test the service after creation
+	 * @return
+	 */
 	@OPTIONS
 	@Path("/events")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getSupportedOperations(){
 		return ("{ {'POST' : { 'description' : 'add an event'}} {'GET' : {'description' : 'get an event'}}}");
 	}
+	
+	/**
+	 * Calling this service will import the guests into the database.
+	 * This method will also add a new GuestList to the database. This
+	 * will create an ID that all of the guests will be associated with.
+	 * 
+	 * @return
+	 */
+//	@POST
+//	@Path("/events/{id}/createseatingassignment")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public List<Message> importGuestList() {
+//		return new ArrayList<Message>();
+//	}
+//	
+//	/**
+//	 * This service will create the seating assignment and assign the
+//	 * guests from the guest list to tables. The tables will then be stored
+//	 * in the database and associated with the correct event.
+//	 */
+//	@POST
+//	@Path("/events/{id}/createseatingassignment")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public List<Message> createSeatingAssignment() {
+//		return new ArrayList<Message>();
+//	}
 }
