@@ -60,7 +60,7 @@ public class Log {
 		classes[5] = eventplannerPD.GuestGuestSitWithBridge.class;
 		classes[6] = eventplannerPD.GuestList.class;
 		classes[7] = eventplannerPD.SeatingArrangement.class;
-		classes[8] = eventplannerPD.Table.class;
+		classes[8] = eventplannerPD.EventTable.class;
 		classes[9] = eventplannerPD.User.class;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(classes);

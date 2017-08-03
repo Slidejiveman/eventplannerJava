@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 import com.owlike.genson.Genson;
 
@@ -26,8 +27,11 @@ import eventplannerDAO.CompanyDAO;
 import eventplannerDAO.EM;
 import eventplannerDAO.UserDAO;
 import eventplannerPD.Company;
-import eventplannerPD.Customer;
 import eventplannerPD.User;
+import eventplannerPD.enums.EmployeeRole;
+import eventplannerPD.security.RoleAssignment;
+import eventplannerPD.security.System;
+import eventplannerREST.security.Secured;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
 
@@ -44,11 +48,15 @@ public class UserService {
 	 */
 	Company company = (Company)(CompanyDAO.listCompany().get(0));
 	
+	@Context
+	SecurityContext securityContext;
+	
 	/**
 	 * logger
 	 */
 	Log log = new Log();
 	
+	//@Secured({EmployeeRole.Administrator})
 	@GET
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -60,12 +68,13 @@ public class UserService {
 		Genson gen = new Genson();
 		for(User user:users){
 			String txt = gen.serialize(user);
-			System.out.println(txt);
+			java.lang.System.out.println(txt);
 		}
 		log.log(users.toString());
 		log.logJAXB();
 		return users;
 	}
+	//@Secured({EmployeeRole.Administrator})
 	@GET
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +83,8 @@ public class UserService {
 		EM.getEntityManager().refresh(user);
 		return user;
 	}
+	
+	//@Secured({EmployeeRole.Administrator})
 	@POST
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -102,6 +113,11 @@ public class UserService {
 			EntityTransaction UserTransaction = EM.getEntityManager().getTransaction();
 			UserTransaction.begin();
 			Boolean result = company.addUser(user);
+			if (user.getRoleAssignments() != null) {
+				for (RoleAssignment ra : user.getRoleAssignments()) {
+					user.addRoleAssignment(ra);
+				}
+			}
 			UserTransaction.commit();
 			if(result) {
 				messages.add(new Message("rest001", "Success Operation", "Add"));
@@ -117,6 +133,7 @@ public class UserService {
 		}		
 	}
 	
+	//@Secured({EmployeeRole.Administrator})
 	@PUT
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -155,6 +172,8 @@ public class UserService {
 		return messages;
 		}	
 	}
+	
+	//@Secured({EmployeeRole.Administrator})
 	@DELETE
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -170,6 +189,11 @@ public class UserService {
 		}else{
 			EntityTransaction UserTransaction = EM.getEntityManager().getTransaction();
 			UserTransaction.begin();
+			if (userToDelete.getRoleAssignments() != null) {
+				for (RoleAssignment ra : userToDelete.getRoleAssignments()) {
+					userToDelete.addRoleAssignment(ra);
+				}
+			}
 			Boolean result = company.removeUser(userToDelete);
 			UserTransaction.commit();
 			if(result) {
@@ -181,6 +205,21 @@ public class UserService {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the currently logged in user.
+	 * @return logged in user
+	 */
+	@Secured
+	@GET
+	@Path("/users/current")
+	@Produces(MediaType.APPLICATION_JSON)
+	public User getUser() {
+		String username = securityContext.getUserPrincipal().getName();
+		User user = System.findUserByUserName(username);
+		return user;
+	}
+	
 	@OPTIONS
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)

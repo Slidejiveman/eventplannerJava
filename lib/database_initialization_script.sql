@@ -24,15 +24,24 @@ VALUES ('deweycheatumnhowe1@gmail.com', 'Dewey, Cheatum, & Howe', '555-213-6745'
 
 -- Insert the default users into the database.
 -- References company_id 1, Eagle Event Planning
-INSERT INTO `user`(`user_is_active`, `user_name`, `user_password`, `user_role`,
+INSERT INTO `user`(`user_is_active`, `user_name`, `user_password`,
                    `user_username`,  `user_company` )
-VALUES (1, 'Trevor Belmont', 'user1', 'Standard', 'vampire_killer', 1);
-INSERT INTO `user`(`user_is_active`, `user_name`, `user_password`, `user_role`,
+VALUES (1, 'Trevor Belmont', 'user1', 'vampire_killer', 1);
+INSERT INTO `user`(`user_is_active`, `user_name`, `user_password`,
                    `user_username`,  `user_company` )
-VALUES (1, 'Andy Harbert', '2hosed_zombies!', 'Administrator', 'joeh', 1);
-INSERT INTO `user`(`user_is_active`, `user_name`, `user_password`, `user_role`,
+VALUES (1, 'Andy Harbert', '2hosed_zombies!', 'joeh', 1);
+INSERT INTO `user`(`user_is_active`, `user_name`, `user_password`,
                    `user_username`,  `user_company` )
-VALUES (1, 'Plain Jane', 'n0t_really@plain', 'Standard', 'planejane', 1);
+VALUES (1, 'Plain Jane', 'n0t_really@plain', 'planejane', 1);
+
+-- Insert the role assignments for the users. This is an association table
+-- that assumes a user may have muliple roles.
+INSERT INTO `roleassignment` (`role`, `roleassignment_user_id`)
+VALUES('Standard', 1);
+INSERT INTO `roleassignment` (`role`, `roleassignment_user_id`)
+VALUES('Administrator', 2);
+INSERT INTO `roleassignment` (`role`, `roleassignment_user_id`)
+VALUES('Standard', 3);
 
 -- Insert the default guest lists. Guests will be associated with these
 -- Guest List IDs are 1 and 2
@@ -107,16 +116,16 @@ VALUES(); -- 2
 -- Default Tables to load into the system
 -- Event 1 and 2 have 2 tables each. Event 1 has size 2
 -- Event 2 has size 4.
-INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+INSERT INTO `eventtable`(`table_number`, `table_shape`, `table_size`,
                     `table_event_id`, `table_seatingarrangement_id`)
 VALUES (1,'Square','Two',1,1);
-INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+INSERT INTO `eventtable`(`table_number`, `table_shape`, `table_size`,
                     `table_event_id`, `table_seatingarrangement_id`)
 VALUES (2,'Square','Two',1,1);
-INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+INSERT INTO `eventtable`(`table_number`, `table_shape`, `table_size`,
                     `table_event_id`, `table_seatingarrangement_id`)
 VALUES (1,'Circle','Four',2,2);
-INSERT INTO `table`(`table_number`, `table_shape`, `table_size`,
+INSERT INTO `eventtable`(`table_number`, `table_shape`, `table_size`,
                     `table_event_id`, `table_seatingarrangement_id`)
 VALUES (2,'Circle','Four',2,2);
 
@@ -132,6 +141,11 @@ INSERT INTO `event`(`event_date`, `event_status`, `event_location`,
                     `event_guestlist`, `event_seatingarrangement`)
 VALUES ('2010-10-11','Open','The World','Easy Mac','Cheeze-a-palooaz',25.0,8,2,
         2,2,2);
+
+-- Tokens may not make sense in the script.
+-- INSERT INTO `token`(`expire_date`, `token`, `user_id`)
+-- VALUES ('2018-01-01', 'abcdefghijklmnopqrstuvwxyz', 2)
+
 -- Turn the FOREIGN_KEY_CHECKS back on so the database
 -- uses this data integrity feature.
 SET FOREIGN_KEY_CHECKS=1;

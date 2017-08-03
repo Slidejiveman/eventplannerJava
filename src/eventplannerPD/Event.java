@@ -107,15 +107,15 @@ public class Event implements Serializable {
     private EventStatus eventStatus;
     /**
      * The collection of tables at the event. 
-     * Each table knows its size and shape. 
+     * Each EventTable knows its size and shape. 
      * Seat numbers begin from the leftmost upper corner of rectangular 
      * tables or the twelve o'clock position of elliptical tables.
      */
-    @OneToMany(targetEntity = Table.class, mappedBy = "event")
+    @OneToMany(targetEntity = EventTable.class, mappedBy = "event")
     @JoinColumn(name = "event_tables", nullable = true)
-    private Collection<Table> tables;
+    private Collection<EventTable> tables;
     /**
-     * The percentage of seats allowed to be vacant at a table. 
+     * The percentage of seats allowed to be vacant at a EventTable. 
      * This value is used along with the size of the guest list to 
      * determine the number of seats that should be available at the event. 
      * This will in turn be used to determine the number of tables at the event.
@@ -217,11 +217,11 @@ public class Event implements Serializable {
         this.eventStatus = eventStatus;
     }
 
-    public Collection<Table> getTables() {
+    public Collection<EventTable> getTables() {
         return this.tables;
     }
     @XmlTransient
-    public void setTables(Collection<Table> tables) {
+    public void setTables(Collection<EventTable> tables) {
         this.tables = tables;
     }
 
@@ -265,19 +265,19 @@ public class Event implements Serializable {
      * Calculates the number of tables needed to accommodate the 
      * guest list and the required ratio of empty seats.
      * @param pse 
-     *        The percentage of empty seats we are expecting at a table. 
+     *        The percentage of empty seats we are expecting at a EventTable. 
      *        This is used to prevent filling up a tables and leaving others completely empty.
-     * @param table 
-     *        The table is an object of a certain shape, either rectangular or elliptical, 
-     *        and a size from four to twelve. The table is where the guests sit. 
-     *        The table object is passed in for its size attribute.
+     * @param EventTable 
+     *        The EventTable is an object of a certain shape, either rectangular or elliptical, 
+     *        and a size from four to twelve. The EventTable is where the guests sit. 
+     *        The EventTable object is passed in for its size attribute.
      * @param gl 
      *        The guest list is passed into this method for its size attribute. 
-     *        The chosen table size and the size of the guest list is needed to 
+     *        The chosen EventTable size and the size of the guest list is needed to 
      *        determine the number of tables needed.
      * @return The number of tables needed to accommodate the guest list with the required ratio of empty seats.
      */
-    public int calculateNumTables(double pse, Table table, GuestList gl) {
+    public int calculateNumTables(double pse, EventTable EventTable, GuestList gl) {
         return 0;
     }
 

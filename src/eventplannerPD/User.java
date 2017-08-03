@@ -2,23 +2,26 @@ package eventplannerPD;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import eventplannerDAO.security.RoleAssignmentDAO;
 import eventplannerPD.enums.EmployeeRole;
+import eventplannerPD.security.RoleAssignment;
+import eventplannerPD.security.Token;
 import eventplannerUT.Message;
 
 /**
@@ -74,19 +77,20 @@ public class User implements Serializable {
     /**
      * The employee's system permission level.
      */
-	@Enumerated(EnumType.STRING)
-	@Column(name = "user_role", nullable = false)
-    private EmployeeRole userRole;
-    
+	@OneToMany(mappedBy = "user", targetEntity = RoleAssignment.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_role_assignment_id", referencedColumnName = "role_assignment_id")
+    private Collection<RoleAssignment> roleAssignments;
+	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_company", nullable = false, referencedColumnName = "company_id")
 	private Company company;
 	/**
      * The authentication token associated with the actively logged in user.
      */
-	@Transient
-    private transient String token;
-
+	@OneToMany(mappedBy = "user", targetEntity = Token.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_token_id", referencedColumnName = "token_id")
+    private Collection<Token> tokens;
+	
     public String getName() {
         return this.name;
     }
@@ -130,25 +134,25 @@ public class User implements Serializable {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
-
-    public String getToken() {
-        return this.token;
-    }
     @XmlTransient
-    public void setToken(String token) {
-		this.token = token;
+	public Collection<Token> getTokens() {
+		return tokens;
 	}
 
-	public EmployeeRole getEmployeeRole() {
-		return userRole;
-	}
-
-    @XmlElement
-	public void setEmployeeRole(EmployeeRole employeeRole) {
-		userRole = employeeRole;
+	public void setTokens(Collection<Token> tokens) {
+		this.tokens = tokens;
+	}	
+    
+    public Collection<RoleAssignment> getRoleAssignments() {
+		return roleAssignments;
 	}
     
-    public Company getCompany() {
+    @XmlElement
+	public void setRoleAssignments(Collection<RoleAssignment> roleAssignments) {
+		this.roleAssignments = roleAssignments;
+	}
+
+	public Company getCompany() {
 		return company;
 	}
 
@@ -183,8 +187,8 @@ public class User implements Serializable {
      * @return True: User is authenticated.
      *         False: User is not authenticated.
      */
-    public boolean authenticate(String s) {
-        return true;
+    public boolean authenticate(String password) {
+        return getPassword().equals(password);
     }
 
     /**
@@ -193,8 +197,13 @@ public class User implements Serializable {
      * @return True: User is allowed to view the User List.
      *         False: User is not allowed to view the User List.
      */
-    public boolean isAuthorized() {
-        return true;
+    public boolean isAuthorized(EmployeeRole role) {
+        for (RoleAssignment ra : getRoleAssignments()) {
+        	if (ra.getRole().equals(role)) {
+        		return true;
+        	} 
+        }
+        return false;
     }
     
     /**
@@ -214,9 +223,6 @@ public class User implements Serializable {
     	if (this.getUsername().equals(null) || this.getUsername().equals("")) {
     		messages.add(new Message("User002", "User's Username cannot be null or empty", "Username"));
     	}
-    	if (!(this.getEmployeeRole().equals(EmployeeRole.Administrator) || this.getEmployeeRole().equals(EmployeeRole.Standard))) {
-    		messages.add(new Message("User003", "User's Role must be Standard or Administrator", "Employee Role"));
-    	}
     	
     	return messages;
     }
@@ -230,12 +236,27 @@ public class User implements Serializable {
     public Boolean update(User user) {
     	this.setName(user.getName());
     	this.setCompany(user.getCompany());
-    	this.setEmployeeRole(user.getEmployeeRole());
     	this.setId(user.getId());
     	this.setIsActive(user.isIsActive());
     	this.setPassword(user.getPassword());
     	this.setUsername(user.getUsername());
+    	if (user.getRoleAssignments() != null) {
+    		for (RoleAssignment ra : this.getRoleAssignments()) {
+    			removeRoleAssignment(ra);
+    		}
+    		for (RoleAssignment ra : user.getRoleAssignments()) {
+    			addRoleAssignment(ra);
+    		}
+    	}
     	return true;
     }
-
+    
+    public void removeRoleAssignment(RoleAssignment ra) {
+        RoleAssignmentDAO.removeRoleAssignment(ra);
+      }
+      
+      public void addRoleAssignment(RoleAssignment ra) {
+        ra.setUser(this);
+        RoleAssignmentDAO.saveRoleAssignment(ra);
+      }
 }

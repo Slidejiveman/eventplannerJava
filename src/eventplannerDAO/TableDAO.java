@@ -5,34 +5,33 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import eventplannerPD.Event;
-import eventplannerPD.Table;
+import eventplannerPD.EventTable;
 
 
 public class TableDAO {
 	/**
-	 * Add the given Table to the database
-	 * @param Table to be added to the database.
+	 * Add the given EventTable to the database
+	 * @param EventTable to be added to the database.
 	 */
-	public static void saveTable(Table table) {
-		EM.getEntityManager().persist(table);
+	public static void saveTable(EventTable EventTable) {
+		EM.getEntityManager().persist(EventTable);
 	}
 	
 	/**
 	 * Alias for saveTable method. They are identical.
-	 * @param Table
+	 * @param EventTable
 	 */
-	public static void addTable(Table table) {
-		EM.getEntityManager().persist(table);
+	public static void addTable(EventTable EventTable) {
+		EM.getEntityManager().persist(EventTable);
 	}
 	
 	// The SQL statements need to be checked.
 	/**
 	 * Returns the list of all Tables in the database. This is very useful for list panels.
-	 * @return List<Table> - all Tables in the database
+	 * @return List<EventTable> - all Tables in the database
 	 */
-	public static List<Table> listTables() {
-		TypedQuery<Table> query = EM.getEntityManager().createQuery("SELECT table FROM table table", Table.class);
+	public static List<EventTable> listTables() {
+		TypedQuery<EventTable> query = EM.getEntityManager().createQuery("SELECT eventtable FROM eventtable eventtable", EventTable.class);
 		return query.getResultList();
 	}
 	
@@ -41,47 +40,47 @@ public class TableDAO {
 	 * @param event - the event we want the tables for
 	 * @return The tables for the event
 	 */
-	public static List<Table> findTablesByEvent(Event event) {
-		TypedQuery<Table> query = EM.getEntityManager().createQuery("table FROM table table WHERE table_event_id="+event.getId(), Table.class);
+	public static List<EventTable> findTablesByEvent(int eventId) {
+		TypedQuery<EventTable> query = EM.getEntityManager().createQuery("SELECT eventtable FROM eventtable eventtable WHERE eventtable.event.id="+eventId, EventTable.class);
 		return query.getResultList();
 	}
 	
 	/**
-	 * Returns the Table specified by the given id number.
-	 * @param id - the number that uniquely identifies the Table
-	 * @return Table - the Table specified by the id
+	 * Returns the EventTable specified by the given id number.
+	 * @param id - the number that uniquely identifies the EventTable
+	 * @return EventTable - the EventTable specified by the id
 	 */
-	public static Table findTableById(int id) {
-		Table Table = EM.getEntityManager().find(Table.class, new Integer(id));
-		return Table;
+	public static EventTable findTableById(int id) {
+		EventTable EventTable = EM.getEntityManager().find(EventTable.class, new Integer(id));
+		return EventTable;
 	}
 	
 	/**
-	 * Returns the table specified by the given Table number for the event.
-	 * @param tableNum - the number of the table, which uniquely identifies it at event scope
-	 * @return table - the table specified by the given number
+	 * Returns the EventTable specified by the given EventTable number for the event.
+	 * @param tableNum - the number of the EventTable, which uniquely identifies it at event scope
+	 * @return EventTable - the EventTable specified by the given number
 	 */
-	public static Table findTableByNumber(String tableNum)
+	public static EventTable findTableByNumber(String tableNum)
     {
-      String qString = "SELECT table FROM table table  WHERE table.table_number ="+tableNum;
+      String qString = "SELECT eventtable FROM eventtable eventtable  WHERE eventtable.number ="+tableNum;
       Query query = EM.getEntityManager().createQuery(qString);
-      Table table = (Table)query.getSingleResult();
-      return table;
+      EventTable EventTable = (EventTable)query.getSingleResult();
+      return EventTable;
     }
 	
 	/**
-	 * Removes the given Table from the database.
-	 * @param Table
+	 * Removes the given EventTable from the database.
+	 * @param EventTable
 	 */
-	public static void removeTable(Table table) {
-		EM.getEntityManager().remove(table);
+	public static void removeTable(EventTable EventTable) {
+		EM.getEntityManager().remove(EventTable);
 	}
 	
 	/**
 	 * An alias for the removeTable method. It is identical.
-	 * @param Table
+	 * @param EventTable
 	 */
-	public static void deleteTable(Table table) {
-		EM.getEntityManager().remove(table);
+	public static void deleteTable(EventTable EventTable) {
+		EM.getEntityManager().remove(EventTable);
 	}
 }

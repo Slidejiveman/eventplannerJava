@@ -1,4 +1,4 @@
-package eventplannerDAO;
+package eventplannerDAO.converter;
 
 import java.sql.Date;
 import java.time.Instant;

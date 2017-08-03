@@ -24,7 +24,9 @@ import com.owlike.genson.Genson;
 
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
+import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
+import eventplannerPD.EventTable;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
 
@@ -48,6 +50,7 @@ public class EventService {
 		log.logJAXB();
 		return events;
 	}
+	
 	@GET
 	@Path("/events/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -56,6 +59,15 @@ public class EventService {
 		EM.getEntityManager().refresh(event);
 		return event;
 	}
+	
+	@GET
+	@Path("/events/{id}/tables")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<EventTable> getTablesForEvent(@PathParam("id") String id){
+		List<EventTable> tables =  TableDAO.findTablesByEvent(Integer.parseInt(id));
+		return tables;
+	}
+	
 	@POST
 	@Path("/events")
 	@Produces(MediaType.APPLICATION_JSON)

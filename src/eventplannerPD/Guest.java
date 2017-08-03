@@ -58,7 +58,7 @@ public class Guest implements Serializable {
 	@Column(name = "guest_relationship_descriptor", nullable = true)
     private String relationshipDescriptor;
     /**
-     * A collection of the Guests this Guest is required to sit with in the same table.
+     * A collection of the Guests this Guest is required to sit with in the same EventTable.
      */
 	@JsonIgnore
 	@OneToMany(mappedBy = "guest")
@@ -73,12 +73,12 @@ public class Guest implements Serializable {
     private Collection<GuestGuestAvoidBridge> guestsToAvoid;
 
     /**
-     * The table the guest is sitting at.
+     * The EventTable the guest is sitting at.
      */
 	@JsonIgnore
     @ManyToOne(optional = true)
     @JoinColumn(name = "guest_table_id", nullable = true, referencedColumnName = "table_id")
-    private Table table;
+    private EventTable eventtable;
     
     @JsonIgnore
     @ManyToOne(optional = true) 
@@ -140,13 +140,13 @@ public class Guest implements Serializable {
         this.guestsToAvoid = guestsToAvoid;
     }
     @JsonIgnore
-    public Table getTable() {
-		return table;
+    public EventTable getTable() {
+		return eventtable;
 	}
     @JsonIgnore
     @XmlElement
-	public void setTable(Table table) {
-		this.table = table;
+	public void setTable(EventTable EventTable) {
+		this.eventtable = EventTable;
 	}
     
     /**
@@ -210,7 +210,7 @@ public class Guest implements Serializable {
     }
     
     /**
-     * Used to print out the Table Marker for this guest.
+     * Used to print out the EventTable Marker for this guest.
      * The toString() method is overwritten to display the name of the guest and the relationship descriptor of the guest.
      * @return The string containing the name and the relationship descriptor of the guest.
      */

@@ -23,11 +23,11 @@ import eventplannerPD.enums.TableShape;
 import eventplannerPD.enums.TableSize;
 
 /**
- * The table class represents the table at which guests sit during an event.
+ * The EventTable class represents the EventTable at which guests sit during an event.
  */
-@XmlRootElement(name = "table")
-@Entity(name = "\"table\"") // Table is a reserved word. Escape it.
-public class Table  implements Serializable {
+@XmlRootElement(name = "eventtable")
+@Entity(name = "eventtable") // EventTable is a reserved word. Escape it.
+public class EventTable  implements Serializable {
 
 	/**
 	 * Allows Serialization so that the item may be stored in the
@@ -35,47 +35,47 @@ public class Table  implements Serializable {
 	 */
 	private static final long serialVersionUID = -5478274599311347270L;
 	/**
-	 * The unique identifier for a persisted table.
+	 * The unique identifier for a persisted EventTable.
 	 */
 	@Id
 	@Column(name = "table_id", updatable = false, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	/**
-     * The size of the table measured in number of seats.
+     * The size of the EventTable measured in number of seats.
      */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "table_size", nullable = false)
     private TableSize size;
     /**
-     * The shape of the table, which is some version of elliptical or rectangular.
+     * The shape of the EventTable, which is some version of elliptical or rectangular.
      */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "table_shape", nullable = false)
     private TableShape shape;
     /**
-     * The number of the table at the event. 
-     * This is a unique identifier per event, meaning that each event has only one table two (for example).
+     * The number of the EventTable at the event. 
+     * This is a unique identifier per event, meaning that each event has only one EventTable two (for example).
      */
 	@Column(name = "table_number", nullable = false)
     private int number;
     /**
-     * The guests collection represents the group of guests sitting at a table. 
+     * The guests collection represents the group of guests sitting at a EventTable. 
      * The number of empty seats can be determined by the difference in the size 
-     * of the guest collection and the table size.
+     * of the guest collection and the EventTable size.
      */
-	@OneToMany(targetEntity = Guest.class, mappedBy = "table")
+	@OneToMany(targetEntity = Guest.class, mappedBy = "eventtable")
 	@JoinColumn(name = "table_guests", nullable = true)
     private Collection<Guest> guests;
     /**
-     * The event the table is associated with.
+     * The event the EventTable is associated with.
      */
 	@JsonIgnore
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "table_event_id", nullable = false, referencedColumnName = "event_id")
     private Event event;
     /**
-     * The seating arrangement the table is associated with
+     * The seating arrangement the EventTable is associated with
      */
 	@JsonIgnore
 	@ManyToOne(optional = true)
@@ -144,26 +144,26 @@ public class Table  implements Serializable {
     }
 
     /**
-     * The default "no-argument" constructor for a table.
+     * The default "no-argument" constructor for a EventTable.
      */
-    public Table() {
+    public EventTable() {
         // If we end up persisting this, then we'll need this constructor
     }
 
     /**
-     * The constructor for a Table that accepts a table size.
-     * @param ts The size of the table to be created.
+     * The constructor for a EventTable that accepts a EventTable size.
+     * @param ts The size of the EventTable to be created.
      */
-    public Table(TableSize ts) {
+    public EventTable(TableSize ts) {
         size = ts;
     }
     
     /**
      * Constructor that accepts the associated event and the size
-     * @param evt the event associated with this table
-     * @param ts the size of the tables used at this event
+     * @param evt the event associated with this EventTable
+     * @param ts the size of the EventTables used at this event
      */
-    public Table(Event evt, TableSize ts) {
+    public EventTable(Event evt, TableSize ts) {
     	event = evt;
     	size = ts;
     }

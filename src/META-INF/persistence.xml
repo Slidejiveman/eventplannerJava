@@ -10,10 +10,12 @@
          <class>eventplannerPD.User</class>
          <class>eventplannerPD.GuestList</class>
          <class>eventplannerPD.SeatingArrangement</class>
-         <class>eventplannerPD.Table</class>
+         <class>eventplannerPD.EventTable</class>
          <class>eventplannerPD.Company</class>
          <class>eventplannerPD.GuestGuestSitWithBridge</class>
          <class>eventplannerPD.GuestGuestAvoidBridge</class>
+         <class>eventplannerPD.security.Token</class>
+         <class>eventplannerPD.security.RoleAssignment</class>
          
          
         <properties>

@@ -54,6 +54,20 @@ public class UserDAO {
 	}
 	
 	/**
+	 * Used to return only the number of users desired for the list screen
+	 * @param page
+	 * @param pageSize
+	 * @return
+	 */
+	public static List<User> getAllUsers(int page, int pageSize)
+	  {
+	    TypedQuery<User> query = EM.getEntityManager().createQuery("SELECT user FROM user user", User.class);
+	    return query.setFirstResult(page)
+	            .setMaxResults(pageSize)
+	            .getResultList();
+
+	  }
+	/**
 	 * Returns the User specified by the given id number.
 	 * @param id - the number that uniquely identifies the User
 	 * @return User - the User specified by the id
@@ -76,6 +90,15 @@ public class UserDAO {
       User user = (User)query.getSingleResult();
       return user;
     }
+	
+	public static User findUserByUserName(String username)
+	  {
+	    String qString = "SELECT user FROM user user  WHERE user.username ='"+username+"'";
+	    Query query = EM.getEntityManager().createQuery(qString);
+	    User user = (User)query.getSingleResult();
+	    return user;
+	  }
+	
 	/**
 	 * Removes the given User from the database.
 	 * @param User
