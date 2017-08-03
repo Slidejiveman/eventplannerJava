@@ -28,7 +28,7 @@ import eventplannerUT.Message;
  */
 @XmlRootElement(name = "guest")
 @Entity(name = "guest")
-public class Guest implements Serializable {
+public class Guest implements Serializable, Comparable<Guest>{
 
     /**
 	 *  Allows Serialization so that the item may be stored in the
@@ -217,5 +217,9 @@ public class Guest implements Serializable {
     public String toString() {
         return "";
     }
-
+    @Override
+    public int compareTo(Guest guest) {
+     // comparison logic goes here
+    	return 1;
+    }
 }
