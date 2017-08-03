@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
 import eventplannerDAO.security.RoleAssignmentDAO;
 import eventplannerPD.enums.EmployeeRole;
 import eventplannerPD.security.RoleAssignment;
@@ -77,6 +79,7 @@ public class User implements Serializable {
     /**
      * The employee's system permission level.
      */
+    
 	@OneToMany(mappedBy = "user", targetEntity = RoleAssignment.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_role_assignment_id", referencedColumnName = "role_assignment_id")
     private Collection<RoleAssignment> roleAssignments;
@@ -87,6 +90,7 @@ public class User implements Serializable {
 	/**
      * The authentication token associated with the actively logged in user.
      */
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", targetEntity = Token.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_token_id", referencedColumnName = "token_id")
     private Collection<Token> tokens;
@@ -134,19 +138,20 @@ public class User implements Serializable {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
+    @JsonIgnore
     @XmlTransient
 	public Collection<Token> getTokens() {
 		return tokens;
 	}
-
+    @JsonIgnore
 	public void setTokens(Collection<Token> tokens) {
 		this.tokens = tokens;
 	}	
-    
+	
     public Collection<RoleAssignment> getRoleAssignments() {
 		return roleAssignments;
 	}
-    
+	
     @XmlElement
 	public void setRoleAssignments(Collection<RoleAssignment> roleAssignments) {
 		this.roleAssignments = roleAssignments;

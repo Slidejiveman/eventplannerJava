@@ -57,6 +57,7 @@ public class GuestList implements Serializable{
     @OneToOne(mappedBy="guestList", cascade = CascadeType.ALL)
     @JoinColumn(name = "guestlist_event", nullable = false)
     private Event event;
+    
     @JsonIgnore
     public Event getEvent() {
 		return event;

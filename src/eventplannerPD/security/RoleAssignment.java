@@ -37,7 +37,7 @@ public class RoleAssignment implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role")
 	private EmployeeRole role;
-	
+	@JsonIgnore
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "roleassignment_user_id", referencedColumnName = "user_id")
 	private User user;
@@ -64,19 +64,14 @@ public class RoleAssignment implements Serializable {
 	public void setRole(EmployeeRole role) {
 		this.role = role;
 	}
-	
-	
+	@JsonIgnore
 	public User getUser() {
 		return user;
 	}
 	
-	
+	@JsonIgnore
 	@XmlTransient
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 }
