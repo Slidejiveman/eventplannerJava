@@ -71,8 +71,8 @@ public class EventTable  implements Serializable {
      * The event the EventTable is associated with.
      */
 	@JsonIgnore
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "table_event_id", nullable = false, referencedColumnName = "event_id")
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "table_event_id", nullable = true, referencedColumnName = "event_id")
     private Event event;
     /**
      * The seating arrangement the EventTable is associated with

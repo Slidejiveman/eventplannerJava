@@ -27,6 +27,8 @@ import eventplannerDAO.EventDAO;
 import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
 import eventplannerPD.EventTable;
+import eventplannerPD.GeneticSeatArranger;
+import eventplannerPD.SeatingArrangement;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
 
@@ -167,7 +169,7 @@ public class EventService {
 	@OPTIONS
 	@Path("/events")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getSupportedOperations(){
+	public String getSupportedOperations() {
 		return ("{ {'POST' : { 'description' : 'add an event'}} {'GET' : {'description' : 'get an event'}}}");
 	}
 	
@@ -178,22 +180,31 @@ public class EventService {
 	 * 
 	 * @return
 	 */
-//	@POST
-//	@Path("/events/{id}/createseatingassignment")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public List<Message> importGuestList() {
-//		return new ArrayList<Message>();
-//	}
-//	
-//	/**
-//	 * This service will create the seating assignment and assign the
-//	 * guests from the guest list to tables. The tables will then be stored
-//	 * in the database and associated with the correct event.
-//	 */
-//	@POST
-//	@Path("/events/{id}/createseatingassignment")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public List<Message> createSeatingAssignment() {
-//		return new ArrayList<Message>();
-//	}
+	@POST
+	@Path("/events/{id}/importguestlist")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Message> importGuestList(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException {
+		return new ArrayList<Message>();
+	}
+	
+	/**
+	 * This service will create the seating assignment and assign the
+	 * guests from the guest list to tables. The tables will then be stored
+	 * in the database and associated with the correct event.
+	 * 
+	 * I'll need to know more details from Augustin to know exactly what to call 
+	 * and do here.
+	 */
+	@POST
+	@Path("/events/{id}/createseatingassignment")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Message> createSeatingAssignment(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException {
+		// find 
+		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		SeatingArrangement seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
+		event.setTables(seatingAssignment.getTables());
+		return new ArrayList<Message>();
+	}
 }
