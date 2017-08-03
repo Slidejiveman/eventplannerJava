@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -37,7 +38,6 @@ public class RoleAssignment implements Serializable {
 	@Column(name = "role")
 	private EmployeeRole role;
 	
-	@JsonIgnore
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "roleassignment_user_id", referencedColumnName = "user_id")
 	private User user;
@@ -60,17 +60,17 @@ public class RoleAssignment implements Serializable {
 	public EmployeeRole getRole() {
 		return role;
 	}
-	@XmlTransient
+	@XmlElement
 	public void setRole(EmployeeRole role) {
 		this.role = role;
 	}
 	
-	@JsonIgnore
+	
 	public User getUser() {
 		return user;
 	}
 	
-	@JsonIgnore
+	
 	@XmlTransient
 	public void setUser(User user) {
 		this.user = user;

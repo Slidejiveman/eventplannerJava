@@ -18,13 +18,13 @@ public class RoleAssignmentDAO {
 	  }
 	  public static List<RoleAssignment> listRoleAssignment()
 	  {
-	    TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleAssignment FROM roleAssignment roleAssignment", RoleAssignment.class);
+	    TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleassignment FROM roleassignment roleassignment", RoleAssignment.class);
 	    return query.getResultList();
 	  }
 	  
 	  public static List<RoleAssignment> getAllRoleAssignments()
 	  {
-	    TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleAssignment FROM roleAssignment roleAssignment", RoleAssignment.class);
+	    TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleassignment FROM roleassignment roleassignment", RoleAssignment.class);
 	    return query.getResultList();
 	  }
 	  public static RoleAssignment findRoleAssignmentById(int id)
@@ -33,9 +33,15 @@ public class RoleAssignmentDAO {
 	    return roleAssignment;
 	  }
 	  
+	  public static List<RoleAssignment> findRoleAssignmentsByUserId(int id)
+	  {
+		TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleassignment FROM roleassignment roleassignment WHERE roleassignment.user.id="+id, RoleAssignment.class);
+	    return query.getResultList();
+	  }
+	  
 	  public static RoleAssignment findRoleAssignmentByRoleAssignmentName(String roleAssignmentname)
 	  {
-	    String qString = "SELECT roleAssignment FROM roleAssignment roleAssignment  WHERE roleAssignment.roleAssignmentname ="+roleAssignmentname;
+	    String qString = "SELECT roleassignment FROM roleassignment roleassignment  WHERE roleassignment.roleAssignmentname ="+roleAssignmentname;
 	    Query query = EM.getEntityManager().createQuery(qString);
 	    RoleAssignment roleAssignment = (RoleAssignment)query.getSingleResult();
 	    return roleAssignment;
@@ -43,7 +49,7 @@ public class RoleAssignmentDAO {
 
 	  public static List<RoleAssignment> getAllRoleAssignments(int page, int pageSize)
 	  {
-	    TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleAssignment FROM roleAssignment roleAssignment", RoleAssignment.class);
+	    TypedQuery<RoleAssignment> query = EM.getEntityManager().createQuery("SELECT roleassignment FROM roleassignment roleassignment", RoleAssignment.class);
 	    return query.setFirstResult(page * pageSize)
 	            .setMaxResults(pageSize)
 	            .getResultList();

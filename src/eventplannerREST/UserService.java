@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import com.owlike.genson.Genson;
@@ -26,11 +27,13 @@ import com.owlike.genson.Genson;
 import eventplannerDAO.CompanyDAO;
 import eventplannerDAO.EM;
 import eventplannerDAO.UserDAO;
+import eventplannerDAO.security.RoleAssignmentDAO;
 import eventplannerPD.Company;
 import eventplannerPD.User;
 import eventplannerPD.enums.EmployeeRole;
 import eventplannerPD.security.RoleAssignment;
 import eventplannerPD.security.System;
+import eventplannerPD.security.Token;
 import eventplannerREST.security.Secured;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
@@ -56,7 +59,7 @@ public class UserService {
 	 */
 	Log log = new Log();
 	
-	//@Secured({EmployeeRole.Administrator})
+	@Secured({EmployeeRole.Administrator})
 	@GET
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -74,7 +77,8 @@ public class UserService {
 		log.logJAXB();
 		return users;
 	}
-	//@Secured({EmployeeRole.Administrator})
+	
+	@Secured({EmployeeRole.Administrator})
 	@GET
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -84,7 +88,7 @@ public class UserService {
 		return user;
 	}
 	
-	//@Secured({EmployeeRole.Administrator})
+	@Secured({EmployeeRole.Administrator})
 	@POST
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -133,7 +137,7 @@ public class UserService {
 		}		
 	}
 	
-	//@Secured({EmployeeRole.Administrator})
+	@Secured({EmployeeRole.Administrator})
 	@PUT
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -173,7 +177,7 @@ public class UserService {
 		}	
 	}
 	
-	//@Secured({EmployeeRole.Administrator})
+	@Secured({EmployeeRole.Administrator})
 	@DELETE
 	@Path("/users/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -220,10 +224,69 @@ public class UserService {
 		return user;
 	}
 	
+	/**
+	 * Returns the role assignments that a user has.
+	 * In our instance this should always be a single role.
+	 * @param id - the id of the user for which we want the role assignments
+	 * @param response - HTTP context response
+	 * @return The list of role assignments associated with a user
+	 * @throws IOException - if there is any serialization error, etc.
+	 */
+	@Secured
+	@GET
+	@Path("/users/{id}/roleassignments")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<RoleAssignment> getRoleAssignmentsForUser(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException{
+		return RoleAssignmentDAO.findRoleAssignmentsByUserId(Integer.parseInt(id));
+	}
+	
 	@OPTIONS
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getSupportedOperations(){
 		return ("{ {'POST' : { 'description' : 'add a user'}} {'GET' : {'description' : 'get a user'}}}");
+	}
+	
+	@POST
+	@Path("/login")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response authenticateUser(User user) {
+		try {
+			// Authenticate the user using the credentials provided
+			authenticate(user.getUsername(), user.getPassword());
+			
+			// Issue a token for the user
+			String token = issueToken(user.getUsername());
+			
+			// Return the token on the response
+			return Response.ok(token).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+	}
+	
+	private void authenticate(String username, String password) throws Exception {
+		// Authenticate against a database, LDAP, file, or whatever
+		// Throw an Exception if the credentials are invalid
+		User user = System.findUserByUserName(username);
+		if(user == null) {
+			throw new Exception();
+		}
+		if(!user.authenticate(password)) {
+			throw new Exception();
+		}
+	}
+	
+	private String issueToken(String username) {
+		// Issue a token (can be a random String persisted to a database eor a JWT token)
+		// The issued token must be associated to a user
+		// Return the issued token
+		EntityTransaction userTransaction = EM.getEntityManager().getTransaction();
+		userTransaction.begin();
+		Token token = new Token(System.findUserByUserName(username));
+		token.save();
+		userTransaction.commit();
+		return token.getToken();
 	}
 }

@@ -35,7 +35,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 
         // Get the HTTP Authorization header from the request
-		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+		String authorizationHeader = 
+				requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 		
 		// Check if the HTTP Authorization header is present and formatted correctly
 		if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
