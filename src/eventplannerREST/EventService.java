@@ -186,6 +186,9 @@ public class EventService {
 	 * This method will also add a new GuestList to the database. This
 	 * will create an ID that all of the guests will be associated with.
 	 * 
+	 * @param uploadedInputStream - the bytes that were in the file
+	 * @param fileDetail - the details sent along with the body
+	 * @param path - the path to write the resulting file to. (for logging)
 	 * @return
 	 */
 	@POST
@@ -198,14 +201,41 @@ public class EventService {
 		
 		// Path format //IP/Installables/uploaded
 		System.out.println("path::"+path);
+		System.out.println(uploadedInputStream.toString());
+		System.out.println(fileDetail.toString());
+		
 		String uploadedFileLocation = path + fileDetail.getFileName();
 		
-		// save it
+		// save it off to prove that it worked.
 		writeToFile(uploadedInputStream, uploadedFileLocation);
 		
 		String output = "File uploaded to : " + uploadedFileLocation;
 		
 		return Response.status(200).entity(output).build();
+	}
+	
+	/**
+	 *Helper method that writes the received guest list out to a file 
+	 *for logging purposes
+	 *
+	 *@param uploadedInputStream - the bytes that were in the file
+	 *@param uploadedFileLocation - the place to save the file
+	 */
+	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+		try {
+			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = uploadedInputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -242,23 +272,5 @@ public class EventService {
 		return messages;
 	}
 	
-	/**
-	 *Helper method that writes the received guest list out to a file
-	 */
-	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-		try {
-			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
-			int read = 0;
-			byte[] bytes = new byte[1024];
-			
-			out = new FileOutputStream(new File(uploadedFileLocation));
-			while ((read = uploadedInputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 }
