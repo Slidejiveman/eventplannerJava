@@ -111,7 +111,7 @@ public class Event implements Serializable {
      * Seat numbers begin from the leftmost upper corner of rectangular 
      * tables or the twelve o'clock position of elliptical tables.
      */
-    @OneToMany(targetEntity = EventTable.class, mappedBy = "event")
+    @OneToMany(targetEntity = EventTable.class, mappedBy = "event", orphanRemoval = true)
     @JoinColumn(name = "event_tables", nullable = true)
     private Collection<EventTable> tables;
     /**
