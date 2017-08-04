@@ -24,6 +24,7 @@ import com.owlike.genson.Genson;
 
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
+import eventplannerDAO.SeatingArrangementDAO;
 import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
 import eventplannerPD.EventTable;
@@ -201,10 +202,24 @@ public class EventService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public List<Message> createSeatingAssignment(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException {
-		// find 
+		// find the event from the database with the given ID
+		// and run it through the seating algorithm
 		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		if (event == null) {
+			messages.add(new Message("rest002", "Failure operation", "Create Seating Assignment"));
+			return messages;
+		}
 		SeatingArrangement seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
+		//SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); // can't persist until this returns something.
+		
+		// This will likely have the database update issue
+		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
+		eventTransaction.begin();
+		event.setSeatingAssigment(seatingAssignment);
 		event.setTables(seatingAssignment.getTables());
-		return new ArrayList<Message>();
+		eventTransaction.commit();
+		messages.add(new Message("rest001", "Success operation", "Create Seating Assignment"));
+		
+		return messages;
 	}
 }
