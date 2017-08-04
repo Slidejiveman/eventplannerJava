@@ -1,6 +1,10 @@
 package eventplannerREST;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +23,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.owlike.genson.Genson;
 
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
-import eventplannerDAO.SeatingArrangementDAO;
 import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
 import eventplannerPD.EventTable;
@@ -182,11 +189,23 @@ public class EventService {
 	 * @return
 	 */
 	@POST
-	@Path("/events/{id}/importguestlist")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public List<Message> importGuestList(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException {
-		return new ArrayList<Message>();
+	@Path("/events/importguestlist")
+	@Produces(MediaType.MULTIPART_FORM_DATA) // Not sure here?
+	public Response importGuestList(
+			@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("path") String path) {
+		
+		// Path format //IP/Installables/uploaded
+		System.out.println("path::"+path);
+		String uploadedFileLocation = path + fileDetail.getFileName();
+		
+		// save it
+		writeToFile(uploadedInputStream, uploadedFileLocation);
+		
+		String output = "File uploaded to : " + uploadedFileLocation;
+		
+		return Response.status(200).entity(output).build();
 	}
 	
 	/**
@@ -221,5 +240,25 @@ public class EventService {
 		messages.add(new Message("rest001", "Success operation", "Create Seating Assignment"));
 		
 		return messages;
+	}
+	
+	/**
+	 *Helper method that writes the received guest list out to a file
+	 */
+	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+		try {
+			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = uploadedInputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
