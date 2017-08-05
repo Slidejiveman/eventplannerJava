@@ -214,7 +214,7 @@ public class UserService {
 	 * Returns the currently logged in user.
 	 * @return logged in user
 	 */
-	//@Secured
+	@Secured
 	@GET
 	@Path("/users/current")
 	@Produces(MediaType.APPLICATION_JSON)
