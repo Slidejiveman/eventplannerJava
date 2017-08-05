@@ -1,12 +1,16 @@
 package eventplannerREST;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletResponse;
@@ -32,10 +36,13 @@ import com.owlike.genson.Genson;
 
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
+import eventplannerDAO.SeatingArrangementDAO;
 import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
 import eventplannerPD.EventTable;
 import eventplannerPD.GeneticSeatArranger;
+import eventplannerPD.Guest;
+import eventplannerPD.GuestList;
 import eventplannerPD.SeatingArrangement;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
@@ -189,15 +196,17 @@ public class EventService {
 	 * @param uploadedInputStream - the bytes that were in the file
 	 * @param fileDetail - the details sent along with the body
 	 * @param path - the path to write the resulting file to. (for logging)
+	 * @param id - the id number for the event the guestlist will be associated with
 	 * @return
 	 */
 	@POST
-	@Path("/events/{id}/importguestlist")
-	@Produces(MediaType.MULTIPART_FORM_DATA) // Not sure here?
+	@Path("/events/{id}/importguestlist") //path param to get event
+	@Produces(MediaType.MULTIPART_FORM_DATA)
 	public Response importGuestList(
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
-			@FormDataParam("path") String path) {
+			@FormDataParam("path") String path,
+			@PathParam("id") String id) {
 		
 		// Path format //IP/Installables/uploaded
 		System.out.println("path::"+path);
@@ -206,16 +215,63 @@ public class EventService {
 		
 		String uploadedFileLocation = path + fileDetail.getFileName();
 		
-		// Add Guests to the database and associate them with the correct event
-		
-		// save it off to log that the file made it to Tomcat
+		// save it off to log that the file made it to Tomcat.
+		// We can also use this file location to read in a line at a time
 		writeToFile(uploadedInputStream, uploadedFileLocation);
-		
 		String output = "File uploaded to : " + uploadedFileLocation;
+		// call a method to parse the file bytes and create Strings.
+		// The strings will be used to initialize Guests.
+		// Get the associated event from the database. The guest list will
+		// be tied to this event.
+		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		// Create the guestlist object.
+		GuestList guestlist = new GuestList();
+		
+		// Persist changes in the database. This might require some work.
+		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
+		eventTransaction.begin();				
+		guestlist.setGuests(parseFile(uploadedInputStream, uploadedFileLocation));
+		event.setGuestList(guestlist);
+		eventTransaction.commit();
 		
 		return Response.status(200).entity(output).build();
 	}
 	
+	/**
+	 * Parses the guests out of the file and Creates a list of guests.
+	 * @param uploadedInputStream - the sent in bytes
+	 */
+	@SuppressWarnings("resource")
+	private List<Guest> parseFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+		List<Guest> guests = new ArrayList<Guest>();
+		FileReader fileReader = null;
+		BufferedReader br = null;
+		String line = null;
+		try {
+			fileReader = new FileReader(uploadedFileLocation);
+			br = new BufferedReader(fileReader);
+			while((line = br.readLine()) != null) {
+				String[] result = line.split(",");
+				Guest guest = new Guest();
+				guest.setName(result[0]);
+				guest.setRelationshipDescriptor(result[1]);
+				guests.add(guest);
+				System.out.println(guest.getName() + " " + guest.getRelationshipDescriptor());
+			}
+		} catch (FileNotFoundException fileEx) {
+			System.err.println("I AM ERROR: The file was not found.");
+			fileEx.printStackTrace();
+		} catch (IOException iEx) {
+			System.err.println("I AM ERROR: There was a file IO error.");
+			iEx.printStackTrace();
+		}
+		
+		return guests;
+//		Scanner s = new Scanner(uploadedInputStream, "UTF-8");
+//		s.useDelimiter("\\A");
+//		System.out.println(s.hasNext() ? s.next().trim() : "");
+	}
+
 	/**
 	 *Helper method that writes the received guest list out to a file 
 	 *for logging purposes
@@ -232,8 +288,6 @@ public class EventService {
 			out = new FileOutputStream(new File(uploadedFileLocation));
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
 				out.write(bytes, 0, read);
-				//String s = new String(bytes);
-				//System.out.println(s);
 			}
 			out.flush();
 			out.close();
@@ -263,7 +317,7 @@ public class EventService {
 			return messages;
 		}
 		SeatingArrangement seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
-		//SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); // can't persist until this returns something.
+		SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); // can't persist until this returns something.
 		
 		// This will likely have the database update issue
 		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();

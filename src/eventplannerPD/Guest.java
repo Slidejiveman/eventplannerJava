@@ -61,14 +61,14 @@ public class Guest implements Serializable, Comparable<Guest>{
      * A collection of the Guests this Guest is required to sit with in the same EventTable.
      */
 	@JsonIgnore
-	@OneToMany(mappedBy = "guest")
+	@OneToMany(mappedBy = "guest", orphanRemoval = true)
 	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true, referencedColumnName = "guesttositwith_table_id")
     private Collection<GuestGuestSitWithBridge> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
 	@JsonIgnore
-	@OneToMany(mappedBy = "guest")
+	@OneToMany(mappedBy = "guest", orphanRemoval = true)
 	@JoinColumn(name = "guest_guests_to_avoid", nullable = true, referencedColumnName = "guesttoavoid_table_id")
     private Collection<GuestGuestAvoidBridge> guestsToAvoid;
 

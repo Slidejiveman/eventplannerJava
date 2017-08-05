@@ -52,13 +52,13 @@ public class Event implements Serializable {
     /**
      * The guestList is a collection of guests that are attending the event.
      */
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JoinColumn(name = "event_guestlist")
     private GuestList guestList;
     /**
      * The seating arrangement is the assignment of guests to tables.
      */
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JoinColumn(name = "event_seatingarrangement")
     private SeatingArrangement seatingAssigment;
 

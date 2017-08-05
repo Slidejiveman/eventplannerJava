@@ -34,7 +34,7 @@ public class GuestList implements Serializable{
 	/**
      * The collection of guests that make up the guest list.
      */
-	@OneToMany(targetEntity = Guest.class, mappedBy = "guestlist")
+	@OneToMany(targetEntity = Guest.class, mappedBy = "guestlist", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JoinColumn(name = "guestlist_guests", nullable = false)
     private Collection<Guest> guests ;
     /**
