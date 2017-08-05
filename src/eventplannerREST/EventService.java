@@ -192,7 +192,7 @@ public class EventService {
 	 * @return
 	 */
 	@POST
-	@Path("/events/importguestlist")
+	@Path("/events/{id}/importguestlist")
 	@Produces(MediaType.MULTIPART_FORM_DATA) // Not sure here?
 	public Response importGuestList(
 			@FormDataParam("file") InputStream uploadedInputStream,
@@ -206,7 +206,9 @@ public class EventService {
 		
 		String uploadedFileLocation = path + fileDetail.getFileName();
 		
-		// save it off to prove that it worked.
+		// Add Guests to the database and associate them with the correct event
+		
+		// save it off to log that the file made it to Tomcat
 		writeToFile(uploadedInputStream, uploadedFileLocation);
 		
 		String output = "File uploaded to : " + uploadedFileLocation;
@@ -230,6 +232,8 @@ public class EventService {
 			out = new FileOutputStream(new File(uploadedFileLocation));
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
 				out.write(bytes, 0, read);
+				//String s = new String(bytes);
+				//System.out.println(s);
 			}
 			out.flush();
 			out.close();

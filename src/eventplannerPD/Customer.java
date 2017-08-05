@@ -135,7 +135,6 @@ public class Customer implements Serializable {
      */
     public Boolean update(Customer customer) {
     	this.setEmail(customer.getEmail());
-    	this.setId(customer.getId());
     	this.setName(customer.getName());
     	this.setPhoneNumber(customer.getPhoneNumber());
     	return true;

@@ -59,7 +59,7 @@ public class UserService {
 	 */
 	Log log = new Log();
 	
-	//@Secured({EmployeeRole.Administrator})
+	@Secured({EmployeeRole.Administrator})
 	@GET
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)

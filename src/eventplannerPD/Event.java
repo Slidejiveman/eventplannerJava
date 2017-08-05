@@ -338,7 +338,6 @@ public class Event implements Serializable {
     	this.setDate(event.getDate());
     	this.setEventStatus(event.getEventStatus());
     	this.setGuestList(event.getGuestList());
-    	this.setId(event.getId());
     	this.setLocation(event.getLocation());
     	this.setMenu(event.getMenu());
     	this.setName(event.getName());
