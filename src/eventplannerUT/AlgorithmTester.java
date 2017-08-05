@@ -7,13 +7,15 @@ import eventplannerPD.Event;
 import eventplannerPD.EventTable;
 import eventplannerPD.GeneticSeatArranger;
 import eventplannerPD.Guest;
+import eventplannerPD.GuestGuestAvoidBridge;
+import eventplannerPD.GuestGuestSitWithBridge;
 import eventplannerPD.GuestList;
 import eventplannerPD.SeatingArrangement;
 
 public class AlgorithmTester {
 
 	public static void main(String[] args) {
-		System.out.println("Testing The Algorithm");
+		System.out.println("Testing The Algorithm\n\n");
 		Event e = new Event();
 		Guest guest1 = new Guest();
 		guest1.setName("John");
@@ -25,6 +27,24 @@ public class AlgorithmTester {
 		guest4.setName("Barthelemeo");
 		Guest guest5 = new Guest();
 		guest5.setName("Nicodemus");
+		
+		//Setting who is seating with who and who does not
+		GuestGuestAvoidBridge GAVBridge = new GuestGuestAvoidBridge();
+		GAVBridge.setGuest(guest5);
+		guest1.setGuestsToAvoid(new ArrayList<GuestGuestAvoidBridge>());
+		guest1.getGuestsToAvoid().add(GAVBridge);
+		GuestGuestAvoidBridge GAVBridge2 = new GuestGuestAvoidBridge();
+		GAVBridge2.setGuest(guest3);
+		guest1.getGuestsToAvoid().add(GAVBridge2);
+		
+		GuestGuestSitWithBridge GSWBridge = new GuestGuestSitWithBridge();
+		guest2.setGuestsToSitWith(new ArrayList<GuestGuestSitWithBridge>());
+		GSWBridge.setGuest(guest3);
+		guest2.getGuestsToSitWith().add(GSWBridge);
+		GuestGuestSitWithBridge GSWBridge2 = new GuestGuestSitWithBridge();
+		GSWBridge2.setGuest(guest4);
+		guest2.getGuestsToSitWith().add(GSWBridge2);
+			
 		
 		//create tables
 		EventTable table1= new EventTable();
@@ -47,10 +67,11 @@ public class AlgorithmTester {
 		
 		//Generate Seating Arrangement
 		SeatingArrangement seats = GeneticSeatArranger.generateSeatingArrangement(e);
-		System.out.println("Seats generated");
+		System.out.println("Selected Plan");
 		for(Entry<Guest,EventTable> seat: seats.getSeatingAssignments().entrySet()){
 			System.out.println(seat.getKey().getName()+" seats on table "+seat.getValue().getNumber());
 		}	
+		System.out.println("Fitness score: "+seats.getArrangementScore());
 
 	}
 
