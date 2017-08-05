@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -51,13 +52,13 @@ public class Event implements Serializable {
     /**
      * The guestList is a collection of guests that are attending the event.
      */
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "event_guestlist")
     private GuestList guestList;
     /**
      * The seating arrangement is the assignment of guests to tables.
      */
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "event_seatingarrangement")
     private SeatingArrangement seatingAssigment;
 

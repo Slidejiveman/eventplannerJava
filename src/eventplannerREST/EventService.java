@@ -1,6 +1,10 @@
 package eventplannerREST;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +23,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.owlike.genson.Genson;
 
@@ -178,14 +186,56 @@ public class EventService {
 	 * This method will also add a new GuestList to the database. This
 	 * will create an ID that all of the guests will be associated with.
 	 * 
+	 * @param uploadedInputStream - the bytes that were in the file
+	 * @param fileDetail - the details sent along with the body
+	 * @param path - the path to write the resulting file to. (for logging)
 	 * @return
 	 */
 	@POST
-	@Path("/events/{id}/importguestlist")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public List<Message> importGuestList(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException {
-		return new ArrayList<Message>();
+	@Path("/events/importguestlist")
+	@Produces(MediaType.MULTIPART_FORM_DATA) // Not sure here?
+	public Response importGuestList(
+			@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("path") String path) {
+		
+		// Path format //IP/Installables/uploaded
+		System.out.println("path::"+path);
+		System.out.println(uploadedInputStream.toString());
+		System.out.println(fileDetail.toString());
+		
+		String uploadedFileLocation = path + fileDetail.getFileName();
+		
+		// save it off to prove that it worked.
+		writeToFile(uploadedInputStream, uploadedFileLocation);
+		
+		String output = "File uploaded to : " + uploadedFileLocation;
+		
+		return Response.status(200).entity(output).build();
+	}
+	
+	/**
+	 *Helper method that writes the received guest list out to a file 
+	 *for logging purposes
+	 *
+	 *@param uploadedInputStream - the bytes that were in the file
+	 *@param uploadedFileLocation - the place to save the file
+	 */
+	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+		try {
+			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = uploadedInputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -201,10 +251,26 @@ public class EventService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public List<Message> createSeatingAssignment(@PathParam("id") String id, @Context final HttpServletResponse response)throws IOException {
-		// find 
+		// find the event from the database with the given ID
+		// and run it through the seating algorithm
 		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		if (event == null) {
+			messages.add(new Message("rest002", "Failure operation", "Create Seating Assignment"));
+			return messages;
+		}
 		SeatingArrangement seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
+		//SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); // can't persist until this returns something.
+		
+		// This will likely have the database update issue
+		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
+		eventTransaction.begin();
+		event.setSeatingAssigment(seatingAssignment);
 		event.setTables(seatingAssignment.getTables());
-		return new ArrayList<Message>();
+		eventTransaction.commit();
+		messages.add(new Message("rest001", "Success operation", "Create Seating Assignment"));
+		
+		return messages;
 	}
+	
+	
 }
