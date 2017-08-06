@@ -3,6 +3,7 @@ package eventplannerPD;
 import java.io.Serializable;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -79,7 +80,7 @@ public class EventTable  implements Serializable {
      */
 	@JsonIgnore
 	@ManyToOne(optional = true)
-	@JoinColumn(name = "table_seatingarrangement_id", nullable = true, referencedColumnName = "seatingarrangement_id")
+	@JoinColumn(name = "table_seatingarrangement_id",nullable = true, referencedColumnName = "seatingarrangement_id")
     private SeatingArrangement seatingArrangement;
 
     public int getId() {

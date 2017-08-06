@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.TreeMap;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -55,7 +56,7 @@ public class SeatingArrangement implements Serializable {
      * The event the seating arrangement is associated with.
      */
 	@JsonIgnore
-    @OneToOne(mappedBy="seatingAssigment")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional=true,mappedBy="seatingAssigment")
     @JoinColumn(name = "seatingarrangement_event", nullable = false)
     private Event event;
     
@@ -67,7 +68,7 @@ public class SeatingArrangement implements Serializable {
      * tables or the twelve o'clock position of elliptical tables.
      */
 	@JsonIgnore
-    @OneToMany(targetEntity = EventTable.class, mappedBy = "seatingArrangement")
+    @OneToMany(targetEntity = EventTable.class, cascade = CascadeType.ALL, mappedBy = "seatingArrangement",orphanRemoval=true)
     @JoinColumn(name = "seatingarrangement_tables", nullable = true)
     private Collection<EventTable> tables;
 	
