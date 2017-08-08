@@ -147,13 +147,18 @@ public class SeatingArrangement implements Serializable {
     public void sortByTableNumber() {
         //test GIT
     }
+    @JsonIgnore
+    @XmlTransient
     public TreeMap<Guest,EventTable>getSeatingAssignments(){
     	return this.seatingAssignments;
     }
+    @JsonIgnore
 	public void setArrangementScore(int score) {
 		this.arrangementScore= score;
 		
 	}
+	@JsonIgnore
+    @XmlTransient
 	public Integer getArrangementScore(){
 		return this.arrangementScore;
 	}
