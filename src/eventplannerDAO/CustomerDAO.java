@@ -1,8 +1,11 @@
 package eventplannerDAO;
 
 import java.util.List;
+
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import eventplannerPD.Customer;
+import eventplannerPD.User;
 
 /**
  * This class will hold the database access code so that we can read values in
@@ -47,6 +50,14 @@ public class CustomerDAO {
 		Customer customer = EM.getEntityManager().find(Customer.class, new Integer(id));
 		return customer;
 	}
+	
+	public static Customer findCustomerByName(String name)
+	  {
+	    String qString = "SELECT customer FROM customer customer  WHERE customer.name ='"+name+"'";
+	    Query query = EM.getEntityManager().createQuery(qString);
+	    Customer customer = (Customer)query.getSingleResult();
+	    return customer;
+	  }
 	
 	/**
 	 * Removes the given Customer from the database.

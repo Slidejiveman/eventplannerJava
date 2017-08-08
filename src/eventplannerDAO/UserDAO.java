@@ -99,6 +99,14 @@ public class UserDAO {
 	    return user;
 	  }
 	
+	public static User findUserByName(String name)
+	  {
+	    String qString = "SELECT user FROM user user  WHERE user.name ='"+name+"'";
+	    Query query = EM.getEntityManager().createQuery(qString);
+	    User user = (User)query.getSingleResult();
+	    return user;
+	  }
+	
 	/**
 	 * Removes the given User from the database.
 	 * @param User

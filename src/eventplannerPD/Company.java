@@ -153,6 +153,10 @@ public class Company implements Serializable {
 		return UserDAO.findUserById(idNumber);
 	}
 	
+	public User findUserByName(String name) {
+		return UserDAO.findUserByName(name);
+	}
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

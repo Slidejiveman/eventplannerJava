@@ -88,6 +88,21 @@ public class UserService {
 		return user;
 	}
 	
+	/**
+	 * I am not securing this method because it is used as a utility
+	 * when adding/updating an event. It is needed to retrieve the user.
+	 * @param name - the name of the user
+	 * @return the user that is working the event
+	 */
+	@GET
+	@Path("/users/{name}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public User getUserByName(@PathParam("name") String name){
+		User user = company.findUserByName(name);
+		EM.getEntityManager().refresh(user);
+		return user;
+	}
+	
 	@Secured({EmployeeRole.Administrator})
 	@POST
 	@Path("/users")
