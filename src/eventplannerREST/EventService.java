@@ -195,11 +195,20 @@ public class EventService {
 	 * This method will also add a new GuestList to the database. This
 	 * will create an ID that all of the guests will be associated with.
 	 * 
+	 * The columns in the spreadsheet are mapped to the following:
+	 * result[0] = Guest Number ==> The relationshipDescriptor since this field is unused in the sample data
+	 * result[1] = Guest First Name
+	 * result[2] = Guest Last Name
+	 * result[3] = Same Table #1
+	 * result[4] = Same Table #2
+	 * result[5] = Different Table #1
+	 * result[6] = Different Table #2
+	 * 
 	 * @param uploadedInputStream - the bytes that were in the file
 	 * @param fileDetail - the details sent along with the body
 	 * @param path - the path to write the resulting file to. (for logging)
 	 * @param id - the id number for the event the guestlist will be associated with
-	 * @return
+	 * @return Response of whether or not the action was a success
 	 */
 	@POST
 	@Path("/events/{id}/importguestlist") //path param to get event
@@ -265,12 +274,15 @@ public class EventService {
 			fileReader = new FileReader(uploadedFileLocation);
 			br = new BufferedReader(fileReader);
 			
+			// The initial read reads in the guests and stores them in the database.
+			// We need to skip the first line since it is headings.
+			br.readLine();
 			while((line = br.readLine()) != null) {
 				String[] result = line.split(",");
 				Guest guest = new Guest();
 				guest.setGuestlist(guestlist);
-				guest.setName(result[0]);
-				guest.setRelationshipDescriptor(result[1]);
+				guest.setRelationshipDescriptor(result[0]); // This is the Guest Number in the sample data
+				guest.setName(result[1] + " " + result[2]);	// Concatenate the first and last names into single name field			
 				guests.add(guest);
 				System.out.println(guest.getName() + " " + guest.getRelationshipDescriptor());				
 			}
