@@ -95,7 +95,24 @@ public class User implements Serializable {
 	@JoinColumn(name = "user_token_id", referencedColumnName = "token_id")
     private Collection<Token> tokens;
 	
-    public String getName() {
+	@JsonIgnore
+	@OneToMany(mappedBy = "assignedUser", targetEntity = Event.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_event_id", referencedColumnName = "event_id")
+    private Collection<Event> events;
+	
+	@JsonIgnore
+	@XmlTransient
+    public Collection<Event> getEvents() {
+		return events;
+	}
+
+	@JsonIgnore
+	@XmlTransient
+	public void setEvents(Collection<Event> events) {
+		this.events = events;
+	}
+
+	public String getName() {
         return this.name;
     }
 

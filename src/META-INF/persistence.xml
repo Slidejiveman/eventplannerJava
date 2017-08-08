@@ -16,6 +16,8 @@
          <class>eventplannerPD.GuestGuestAvoidBridge</class>
          <class>eventplannerPD.security.Token</class>
          <class>eventplannerPD.security.RoleAssignment</class>
+         <class>eventplannerDAO.converter.LocalDateConverter</class>
+         <class>eventplannerDAO.converter.LocalTimeAttributeConverter</class>
          
          
         <properties>
