@@ -36,6 +36,8 @@ import com.owlike.genson.Genson;
 
 import eventplannerDAO.EM;
 import eventplannerDAO.EventDAO;
+import eventplannerDAO.GuestDAO;
+import eventplannerDAO.GuestListDAO;
 import eventplannerDAO.SeatingArrangementDAO;
 import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
@@ -214,23 +216,33 @@ public class EventService {
 		System.out.println(fileDetail.toString());
 		
 		String uploadedFileLocation = path + fileDetail.getFileName();
-		
+		int intId = Integer.parseInt(id);
 		// save it off to log that the file made it to Tomcat.
 		// We can also use this file location to read in a line at a time
 		writeToFile(uploadedInputStream, uploadedFileLocation);
 		String output = "File uploaded to : " + uploadedFileLocation;
-		// call a method to parse the file bytes and create Strings.
-		// The strings will be used to initialize Guests.
+		
 		// Get the associated event from the database. The guest list will
 		// be tied to this event.
-		Event event = EventDAO.findEventById(Integer.parseInt(id));
-		// Create the guestlist object.
+		Event event = EventDAO.findEventById(intId);
 		GuestList guestlist = new GuestList();
 		
+		// If we have a guest list by this ID, remove it from the database
+		// Also remove all of its guests.
+		if(GuestListDAO.findGuestListById(intId) != null) {
+			GuestList guestListToRemove = GuestListDAO.findGuestListById(intId);
+			List<Guest> guestsToRemove = GuestDAO.listGuestsByGuestList(intId);
+			for (Guest g : guestsToRemove) {
+				GuestDAO.removeGuest(g);
+			}
+			GuestListDAO.removeGuestList(guestListToRemove);
+		}		
+		
+		guestlist.setId(intId); // This works since the relationship is one to one
 		// Persist changes in the database. This might require some work.
-		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
+		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();		
 		eventTransaction.begin();				
-		guestlist.setGuests(parseFile(uploadedInputStream, uploadedFileLocation));
+		guestlist.setGuests(parseFile(uploadedInputStream, uploadedFileLocation, guestlist));
 		event.setGuestList(guestlist);
 		eventTransaction.commit();
 		
@@ -241,8 +253,7 @@ public class EventService {
 	 * Parses the guests out of the file and Creates a list of guests.
 	 * @param uploadedInputStream - the sent in bytes
 	 */
-	@SuppressWarnings("resource")
-	private List<Guest> parseFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+	private List<Guest> parseFile(InputStream uploadedInputStream, String uploadedFileLocation, GuestList guestlist) {
 		List<Guest> guests = new ArrayList<Guest>();
 		FileReader fileReader = null;
 		BufferedReader br = null;
@@ -250,13 +261,15 @@ public class EventService {
 		try {
 			fileReader = new FileReader(uploadedFileLocation);
 			br = new BufferedReader(fileReader);
+			
 			while((line = br.readLine()) != null) {
 				String[] result = line.split(",");
 				Guest guest = new Guest();
+				guest.setGuestlist(guestlist);
 				guest.setName(result[0]);
 				guest.setRelationshipDescriptor(result[1]);
 				guests.add(guest);
-				System.out.println(guest.getName() + " " + guest.getRelationshipDescriptor());
+				System.out.println(guest.getName() + " " + guest.getRelationshipDescriptor());				
 			}
 		} catch (FileNotFoundException fileEx) {
 			System.err.println("I AM ERROR: The file was not found.");

@@ -46,10 +46,10 @@ VALUES('Standard', 3);
 -- Insert the default guest lists. Guests will be associated with these
 -- Guest List IDs are 1 and 2
 -- NOTE: It would probably be good to add in a reference to the Event.
-INSERT INTO `guestlist`(`guestlist_size`)
-VALUES (3);
-INSERT INTO `guestlist`(`guestlist_size`)
-VALUES (6);
+INSERT INTO `guestlist`(`guestlist_id`)
+VALUES (1);
+INSERT INTO `guestlist`(`guestlist_id`)
+VALUES (2);
 
 -- Insert the default Guests. There needs to be 9 to match the guestlist sizes.
 -- The first 3 guests should be associated with event 1, which should have

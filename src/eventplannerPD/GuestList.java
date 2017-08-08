@@ -6,12 +6,11 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -43,19 +42,19 @@ public class GuestList implements Serializable{
      */
     @Id
 	@Column(name = "guestlist_id", updatable = false, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * The size of the guest list measured in the number of guests.
      */
-    @Column(name = "guestlist_size", nullable = true)
-    private int size;
+    @Transient
+    private transient int size;
     /**
      * This is the Event that the guest list is associated with.
      */
     @JsonIgnore
-    @OneToOne(mappedBy="guestList", cascade = CascadeType.ALL, orphanRemoval = true,optional=true)
-    @JoinColumn(name = "guestlist_event", nullable = false)
+    @OneToOne(mappedBy="guestList",optional=true)
+    @JoinColumn(name = "guestlist_event", nullable = true)
     private Event event;
     
     @JsonIgnore
@@ -85,12 +84,11 @@ public class GuestList implements Serializable{
     public void setId(int id) {
         this.id = id;
     }
-
+  
     public int getSize() {
         return this.size;
     }
 
-    @XmlElement
     public void setSize(int size) {
         this.size = size;
     }
