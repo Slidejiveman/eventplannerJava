@@ -60,9 +60,9 @@ public class CustomerService {
 		return customer;
 	}
 	
-	@GET
-	@Path("/customers/byname/{name}")
-	@Produces(MediaType.APPLICATION_JSON)
+//	@GET
+//	@Path("/customers/byname/{name}")
+//	@Produces(MediaType.APPLICATION_JSON)
 	public Customer getCustomerByName(@PathParam("name") String name){
 		Customer customer = CustomerDAO.findCustomerByName(name);
 		EM.getEntityManager().refresh(customer);

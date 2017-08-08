@@ -225,22 +225,25 @@ public class EventService {
 		// Get the associated event from the database. The guest list will
 		// be tied to this event.
 		Event event = EventDAO.findEventById(intId);
-		GuestList guestlist = new GuestList();
+		GuestList guestlist = GuestListDAO.findGuestListById(intId);
 		
-		// If we have a guest list by this ID, remove it from the database
-		// Also remove all of its guests.
-		if(GuestListDAO.findGuestListById(intId) != null) {
-			GuestList guestListToRemove = GuestListDAO.findGuestListById(intId);
+		// If we have a guest list by this ID remove all of its guests.
+		// we don't need to remove the guest list. We will update it's guests.
+		if( guestlist != null) {
 			List<Guest> guestsToRemove = GuestDAO.listGuestsByGuestList(intId);
 			for (Guest g : guestsToRemove) {
 				GuestDAO.removeGuest(g);
 			}
-			GuestListDAO.removeGuestList(guestListToRemove);
-		}		
+		} else {
+			// Create a guest list and persist it if it does not exist in the database
+			guestlist = new GuestList();
+			guestlist.setId(intId); // This works since the relationship is one to one
+			GuestListDAO.addGuestList(guestlist);
+		}
 		
-		guestlist.setId(intId); // This works since the relationship is one to one
+		
 		// Persist changes in the database. This might require some work.
-		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();		
+		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();	
 		eventTransaction.begin();				
 		guestlist.setGuests(parseFile(uploadedInputStream, uploadedFileLocation, guestlist));
 		event.setGuestList(guestlist);

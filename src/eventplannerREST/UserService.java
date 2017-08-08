@@ -94,9 +94,9 @@ public class UserService {
 	 * @param name - the name of the user
 	 * @return the user that is working the event
 	 */
-	@GET
-	@Path("/users/{name}")
-	@Produces(MediaType.APPLICATION_JSON)
+//	@GET
+//	@Path("/users/{name}")
+//	@Produces(MediaType.APPLICATION_JSON)
 	public User getUserByName(@PathParam("name") String name){
 		User user = company.findUserByName(name);
 		EM.getEntityManager().refresh(user);
