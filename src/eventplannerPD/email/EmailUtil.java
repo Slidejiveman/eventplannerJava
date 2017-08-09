@@ -31,7 +31,10 @@ public class EmailUtil {
 	
     /**
      * Sends the confirmation email to the customer associated with a given event when the event's status is changed.
-     * @param receiver The receiver is the customer who commissioned Eagle Event Planning to plan and host this event.
+     * @param to - the email address of the receiver
+     * @param from - the email address of the sender, which is Ubiquity Mail
+     * @param host - the email host service. It is gmail in this case
+     * @param event = the event in question
      */
     public static List<eventplannerUT.Message> sendConfirmationEmail(String to, String from, String host, Event event) {
     	

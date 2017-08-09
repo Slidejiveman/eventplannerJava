@@ -416,13 +416,28 @@ public class EventService {
 		return messages;
 	}
 	
+	/**
+	 * Sends an email to the customer associated with an event.
+	 * 
+	 * @param id - the id of the event needed
+	 * @param response - context for the REST service
+	 * @return messages that are related to error or success of the operation
+	 * @throws IOException
+	 */
 	@POST
 	@Path("/events/{id}/email")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public List<Message> sendConfirmationEmail(@PathParam("id") String id, @Context final HttpServletResponse response) throws IOException {
 		Event event = EventDAO.findEventById(Integer.parseInt(id));
-		messages = EmailUtil.sendConfirmationEmail(event.getCustomer().getEmail(), "ubiquitymail@gmail.com", "smtp.gmail.com", event);
+		if (event == null) {
+			messages.add(new Message("rest002", "Failure operation", "Send Email"));
+			return messages;
+		}
+		messages.addAll(EmailUtil.sendConfirmationEmail(event.getCustomer().getEmail(), "ubiquitymail@gmail.com", "smtp.gmail.com", event));
+		if(messages.size() == 0) {
+			messages.add(new Message("rest001", "Success operation", "Send Email"));
+		}
 		return messages;
 	}	
 }
