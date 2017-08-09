@@ -47,13 +47,14 @@ import eventplannerPD.GuestGuestAvoidBridge;
 import eventplannerPD.GuestGuestSitWithBridge;
 import eventplannerPD.GuestList;
 import eventplannerPD.SeatingArrangement;
+import eventplannerPD.email.EmailUtil;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
 
 @Path("/eventservice")
 public class EventService {
 	//The list of messages to deliver to the user.
-	ArrayList<Message> messages = new ArrayList<Message>();
+	List<Message> messages = new ArrayList<Message>();
 	//logger
 	Log log = new Log();
 	
@@ -415,5 +416,13 @@ public class EventService {
 		return messages;
 	}
 	
-	
+	@POST
+	@Path("/events/{id}/email")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Message> sendConfirmationEmail(@PathParam("id") String id, @Context final HttpServletResponse response) throws IOException {
+		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		messages = EmailUtil.sendConfirmationEmail(event.getCustomer().getEmail(), "ubiquitymail@gmail.com", "smtp.gmail.com", event);
+		return messages;
+	}	
 }
