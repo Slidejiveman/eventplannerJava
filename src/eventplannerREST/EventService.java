@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +43,8 @@ import eventplannerPD.Event;
 import eventplannerPD.EventTable;
 import eventplannerPD.GeneticSeatArranger;
 import eventplannerPD.Guest;
+import eventplannerPD.GuestGuestAvoidBridge;
+import eventplannerPD.GuestGuestSitWithBridge;
 import eventplannerPD.GuestList;
 import eventplannerPD.SeatingArrangement;
 import eventplannerUT.Log;
@@ -258,6 +259,11 @@ public class EventService {
 		event.setGuestList(guestlist);
 		eventTransaction.commit();
 		
+		EntityTransaction guestRelationshipTransaction = EM.getEntityManager().getTransaction();
+		guestRelationshipTransaction.begin();
+		pairGuests(uploadedInputStream, uploadedFileLocation, guestlist);
+		guestRelationshipTransaction.commit();
+		
 		return Response.status(200).entity(output).build();
 	}
 	
@@ -281,11 +287,12 @@ public class EventService {
 				String[] result = line.split(",");
 				Guest guest = new Guest();
 				guest.setGuestlist(guestlist);
-				guest.setRelationshipDescriptor(result[0]); // This is the Guest Number in the sample data
+				guest.setRelationshipDescriptor(result[0]); // This is the Guest Number in the sample data since field was unused
 				guest.setName(result[1] + " " + result[2]);	// Concatenate the first and last names into single name field			
 				guests.add(guest);
 				System.out.println(guest.getName() + " " + guest.getRelationshipDescriptor());				
 			}
+			br.close();
 		} catch (FileNotFoundException fileEx) {
 			System.err.println("I AM ERROR: The file was not found.");
 			fileEx.printStackTrace();
@@ -300,6 +307,56 @@ public class EventService {
 //		System.out.println(s.hasNext() ? s.next().trim() : "");
 	}
 
+	private void pairGuests(InputStream uploadedInputStream, String uploadedFileLocation, GuestList guestlist) {
+		String guestListIdString = String.valueOf(guestlist.getId());
+		FileReader fileReader = null;
+		BufferedReader br = null;
+		String line = null;
+		
+		try {
+			// Second read through creates relationships between the guests
+			fileReader = new FileReader(uploadedFileLocation);
+			br = new BufferedReader(fileReader);
+			br.readLine();
+			while((line = br.readLine()) != null) {
+				String[] result = line.split(",");
+				int rowSize = result.length;
+				Guest guestInQuestion = GuestDAO.findGuestByRelationshipDescriptor(result[0], guestListIdString);
+				if (rowSize >= 4 && result[3] != null && !result[3].equals("")) {
+					Guest guestToSitWith = GuestDAO.findGuestByRelationshipDescriptor(result[3], guestListIdString);
+					GuestGuestSitWithBridge bridgeEntry = new GuestGuestSitWithBridge(guestInQuestion, guestToSitWith);
+					guestInQuestion.getGuestsToSitWith().add(bridgeEntry);
+					System.out.println(bridgeEntry.toString());
+				}
+				if (rowSize >= 5 && result[4] != null && !result[4].equals("")) {
+					Guest guestToSitWith = GuestDAO.findGuestByRelationshipDescriptor(result[4], guestListIdString);
+					GuestGuestSitWithBridge bridgeEntry = new GuestGuestSitWithBridge(guestInQuestion, guestToSitWith);
+					guestInQuestion.getGuestsToSitWith().add(bridgeEntry);
+					System.out.println(bridgeEntry.toString());
+				}
+				if (rowSize >= 6 && result[5] != null && !result[5].equals("")) {
+					Guest guestToAvoid = GuestDAO.findGuestByRelationshipDescriptor(result[5], guestListIdString);
+					GuestGuestAvoidBridge bridgeEntry = new GuestGuestAvoidBridge(guestInQuestion, guestToAvoid);
+					guestInQuestion.getGuestsToAvoid().add(bridgeEntry);
+					System.out.println(bridgeEntry.toString());
+				}
+				if (rowSize >= 7 && result[6] != null && !result[6].equals("")) {
+					Guest guestToAvoid = GuestDAO.findGuestByRelationshipDescriptor(result[6], guestListIdString);
+					GuestGuestAvoidBridge bridgeEntry = new GuestGuestAvoidBridge(guestInQuestion, guestToAvoid);
+					guestInQuestion.getGuestsToAvoid().add(bridgeEntry);
+					System.out.println(bridgeEntry.toString());
+				}
+			}
+			br.close();
+		} catch (FileNotFoundException fileEx) {
+			System.err.println("I AM ERROR: The file was not found.");
+			fileEx.printStackTrace();
+		} catch (IOException iEx) {
+			System.err.println("I AM ERROR: There was a file IO error.");
+			iEx.printStackTrace();
+		}
+	}
+	
 	/**
 	 *Helper method that writes the received guest list out to a file 
 	 *for logging purposes

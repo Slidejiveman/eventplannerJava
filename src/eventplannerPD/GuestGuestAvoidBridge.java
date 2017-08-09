@@ -46,6 +46,13 @@ public class GuestGuestAvoidBridge implements Serializable {
     public GuestGuestAvoidBridge() {
 		
 	}
+    
+    public GuestGuestAvoidBridge(Guest guest, Guest guestToAvoid) {
+		this.setGuest(guest);
+		this.setGuestId(guest.getId());
+		this.setGuestToAvoid(guestToAvoid);
+		this.setGuestAvoidId(guestToAvoid.getId());
+   	}
 	
 	public int getTableId() {
 		return guestAvoidBridgeId;
