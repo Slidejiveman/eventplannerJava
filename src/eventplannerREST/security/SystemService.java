@@ -68,7 +68,5 @@ public class SystemService {
 		token.save();
 		userTransaction.commit();
 		return token.getToken();
-	}
-	
-	
+	}	
 } 

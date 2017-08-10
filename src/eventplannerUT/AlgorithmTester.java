@@ -1,22 +1,26 @@
 package eventplannerUT;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
+
+import eventplannerDAO.EventDAO;
+import eventplannerDAO.GuestDAO;
+import eventplannerDAO.GuestListDAO;
 
 import eventplannerPD.Event;
 import eventplannerPD.EventTable;
 import eventplannerPD.GeneticSeatArranger;
 import eventplannerPD.Guest;
-import eventplannerPD.GuestGuestAvoidBridge;
-import eventplannerPD.GuestGuestSitWithBridge;
 import eventplannerPD.GuestList;
 import eventplannerPD.SeatingArrangement;
+import eventplannerPD.enums.TableShape;
+import eventplannerPD.enums.TableSize;
 
 public class AlgorithmTester {
 
 	public static void main(String[] args) {
 		System.out.println("Testing The Algorithm\n\n");
-		Event e = new Event();
+		/*Event e = new Event();
 		Guest guest1 = new Guest();
 		guest1.setName("John");
 		Guest guest2 = new Guest();
@@ -65,14 +69,43 @@ public class AlgorithmTester {
 		e.getTables().add(table1);
 		e.getTables().add(table2);
 		
-		//Generate Seating Arrangement
-		SeatingArrangement seats = GeneticSeatArranger.generateSeatingArrangement(e);
-		System.out.println("Selected Plan");
-		for(Entry<Guest,EventTable> seat: seats.getSeatingAssignments().entrySet()){
-			System.out.println(seat.getKey().getName()+" seats on table "+seat.getValue().getNumber());
-		}	
-		System.out.println("Fitness score: "+seats.getArrangementScore());
-
+		*/
+		
+		List<Event>events = EventDAO.listEvents();
+		List<GuestList> guestlists = GuestListDAO.listGuestLists();
+		//For each event, produce a seating plan
+		for(Event e: events){
+			//set guest list for the event.
+			for(GuestList guestlist: guestlists){
+				if (guestlist.getEvent().equals(e)){
+					e.setGuestList(guestlist);
+				}
+			}
+			for(Guest guest: e.getGuestList().getGuests()){
+			}
+			//set tables
+			int numberOfTablesToUse = (e.getGuestList().getGuests().size())/8;
+			for(int count=0;count<numberOfTablesToUse;count++){
+				EventTable table = new EventTable();
+				table.setEvent(e);
+				table.setNumber(count);
+				table.setShape(TableShape.Circle);
+				table.setSize(TableSize.Eight);
+				e.getTables().add(table);
+			}
+			
+			System.out.println("Seating plan for event, "+e.getName());
+			//Generate Seating Arrangement
+			SeatingArrangement seats = GeneticSeatArranger.generateSeatingArrangement(e);
+			System.out.println("Selected Plan");
+			for(Entry<Guest,EventTable> seat: seats.getSeatingAssignments().entrySet()){
+				System.out.println(seat.getKey().getName()+" seats on table "+seat.getValue().getNumber());
+			}	
+			System.out.println("Fitness score: "+seats.getArrangementScore());
+			for(Entry<Guest,EventTable> seat: seats.getSeatingAssignments().entrySet()){
+				System.out.println(seat.getKey().getName()+" seats on table "+seat.getValue().getNumber());
+			}	
+			System.out.println("Fitness score: "+seats.getArrangementScore());
+		}
 	}
-
 }
