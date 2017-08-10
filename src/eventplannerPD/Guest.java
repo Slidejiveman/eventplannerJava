@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,6 +55,9 @@ public class Guest implements Serializable, Comparable<Guest>{
      *     Mother of the Bride
      *     Father of the Groom
      *     Husband of Gertrude
+     * 
+     * Or, the descriptor holds the string representation of a number
+     * read in from the file.
      */
 	@Column(name = "guest_relationship_descriptor", nullable = true)
     private String relationshipDescriptor;
@@ -61,14 +65,14 @@ public class Guest implements Serializable, Comparable<Guest>{
      * A collection of the Guests this Guest is required to sit with in the same EventTable.
      */
 	@JsonIgnore
-	@OneToMany(mappedBy = "guest", orphanRemoval = true)
+	@OneToMany(mappedBy = "guest", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "guest_guests_to_sit_with", nullable = true, referencedColumnName = "guesttositwith_table_id")
     private Collection<GuestGuestSitWithBridge> guestsToSitWith;
     /**
      * The collection of Guests that this Guest must not sit with.
      */
 	@JsonIgnore
-	@OneToMany(mappedBy = "guest", orphanRemoval = true)
+	@OneToMany(mappedBy = "guest", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "guest_guests_to_avoid", nullable = true, referencedColumnName = "guesttoavoid_table_id")
     private Collection<GuestGuestAvoidBridge> guestsToAvoid;
 

@@ -3,6 +3,7 @@ package eventplannerDAO;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import eventplannerPD.Guest;
@@ -91,6 +92,13 @@ public class GuestDAO {
 	 */
 	public static Guest findGuestById(int id) {
 		Guest guest = EM.getEntityManager().find(Guest.class, new Integer(id));
+		return guest;
+	}
+	
+	public static Guest findGuestByRelationshipDescriptor(String rd, String guestListId) {
+		String qString = "SELECT guest FROM guest guest WHERE guest.relationshipDescriptor="+rd+" AND guest.guestlist.id="+guestListId;
+		Query query = EM.getEntityManager().createQuery(qString);
+		Guest guest = (Guest)query.getSingleResult();
 		return guest;
 	}
 	

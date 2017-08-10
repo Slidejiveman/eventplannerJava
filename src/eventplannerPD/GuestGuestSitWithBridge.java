@@ -46,6 +46,13 @@ public class GuestGuestSitWithBridge implements Serializable {
 	public GuestGuestSitWithBridge() {
 		
 	}
+	
+    public GuestGuestSitWithBridge(Guest guest, Guest guestToSitWith) {
+		this.setGuest(guest);
+		this.setGuestId(guest.getId());
+		this.setGuestToSitWith(guestToSitWith);
+		this.setGuestSitWithId(guestToSitWith.getId());
+	}
 
 	public int getTableId() {
 		return guestSitWithBridgeId;
@@ -87,6 +94,11 @@ public class GuestGuestSitWithBridge implements Serializable {
 		this.guestToSitWith = guestToSitWith;
 	}
 
+	@Override
+	public String toString() {
+		return guest.getName() + ", " + guestToSitWith.getName();
+	}
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
