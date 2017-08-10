@@ -194,7 +194,7 @@ public class ReportService {
 		// And get the guests so you can display their table numbers
 		Event event = EventDAO.findEventById(Integer.parseInt(id));
 		List<EventTable> tablesForEvent = TableDAO.findTablesByEvent(event.getId());
-		String fileString = "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + "seatingreport.pdf";
+		String fileString = "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + "seatingreporttn.pdf";
 		
 		// Create the PDF Document		
 		try {
@@ -226,6 +226,7 @@ public class ReportService {
 	 */
 	private void createSeatingReportByTableNumber(Document document, List<EventTable> tables) {
 		// Loop through tables and print out guest information
+		// These are ordered by table number by nature of the looping structure
 		for (EventTable t : tables) {			
 			for (Guest g : t.getGuests()) {
 				try {
@@ -239,5 +240,51 @@ public class ReportService {
 				}
 			}
 		}		
+	}
+	
+	@GET
+	@Path("/events/{id}/alphabeticalseatingreport")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	//@Produces({"application/pdf"})
+	public Response getSeatingReportAlphabetically(@PathParam("id") String id) {
+		// Get the Event Object where this matters.
+		// And get the guests so you can display their table numbers
+		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		List<Guest> guestsForEvent = GuestDAO.listGuestsByGuestList(event.getId());
+		String fileString = "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + "seatingreportalpha.pdf";
+		
+		// Create the PDF Document		
+		try {
+			Document document = new Document();
+			PdfWriter.getInstance(document, new FileOutputStream(fileString));
+			document.open();
+			createSeatingReportAlphabetically(document, guestsForEvent);
+			document.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("I AM ERROR: File not found.");
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			System.err.println("I AM ERROR: Something went wrong with the document.");
+			e.printStackTrace();
+		}
+		
+		// Send the created file to the client
+		// .txt test path => "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + event.getId() + ".txt"
+		File file = new File(fileString);
+		return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+				.header("Content-Disposition", "attachment; filename=\""+ file.getName() + "\"")
+				.build();
+	}
+
+	/**
+	 * Writes a seating report, ordering guests alphabetically by last name.
+	 * In order to do this, the guest.name property must be spit on " ".
+	 * @see eventplannerPD.Guest
+	 * @param document - holds the content to be written to PDF
+	 * @param guestsForEvent - the guests who are on the seating assignment
+	 */
+	private void createSeatingReportAlphabetically(Document document, List<Guest> guestsForEvent) {
+		// TODO Auto-generated method stub
+		
 	}
 }

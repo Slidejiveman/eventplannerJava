@@ -3,6 +3,7 @@ package eventplannerPD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -258,11 +259,55 @@ public class Guest implements Serializable, Comparable<Guest>{
      * @return The string containing the name and the relationship descriptor of the guest.
      */
     public String toString() {
-        return "";
+        return this.getName() + " " + this.getRelationshipDescriptor();
     }
     @Override
-    public int compareTo(Guest guest) {
+    public int compareTo(Guest compareGuest) {
      // comparison logic goes here
-    	return 1;
+    	String[] guestNames = this.getName().trim().split(" ");
+    	String[] compareGuestNames = compareGuest.getName().trim().split(" ");
+    	
+    	// If the array contains a first and last name and neither
+    	// of them are the empty string, compare the two.
+    	if (guestNames.length == 2 && !guestNames[1].equals("")
+    			&& !compareGuestNames[1].equals("")) {
+    		// The default compareToIgnoreCase string is what we want to use
+    		// we just want to use it on the last name first.
+    		// In this instance, the last names are equal. So, return based on
+    		// the first names.
+    		if (guestNames[1].compareToIgnoreCase(compareGuestNames[1]) != 0) {
+    			// Last names are different, so return based on this.
+    			return guestNames[1].compareToIgnoreCase(compareGuestNames[1]);
+    		} else {
+    			// Last names are the same, so return based on first names
+    			return guestNames[0].compareToIgnoreCase(compareGuestNames[0]);
+    		}		
+    	} else {
+    		// At least One of the two strings did not have a space in it, 
+    		// so compare based on the first value and the second value
+    		 if (guestNames.length < 2 && !guestNames[1].equals("")) {
+    			 return guestNames[0].compareToIgnoreCase(compareGuestNames[1]);
+    		 } else if (compareGuestNames.length < 2 && !compareGuestNames[1].equals("")) {   		 
+    			 return guestNames[1].compareToIgnoreCase(compareGuestNames[0]);
+    		 } else {
+    			 // Catches the case where neither string split
+    			 return guestNames[0].compareToIgnoreCase(compareGuestNames[0]);
+    		 }
+    		
+    	} 	
     }
+    
+    /**
+     * Return alphabetically by last name
+     * given a single string that contains both 
+     * last name and first name
+     */
+    public static Comparator<Guest> GuestLastNameComparator = new Comparator<Guest>() {
+
+		@Override
+		public int compare(Guest guest1, Guest guest2) {
+			return guest1.compareTo(guest2);
+		}  	
+    	
+    };
 }
