@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -84,12 +85,51 @@ public class Guest implements Serializable, Comparable<Guest>{
     @JoinColumn(name = "guest_table_id", nullable = true, referencedColumnName = "table_id")
     private EventTable eventtable;
     
+	/**
+	 * The guest list the guest is associated with
+	 */
     @JsonIgnore
     @ManyToOne(optional = true) 
     @JoinColumn(name = "guest_guestlist", nullable = true, referencedColumnName = "guestlist_id")  
     private GuestList guestlist;
     
+    /**
+     * A List of guests used for the seating algorithm.
+     * Holds the guests another guest is supposed to sit with.
+     */
+    @Transient
     @JsonIgnore
+    private transient List<Guest> guestsToSitWithList;
+    
+    /**
+     * A List of guests used for the seating algorithm.
+     * Holds the guests another guest is supposed to avoid sitting with.
+     */
+    @Transient
+    @JsonIgnore
+    private transient List<Guest> guestsToAvoidList;
+    
+    @JsonIgnore
+    public List<Guest> getGuestsToSitWithList() {
+		return guestsToSitWithList;
+	}
+
+    @JsonIgnore
+	public void setGuestsToSitWithList(List<Guest> guestsToSitWithList) {
+		this.guestsToSitWithList = guestsToSitWithList;
+	}
+
+    @JsonIgnore
+	public List<Guest> getGuestsToAvoidList() {
+		return guestsToAvoidList;
+	}
+
+    @JsonIgnore
+	public void setGuestsToAvoidList(List<Guest> guestsToAvoidList) {
+		this.guestsToAvoidList = guestsToAvoidList;
+	}
+
+	@JsonIgnore
     public GuestList getGuestlist() {
 		return guestlist;
 	}
