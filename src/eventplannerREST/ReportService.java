@@ -40,11 +40,12 @@ public class ReportService {
 	 * This service relies on a file being existing in Tomcat's file system
 	 * before it can actually send it.
 	 * 
-	 * @return
+	 * @return The HTTP response if it succeeds
 	 */
 	@GET
 	@Path("/events/{id}/tablemarkers")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	//@Produces({"application/pdf"})
 	public Response getTableMarkers(@PathParam("id") String id) {
 		// Get the Event Object where this matters.
 		Event event = EventDAO.findEventById(Integer.parseInt(id));
@@ -56,7 +57,7 @@ public class ReportService {
 			Document document = new Document();
 			PdfWriter.getInstance(document, new FileOutputStream(fileString));
 			document.open();
-			addTableMarkerContent(document, guestsForEvent);
+			addTableMarkersContent(document, guestsForEvent);
 			document.close();
 		} catch (FileNotFoundException e) {
 			System.err.println("I AM ERROR: File not found.");
@@ -67,13 +68,21 @@ public class ReportService {
 		}
 		
 		// Send the created file to the client
-		File file = new File("C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + event.getId() + ".txt");
+		// .txt test path => "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + event.getId() + ".txt"
+		File file = new File(fileString);
 		return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
 				.header("Content-Disposition", "attachment; filename=\""+ file.getName() + "\"")
 				.build();
 	}
 
-	private void addTableMarkerContent(Document document, List<Guest> guests) {
+	/**
+	 * Writes all table markers out all of the guests invited to
+	 * a particular event.
+	 * 
+	 * @param document - the content that will be writtent to the PDF
+	 * @param guests - the guests for the event
+	 */
+	private void addTableMarkersContent(Document document, List<Guest> guests) {
 		// Loop through Guests and print out guest information
 		for (Guest g : guests) {			
 			try {
@@ -101,5 +110,73 @@ public class ReportService {
 		
 	}
 	
+	/**
+	 * Creates a table marker for a single guest for any event. 
+	 * Only the guest id is needed.
+	 * 
+	 * @param id - the unique identifier for a guest in the database
+	 * @return A response as to whether or not 
+	 */
+	@GET
+	@Path("/tablemarkers/{id}")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	//@Produces({"application/pdf"})
+	public Response getTableMarkerForGuest(@PathParam("id") String id) {
+		// Get the Event Object where this matters.
+		Guest guest = GuestDAO.findGuestById(Integer.parseInt(id));
+		String fileString = "C:\\Users\\rdnot\\Desktop\\Reports\\" + guest.getName() + "tm.pdf";
+		
+		// Create the PDF Document		
+		try {
+			Document document = new Document();
+			PdfWriter.getInstance(document, new FileOutputStream(fileString));
+			document.open();
+			addTableMarkerContent(document, guest);
+			document.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("I AM ERROR: File not found.");
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			System.err.println("I AM ERROR: Something went wrong with the document.");
+			e.printStackTrace();
+		}
+		
+		// Send the created file to the client
+		// .txt test path => "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + event.getId() + ".txt"
+		File file = new File(fileString);
+		return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+				.header("Content-Disposition", "attachment; filename=\""+ file.getName() + "\"")
+				.build();
+	}
+	
+	/**
+	 * Creates a table marker for a single guest
+	 * @param document - the document contents
+	 * @param g - the guest in question
+	 */
+	private void addTableMarkerContent(Document document, Guest g) {			
+		try {
+			System.out.println(g.getName() + "\n" + g.getRelationshipDescriptor());
+			Paragraph para = new Paragraph(g.getName() + "\n" + g.getRelationshipDescriptor() + "\n");
+			para.setAlignment(Element.ALIGN_CENTER);
+			if (g.getTable() != null) {
+				para.add("Table No.: " + g.getTable().getNumber());
+				System.out.println("Table No.: " + g.getTable().getNumber());
+			} else {
+				para.add("This guest has not been assigned a table.");
+				System.out.println("This guest has not been assigned a table.");
+			}
+			document.add(para);
+			//Post spaces for table markers
+			for (int i = 0; i < 10; i++) {
+				document.add(Chunk.NEWLINE);
+			}				
+		} catch (DocumentException e) {
+			System.err.println("I AM ERROR: Something went wrong with the document.");
+			e.printStackTrace();
+		}			
+			
+		
+	}
 	
 }
