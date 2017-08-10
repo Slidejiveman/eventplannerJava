@@ -71,8 +71,8 @@ public class GeneticSeatArranger {
 	 *	6. Roll a 4 sided die and randomly select one of the 4 resulting fittest solutions
 	 */ 
 	public static SeatingArrangement generateSeatingArrangement(Event event) {
-    	ArrayList<SeatingArrangement> arrangementsPopulation  = generateInitPopulation(event);  
-    	ArrayList<SeatingArrangement> bestSeatingArrangements = produceBestArrangements(arrangementsPopulation);
+    	List<SeatingArrangement> arrangementsPopulation  = generateInitPopulation(event);  
+    	List<SeatingArrangement> bestSeatingArrangements = produceBestArrangements(arrangementsPopulation);
     	System.out.println("\n\n"+"All best arrangements");
     	for(SeatingArrangement s: bestSeatingArrangements){
     		for(Entry<Guest,EventTable> seat: s.getSeatingAssignments().entrySet()){
@@ -87,8 +87,8 @@ public class GeneticSeatArranger {
 	/*
 	 * The following method generates four seating arrangements samples to start with
 	 */
-	private static ArrayList<SeatingArrangement> generateInitPopulation( Event event) {
-		ArrayList<SeatingArrangement> arrangementsPopulation  = new ArrayList<SeatingArrangement>();
+	private static List<SeatingArrangement> generateInitPopulation( Event event) {
+		List<SeatingArrangement> arrangementsPopulation  = new ArrayList<SeatingArrangement>();
 		List<Guest> guests = (List<Guest>) event.getGuestList().getGuests();
 		List<EventTable> tables = (List<EventTable>) event.getTables();
 		for(int count=0;count<4;count++){
@@ -131,8 +131,8 @@ public class GeneticSeatArranger {
 		
 		for(int row =0; row<numberOfGuests;row++){
 			for(int column=0;column<numberOfGuests;column++){
-				Guest rowGuest = ((ArrayList<Guest>)s.getEvent().getGuestList().getGuests()).get(row);
-				Guest colGuest = ((ArrayList<Guest>)s.getEvent().getGuestList().getGuests()).get(column);
+				Guest rowGuest = ((List<Guest>)s.getEvent().getGuestList().getGuests()).get(row);
+				Guest colGuest = ((List<Guest>)s.getEvent().getGuestList().getGuests()).get(column);
 				if(rowGuest.getGuestsToSitWith()!=null){
 					if(rowGuest.getGuestsToSitWith().contains(colGuest)){
 						guestsMatrix[row][column]=10;
@@ -149,8 +149,8 @@ public class GeneticSeatArranger {
 		}
 		for(int i=0; i<numberOfGuests;i++){
 			for(int j=0;j<numberOfGuests;j++){
-				Guest ithGuest = ((ArrayList<Guest>)s.getEvent().getGuestList().getGuests()).get(i);
-				Guest jthGuest = ((ArrayList<Guest>)s.getEvent().getGuestList().getGuests()).get(j);
+				Guest ithGuest = ((List<Guest>)s.getEvent().getGuestList().getGuests()).get(i);
+				Guest jthGuest = ((List<Guest>)s.getEvent().getGuestList().getGuests()).get(j);
 				
 				for(Entry<Guest,EventTable> entry:s.getSeatingAssignments().entrySet()){
 					if (entry.getKey().equals(ithGuest))
@@ -173,12 +173,12 @@ public class GeneticSeatArranger {
 	 * The following method uses the genetic model to produce the bests of the possible
 	 * seating arrangements.
 	 */
-	private static ArrayList<SeatingArrangement> produceBestArrangements(
-			ArrayList<SeatingArrangement> arrangementsPopulation) {
+	private static List<SeatingArrangement> produceBestArrangements(
+			List<SeatingArrangement> arrangementsPopulation) {
 		int generation=0;
 		while (generation<200){
-			ArrayList<SeatingArrangement> children = new ArrayList<SeatingArrangement>();
-			ArrayList<SeatingArrangement> mutatedChildren = new ArrayList<SeatingArrangement>();
+			List<SeatingArrangement> children = new ArrayList<SeatingArrangement>();
+			List<SeatingArrangement> mutatedChildren = new ArrayList<SeatingArrangement>();
 			for(SeatingArrangement sa1:arrangementsPopulation){
 				for(SeatingArrangement sa2:arrangementsPopulation){
 					if(!sa1.equals(sa2)){
@@ -199,8 +199,8 @@ public class GeneticSeatArranger {
 	/*
 	 * The following method produces two children from two parent arrangements
 	 */
-	private static ArrayList<SeatingArrangement> produceChildren(SeatingArrangement sa1, SeatingArrangement sa2) {
-		ArrayList<SeatingArrangement> children = new ArrayList<SeatingArrangement>();
+	private static List<SeatingArrangement> produceChildren(SeatingArrangement sa1, SeatingArrangement sa2) {
+		List<SeatingArrangement> children = new ArrayList<SeatingArrangement>();
 		TreeMap<Guest,EventTable> secondPartforChild1=new TreeMap<Guest,EventTable>();
 		TreeMap<Guest,EventTable> secondPartforChild2= new TreeMap<Guest,EventTable>();
 		SeatingArrangement childArrangement1 = new SeatingArrangement(0);
@@ -269,8 +269,8 @@ public class GeneticSeatArranger {
 	/*
 	 * The following method mutate the produced arrangements offsprings
 	 */
-	private static ArrayList<SeatingArrangement> mutateChildren(ArrayList<SeatingArrangement> children) {
-		ArrayList<SeatingArrangement> childrenAfterMutation = new ArrayList<SeatingArrangement>();
+	private static List<SeatingArrangement> mutateChildren(List<SeatingArrangement> children) {
+		List<SeatingArrangement> childrenAfterMutation = new ArrayList<SeatingArrangement>();
 		for(SeatingArrangement child:children){
 			SeatingArrangement mutatedChild = swapAssignments(child);
 			childrenAfterMutation.add(mutatedChild);
@@ -344,8 +344,8 @@ public class GeneticSeatArranger {
 	 * This method picks top Four arrangement from each generation to advance to the
 	 * next generation until the desired arrangement is produced
 	 */
-	private static ArrayList<SeatingArrangement> pickTopArrangements(
-			ArrayList<SeatingArrangement> arrangementsPopulation) {
+	private static List<SeatingArrangement> pickTopArrangements(
+			List<SeatingArrangement> arrangementsPopulation) {
 		int [] arrangementScores = new int[arrangementsPopulation.size()];
 		int count=0;
 		int topScore = arrangementScores[0];
@@ -358,7 +358,7 @@ public class GeneticSeatArranger {
 		}
 		
 		//Add every seating plan with a top score to the arrayList return
-		ArrayList<SeatingArrangement> bestArrangements = new ArrayList<SeatingArrangement>();
+		List<SeatingArrangement> bestArrangements = new ArrayList<SeatingArrangement>();
 		for(SeatingArrangement sa: arrangementsPopulation){
 			if(sa.getArrangementScore().equals(topScore)){
 				bestArrangements.add(sa);
@@ -371,7 +371,7 @@ public class GeneticSeatArranger {
 	 * This method randomly selects one of the generated best arrangements
 	 */
 	private static SeatingArrangement selectRandomBestArrangement(
-			ArrayList<SeatingArrangement> bestSeatingArrangements) {
+			List<SeatingArrangement> bestSeatingArrangements) {
 		Random arrangementPicker = new SecureRandom();
 		int randomArrangementIndex = arrangementPicker.nextInt(bestSeatingArrangements.size());
 		return bestSeatingArrangements.get(randomArrangementIndex);
