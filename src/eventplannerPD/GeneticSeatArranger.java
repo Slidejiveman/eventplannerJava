@@ -4,6 +4,10 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import eventplannerDAO.GuestDAO;
+import eventplannerDAO.GuestListDAO;
+
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -71,6 +75,18 @@ public class GeneticSeatArranger {
 	 *	6. Roll a 4 sided die and randomly select one of the 4 resulting fittest solutions
 	 */ 
 	public static SeatingArrangement generateSeatingArrangement(Event event) {
+		List<GuestList> guestlists = GuestListDAO.listGuestLists();
+		//For each event, produce a seating plan
+		//set guest list for the event.
+		for(GuestList guestlist: guestlists){
+			if (guestlist.getEvent().equals(event)){
+				event.setGuestList(guestlist);
+			}
+		}
+		for(Guest guest: event.getGuestList().getGuests()){
+			guest.setGuestsToAvoidList(GuestDAO.listGuestsToAvoid(guest.getId()));
+			guest.setGuestsToSitWithList(GuestDAO.listGuestsToSitWith(guest.getId()));
+		}
     	List<SeatingArrangement> arrangementsPopulation  = generateInitPopulation(event);  
     	List<SeatingArrangement> bestSeatingArrangements = produceBestArrangements(arrangementsPopulation);
     	System.out.println("\n\n"+"All best arrangements");
@@ -133,16 +149,19 @@ public class GeneticSeatArranger {
 			for(int column=0;column<numberOfGuests;column++){
 				Guest rowGuest = ((List<Guest>)s.getEvent().getGuestList().getGuests()).get(row);
 				Guest colGuest = ((List<Guest>)s.getEvent().getGuestList().getGuests()).get(column);
-				if(rowGuest.getGuestsToSitWith()!=null){
-					if(rowGuest.getGuestsToSitWith().contains(colGuest)){
+				
+				if(rowGuest.getGuestsToSitWithList()!=null){
+					if(rowGuest.getGuestsToSitWithList().contains(colGuest)){
 						guestsMatrix[row][column]=10;
 					}
 				}
-				else if (rowGuest.getGuestsToAvoid()!=null){
-					if(rowGuest.getGuestsToAvoid().contains(colGuest)){
+				else if (rowGuest.getGuestsToAvoidList()!=null){
+					if(rowGuest.getGuestsToAvoidList().contains(colGuest)){
 						guestsMatrix[row][column]=0;
 					}
-				}else{
+				}
+				if((rowGuest.getGuestsToSitWithList().size()==0)&&(rowGuest.getGuestsToAvoidList().size()==0))
+				{
 					guestsMatrix[row][column]=5;
 				}
 			}
@@ -176,7 +195,7 @@ public class GeneticSeatArranger {
 	private static List<SeatingArrangement> produceBestArrangements(
 			List<SeatingArrangement> arrangementsPopulation) {
 		int generation=0;
-		while (generation<200){
+		while (generation<50){
 			List<SeatingArrangement> children = new ArrayList<SeatingArrangement>();
 			List<SeatingArrangement> mutatedChildren = new ArrayList<SeatingArrangement>();
 			for(SeatingArrangement sa1:arrangementsPopulation){
