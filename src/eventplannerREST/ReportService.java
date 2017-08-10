@@ -22,7 +22,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import eventplannerDAO.EventDAO;
 import eventplannerDAO.GuestDAO;
+import eventplannerDAO.TableDAO;
 import eventplannerPD.Event;
+import eventplannerPD.EventTable;
 import eventplannerPD.Guest;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
@@ -104,10 +106,8 @@ public class ReportService {
 			} catch (DocumentException e) {
 				System.err.println("I AM ERROR: Something went wrong with the document.");
 				e.printStackTrace();
-			}			
-			
-		}
-		
+			}					
+		}		
 	}
 	
 	/**
@@ -174,9 +174,70 @@ public class ReportService {
 		} catch (DocumentException e) {
 			System.err.println("I AM ERROR: Something went wrong with the document.");
 			e.printStackTrace();
-		}			
-			
-		
-	}
+		}							
+	}	
 	
+	/**
+	 * Rest service that will return all table markers for an event
+	 * This service works, so it will be used as a pattern for the others.
+	 * This service relies on a file being existing in Tomcat's file system
+	 * before it can actually send it.
+	 * 
+	 * @return The HTTP response if it succeeds
+	 */
+	@GET
+	@Path("/events/{id}/tablenumberseatingreport")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	//@Produces({"application/pdf"})
+	public Response getSeatingReportByTableNumber(@PathParam("id") String id) {
+		// Get the Event Object where this matters.
+		// And get the guests so you can display their table numbers
+		Event event = EventDAO.findEventById(Integer.parseInt(id));
+		List<EventTable> tablesForEvent = TableDAO.findTablesByEvent(event.getId());
+		String fileString = "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + "seatingreport.pdf";
+		
+		// Create the PDF Document		
+		try {
+			Document document = new Document();
+			PdfWriter.getInstance(document, new FileOutputStream(fileString));
+			document.open();
+			createSeatingReportByTableNumber(document, tablesForEvent);
+			document.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("I AM ERROR: File not found.");
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			System.err.println("I AM ERROR: Something went wrong with the document.");
+			e.printStackTrace();
+		}
+		
+		// Send the created file to the client
+		// .txt test path => "C:\\Users\\rdnot\\Desktop\\Reports\\" + event.getName() + event.getId() + ".txt"
+		File file = new File(fileString);
+		return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+				.header("Content-Disposition", "attachment; filename=\""+ file.getName() + "\"")
+				.build();
+	}
+
+	/**
+	 * This method creates the seating report content, grouped by table number.
+	 * @param document - the content to be printed to PDF
+	 * @param guests - the guests for the event which have been assigned tables
+	 */
+	private void createSeatingReportByTableNumber(Document document, List<EventTable> tables) {
+		// Loop through tables and print out guest information
+		for (EventTable t : tables) {			
+			for (Guest g : t.getGuests()) {
+				try {
+					System.out.println("Table No." + t.getNumber() + " " + g.getName());
+					Paragraph para = new Paragraph("Table No. " + t.getNumber() + " " + g.getName() + "\n");
+					para.setAlignment(Element.ALIGN_CENTER);
+					document.add(para);				
+				} catch (DocumentException e) {
+					System.err.println("I AM ERROR: Something went wrong with the document.");
+					e.printStackTrace();
+				}
+			}
+		}		
+	}
 }
