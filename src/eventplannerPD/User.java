@@ -107,7 +107,6 @@ public class User implements Serializable {
 	}
 
 	@JsonIgnore
-	@XmlTransient
 	public void setEvents(Collection<Event> events) {
 		this.events = events;
 	}
