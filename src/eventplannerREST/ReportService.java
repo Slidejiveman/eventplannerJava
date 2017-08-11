@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -283,8 +285,34 @@ public class ReportService {
 	 * @param document - holds the content to be written to PDF
 	 * @param guestsForEvent - the guests who are on the seating assignment
 	 */
-	private void createSeatingReportAlphabetically(Document document, List<Guest> guestsForEvent) {
-		// TODO Auto-generated method stub
-		
+	private void createSeatingReportAlphabetically(Document document, List<Guest> guests) {
+		// Loop through Guests and print out guest information
+		SortedSet<Guest> sortedGuests = new TreeSet<Guest>();
+		sortedGuests.addAll(guests);		
+		for (Guest g : sortedGuests) {
+			if (g.getTable() != null) {
+				try {
+					Paragraph para = new Paragraph();
+					para.setAlignment(Element.ALIGN_CENTER);
+					System.out.println(g.getName() + " Table No. " + g.getTable().getNumber() + "\n");
+					para.add(g.getName() + " Table No. " + g.getTable().getNumber() + "\n");				
+					document.add(para);
+				} catch (DocumentException e) {
+					System.err.println("I AM ERROR: Something went wrong with the document.");
+					e.printStackTrace();
+				}
+			} else {	
+				try {	
+				    Paragraph para = new Paragraph();
+					para.setAlignment(Element.ALIGN_CENTER);
+					para.add(g.getName() + " has not been assigned a table.");
+					System.out.println(g.getName() + " has not been assigned a table.");				
+					document.add(para);
+				} catch (DocumentException e) {
+					System.err.println("I AM ERROR: Something went wrong with the document.");
+					e.printStackTrace();
+				}
+			}
+		}		
 	}
 }
