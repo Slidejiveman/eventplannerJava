@@ -81,7 +81,7 @@ public class Guest implements Serializable, Comparable<Guest>{
     /**
      * The EventTable the guest is sitting at.
      */
-	@JsonIgnore
+	//@JsonIgnore
     @ManyToOne(optional = true)
     @JoinColumn(name = "guest_table_id", nullable = true, referencedColumnName = "table_id")
     private EventTable eventtable;
@@ -130,12 +130,12 @@ public class Guest implements Serializable, Comparable<Guest>{
 		this.guestsToAvoidList = guestsToAvoidList;
 	}
 
-	@JsonIgnore
+	//@JsonIgnore
     public GuestList getGuestlist() {
 		return guestlist;
 	}
     
-    @JsonIgnore
+    //@JsonIgnore
     @XmlElement
 	public void setGuestlist(GuestList guestlist) {
 		this.guestlist = guestlist;
@@ -184,11 +184,11 @@ public class Guest implements Serializable, Comparable<Guest>{
     public void setGuestsToAvoid(Collection<GuestGuestAvoidBridge> guestsToAvoid) {
         this.guestsToAvoid = guestsToAvoid;
     }
-    @JsonIgnore
+    //@JsonIgnore
     public EventTable getTable() {
 		return eventtable;
 	}
-    @JsonIgnore
+    //@JsonIgnore
     @XmlElement
 	public void setTable(EventTable EventTable) {
 		this.eventtable = EventTable;

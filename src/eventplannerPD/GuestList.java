@@ -33,6 +33,7 @@ public class GuestList implements Serializable{
 	/**
      * The collection of guests that make up the guest list.
      */
+	@JsonIgnore
 	@OneToMany(targetEntity = Guest.class, mappedBy = "guestlist", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JoinColumn(name = "guestlist_guests", nullable = false)
     private Collection<Guest> guests ;
@@ -48,6 +49,7 @@ public class GuestList implements Serializable{
      * The size of the guest list measured in the number of guests.
      */
     @Transient
+    @JsonIgnore
     private transient int size;
     /**
      * This is the Event that the guest list is associated with.
@@ -66,11 +68,11 @@ public class GuestList implements Serializable{
 	public void setEvent(Event event) {
 		this.event = event;
 	}
-    
+    @JsonIgnore
 	public Collection<Guest> getGuests() {
         return this.guests;
     }
-    
+    @JsonIgnore
 	@XmlTransient
     public void setGuests(Collection<Guest> guests) {
         this.guests = guests;
@@ -84,11 +86,12 @@ public class GuestList implements Serializable{
     public void setId(int id) {
         this.id = id;
     }
-  
+    @JsonIgnore
     public int getSize() {
         return this.size;
     }
-
+    @JsonIgnore
+    @XmlTransient
     public void setSize(int size) {
         this.size = size;
     }

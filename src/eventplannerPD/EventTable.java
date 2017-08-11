@@ -65,6 +65,7 @@ public class EventTable  implements Serializable {
      * The number of empty seats can be determined by the difference in the size 
      * of the guest collection and the EventTable size.
      */
+	@JsonIgnore
 	@OneToMany(targetEntity = Guest.class, mappedBy = "eventtable", orphanRemoval = true)
 	@JoinColumn(name = "table_guests", nullable = true)
     private Collection<Guest> guests;
@@ -135,10 +136,11 @@ public class EventTable  implements Serializable {
     public void setNumber(int number) {
         this.number = number;
     }
-
+    @JsonIgnore
     public Collection<Guest> getGuests() {
         return this.guests;
     }
+    @JsonIgnore
     @XmlTransient
     public void setGuests(Collection<Guest> guests) {
         this.guests = guests;
