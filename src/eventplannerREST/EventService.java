@@ -403,13 +403,13 @@ public class EventService {
 			return messages;
 		}
 		SeatingArrangement seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
-		SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); // can't persist until this returns something.
+		seatingAssignment.setId(event.getId());
+		SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); 
 		
-		// This will likely have the database update issue
 		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
 		eventTransaction.begin();
 		event.setSeatingAssigment(seatingAssignment);
-		event.setTables(seatingAssignment.getTables());
+		//event.setTables(seatingAssignment.getTables()); // Make sure we add tables back to the guests
 		eventTransaction.commit();
 		messages.add(new Message("rest001", "Success operation", "Create Seating Assignment"));
 		
