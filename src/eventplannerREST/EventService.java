@@ -402,7 +402,14 @@ public class EventService {
 			messages.add(new Message("rest002", "Failure operation", "Create Seating Assignment"));
 			return messages;
 		}
-		SeatingArrangement seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
+		
+		// If seating arrangement is already in the database, remove it so that it can be overwritten
+		SeatingArrangement seatingAssignment = SeatingArrangementDAO.findSeatingArrangementById(event.getId());
+		if (seatingAssignment != null) {
+			// For now, do not remove any tables related to it because we are not generating tables
+			SeatingArrangementDAO.removeSeatingArrangement(seatingAssignment);
+		}
+		seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
 		seatingAssignment.setId(event.getId());
 		SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); 
 		
