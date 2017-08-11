@@ -288,7 +288,7 @@ public class ReportService {
 	private void createSeatingReportAlphabetically(Document document, List<Guest> guests) {
 		// Loop through Guests and print out guest information
 		SortedSet<Guest> sortedGuests = new TreeSet<Guest>();
-		sortedGuests.addAll(guests);		
+		sortedGuests.addAll(guests); // using a sorted set causes it to call my custome comparator for Guests
 		for (Guest g : sortedGuests) {
 			if (g.getTable() != null) {
 				try {
