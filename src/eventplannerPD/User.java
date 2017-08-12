@@ -80,7 +80,7 @@ public class User implements Serializable {
      * The employee's system permission level.
      */
     
-	@OneToMany(mappedBy = "user", targetEntity = RoleAssignment.class, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", targetEntity = RoleAssignment.class, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "user_role_assignment_id", referencedColumnName = "role_assignment_id")
     private Collection<RoleAssignment> roleAssignments;
 	
