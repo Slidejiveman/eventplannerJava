@@ -256,7 +256,6 @@ public class User implements Serializable {
      */
     public Boolean update(User user) {
     	this.setName(user.getName());
-    	this.setCompany(user.getCompany());
     	this.setIsActive(user.isIsActive());
     	this.setPassword(user.getPassword());
     	this.setUsername(user.getUsername());
