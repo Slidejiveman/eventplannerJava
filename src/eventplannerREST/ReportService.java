@@ -227,7 +227,21 @@ public class ReportService {
 	 * @param guests - the guests for the event which have been assigned tables
 	 */
 	private void createSeatingReportByTableNumber(Document document, List<EventTable> tables) {
-		// Loop through tables and print out guest information
+		
+		// Check to see if tables exist for this event. If they do not,
+		// Print as much on the document.
+		if (tables.size() == 0) {
+			try {
+			    Paragraph para = new Paragraph("There are no assigned tables for this event as of yet.\n");			
+				document.add(para);
+			} catch (DocumentException e) {
+				System.err.println("I AM ERROR: Something went wrong with the document.");
+				e.printStackTrace();
+			}
+			return; // If there are no tables, there is nothing else to do, so return.
+		}
+		
+		// If tables exist, loop through tables and print out guest information
 		// These are ordered by table number by nature of the looping structure
 		for (EventTable t : tables) {			
 			for (Guest g : t.getGuests()) {
