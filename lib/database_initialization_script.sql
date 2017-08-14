@@ -108,10 +108,10 @@ VALUES (6,7); -- Hank avoids Homer
 
 -- Seating Arrangements to load by default in the database
 -- Creates a 1 and a 2 which will be associated with the events
-INSERT INTO `seatingarrangement`()
-VALUES(); -- 1
-INSERT INTO `seatingarrangement`()
-VALUES(); -- 2
+INSERT INTO `seatingarrangement`(`seatingarrangement_id`)
+VALUES(1); -- 1
+INSERT INTO `seatingarrangement`(`seatingarrangement_id`)
+VALUES(2); -- 2
 
 -- Default Tables to load into the system
 -- Event 1 and 2 have 2 tables each. Event 1 has size 2
