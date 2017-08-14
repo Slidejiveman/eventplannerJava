@@ -300,12 +300,12 @@ public class Event implements Serializable {
     public List<Message> validate() {
     	List<Message> messages = new ArrayList<Message>();
     	
-    	if (this.getAssignedUser() == null) {
-    		messages.add(new Message("Event000","Events must have an assigned User","User"));
-    	}
-    	if (this.getCustomer() == null) {
-    		messages.add(new Message("Event001", "Events must have an assigned Customer","Customer"));
-    	}
+//    	if (this.getAssignedUser() == null) {
+//    		messages.add(new Message("Event000","Events must have an assigned User","User"));
+//    	}
+//    	if (this.getCustomer() == null) {
+//    		messages.add(new Message("Event001", "Events must have an assigned Customer","Customer"));
+//    	}
     	if (this.getDate() == null) {
     		messages.add(new Message("Event002", "The Event date cannot be null.", "Date"));
     	}
@@ -334,16 +334,16 @@ public class Event implements Serializable {
      */
     public Boolean update(Event event) {
     	this.setAssignedUser(event.getAssignedUser());
-    	this.setCustomer(event.getCustomer());
+//    	this.setCustomer(event.getCustomer());
     	this.setDate(event.getDate());
     	this.setEventStatus(event.getEventStatus());
-    	this.setGuestList(event.getGuestList());
+        this.setGuestList(event.getGuestList());
     	this.setLocation(event.getLocation());
     	this.setMenu(event.getMenu());
     	this.setName(event.getName());
     	this.setPercentSeatsEmpty(event.getPercentSeatsEmpty());
-    	this.setSeatingAssigment(event.getSeatingAssigment());
-    	this.setTables(event.getTables());
+        this.setSeatingAssigment(event.getSeatingAssigment());
+//      this.setTables(event.getTables());
     	this.setTotalSeats(event.getTotalSeats());
     	return true;
     }
