@@ -114,7 +114,10 @@ public class EventService {
 			eventTransaction.begin();
 			EventDAO.addEvent(event);
 			eventTransaction.commit();
-			messages.add(new Message("rest001", "Success Operation", "Add"));
+			EmailUtil.sendConfirmationEmail(event.getCustomer().getEmail(), "ubiquitymail@gmail.com", "smtp.gmail.com", event);
+			if(messages.size() == 0) {
+				messages.add(new Message("rest001", "Success operation", "Send Email"));
+			}
 			return messages;
 		}
 	}
@@ -148,6 +151,7 @@ public class EventService {
 		eventTransaction.begin();
 		Boolean result = eventToUpdate.update(event);
 		eventTransaction.commit();
+		EmailUtil.sendConfirmationEmail(event.getCustomer().getEmail(), "ubiquitymail@gmail.com", "smtp.gmail.com", event);
 		if (result) {
 			messages.add(new Message("rest001", "Success Operation", "Update"));
 			return messages;
