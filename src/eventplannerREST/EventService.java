@@ -222,10 +222,12 @@ public class EventService {
 	public Response importGuestList(
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
-			@FormDataParam("path") String path,
+			//@FormDataParam("path") String path, // not needed after Postman testing concluded.
 			@PathParam("id") String id) {
 		
-		// Path format //IP/Installables/uploaded
+		// Path hard-coded for demonstration purposes.
+		String path = "C:\\Users\\rdnot\\Desktop\\";
+		
 		System.out.println("path::"+path);
 		System.out.println(uploadedInputStream.toString());
 		System.out.println(fileDetail.toString());
