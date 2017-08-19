@@ -278,6 +278,7 @@ public class Event implements Serializable {
     /**
      * Calculates the number of tables needed to accommodate the 
      * guest list and the required ratio of empty seats.
+     * @param i 
      * @param pse 
      *        The percentage of empty seats we are expecting at a EventTable. 
      *        This is used to prevent filling up a tables and leaving others completely empty.
@@ -298,8 +299,8 @@ public class Event implements Serializable {
 	 * The calculation is performed as follows: 
 	 * Number of Tables = Math.Ceil((Number of Guests*(100+Percentage of Seats to be left Empty))/(100*Number of People per Table)) = 44 tables
 	 */
-    public int calculateNumTables() {
-		return (int) (Math.ceil(((100+this.getPercentSeatsEmpty())*this.getGuestList().getGuests().size())/(100*tableSizeToInt(TableSize.Two)))); //Should read table size from the database
+    public int calculateNumTables(int i) {
+		return (int) (Math.ceil(((100+this.getPercentSeatsEmpty())*this.getGuestList().getGuests().size())/(100*i))); //Should read table size from the database
     }
     
     /*

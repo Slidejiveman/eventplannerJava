@@ -89,7 +89,7 @@ public class GeneticSeatArranger {
 			guest.setGuestsToAvoidList(GuestDAO.listGuestsToAvoid(guest.getId()));
 			guest.setGuestsToSitWithList(GuestDAO.listGuestsToSitWith(guest.getId()));
 		}
-		int tablesToUse = event.calculateNumTables();
+		int tablesToUse = event.calculateNumTables(event.getSeatsPerTable());
 		int counter=0;
 		event.setTables(new ArrayList<EventTable>());
 		event.setSeatingAssigment(new SeatingArrangement());
@@ -100,8 +100,6 @@ public class GeneticSeatArranger {
 			EventTable table = new EventTable();
 			table.setEvent(event);
 			table.setShape(TableShape.Circle);
-			table.setSize(TableSize.Two);
-			System.out.println("Created with size: "+table.getSize());
 			table.setNumber(counter+1);
 			table.setGuests(new ArrayList<Guest>());
 			event.getTables().add(table);
