@@ -407,6 +407,22 @@ public class EventService {
 		if (event == null) {
 			messages.add(new Message("rest002", "Failure operation", "Create Seating Assignment"));
 			return messages;
+		} else {
+			// Set all of the guest table IDs for the event to null
+			List<Guest> guests = GuestDAO.listGuestsByGuestList(event.getId());
+			for (Guest g : guests) {
+				g.setTable(null);
+			}
+			// If we find an event, remove all of the tables associated with it.
+			List<EventTable> tables = TableDAO.findTablesByEvent(event.getId());
+			for (EventTable t : tables) {
+				TableDAO.removeTable(t);
+			}
+			// clean up the database by removing existing relationships
+			EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
+			eventTransaction.begin();
+			event.setSeatingAssigment(null);
+			eventTransaction.commit();
 		}
 		
 		// If seating arrangement is already in the database, remove it so that it can be overwritten
@@ -414,15 +430,18 @@ public class EventService {
 		if (seatingAssignment != null) {
 			// For now, do not remove any tables related to it because we are not generating tables
 			SeatingArrangementDAO.removeSeatingArrangement(seatingAssignment);
-		}
-		seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
-		seatingAssignment.setId(event.getId());
-		SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); 
+		} 	
 		
 		EntityTransaction eventTransaction = EM.getEntityManager().getTransaction();
-		eventTransaction.begin();
+		seatingAssignment = GeneticSeatArranger.generateSeatingArrangement(event);
+		eventTransaction.begin();		
+		seatingAssignment.setId(event.getId());
+		SeatingArrangementDAO.addSeatingArrangement(seatingAssignment); 
 		event.setSeatingAssigment(seatingAssignment);
-		//event.setTables(seatingAssignment.getTables()); // Make sure we add tables back to the guests
+		event.setTables(seatingAssignment.getTables()); // Make sure we add tables back to the guests
+		for (EventTable t : event.getTables()) {
+			t.setSeatingArrangement(event.getSeatingAssigment());
+		}
 		eventTransaction.commit();
 		messages.add(new Message("rest001", "Success operation", "Create Seating Assignment"));
 		

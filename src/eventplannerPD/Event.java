@@ -59,7 +59,7 @@ public class Event implements Serializable {
     /**
      * The seating arrangement is the assignment of guests to tables.
      */
-	@OneToOne(orphanRemoval = true, optional=true)
+	@OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true, optional=true)
 	@JoinColumn(name = "event_seatingarrangement",nullable=true)
     private SeatingArrangement seatingAssigment;
 
@@ -113,7 +113,7 @@ public class Event implements Serializable {
      * Seat numbers begin from the leftmost upper corner of rectangular 
      * tables or the twelve o'clock position of elliptical tables.
      */
-    @OneToMany(targetEntity = EventTable.class, mappedBy = "event", orphanRemoval = true)
+    @OneToMany(targetEntity = EventTable.class, mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_tables", nullable = true)
     private Collection<EventTable> tables;
     /**
@@ -132,7 +132,7 @@ public class Event implements Serializable {
     /**
      * This is needed for the algorithm. A table can already know this, but event needs to know it too.
      */
-    @Column(name = "event_seats_per_table", nullable = false)
+    @Column(name = "event_seats_per_table", nullable = true)
     private int seatsPerTable;
 
     public int getSeatsPerTable() {

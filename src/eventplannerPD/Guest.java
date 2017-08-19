@@ -82,7 +82,7 @@ public class Guest implements Serializable, Comparable<Guest>{
      * The EventTable the guest is sitting at.
      */
 	//@JsonIgnore
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "guest_table_id", nullable = true, referencedColumnName = "table_id")
     private EventTable eventtable;
     

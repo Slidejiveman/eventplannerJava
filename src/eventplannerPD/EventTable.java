@@ -46,7 +46,7 @@ public class EventTable  implements Serializable {
      * The size of the EventTable measured in number of seats.
      */
 	@Enumerated(EnumType.STRING)
-	@Column(name = "table_size", nullable = false)
+	@Column(name = "table_size", nullable = true)
     private TableSize size;
     /**
      * The shape of the EventTable, which is some version of elliptical or rectangular.
@@ -66,7 +66,7 @@ public class EventTable  implements Serializable {
      * of the guest collection and the EventTable size.
      */
 	@JsonIgnore
-	@OneToMany(targetEntity = Guest.class, mappedBy = "eventtable", orphanRemoval = true)
+	@OneToMany(targetEntity = Guest.class, mappedBy = "eventtable", orphanRemoval = false)
 	@JoinColumn(name = "table_guests", nullable = true)
     private Collection<Guest> guests;
     /**
