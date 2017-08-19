@@ -136,7 +136,7 @@ INSERT INTO `event`(`event_date`, `event_status`, `event_location`,
                     `event_guestlist`, `event_seatingarrangement`)
 VALUES ('2010-11-12','Open','The PEC','Hot Dogs','Slamfest',10.0,2,4,1,1,1,1);
 INSERT INTO `event`(`event_date`, `event_status`, `event_location`,
-                    `event_menu`, `event_name`, `event_percent_seats_empty`,`event_seats_per_table`
+                    `event_menu`, `event_name`, `event_percent_seats_empty`,`event_seats_per_table`,
                     `event_total_seats`, `event_user_id`, `event_customer_id`,
                     `event_guestlist`, `event_seatingarrangement`)
 VALUES ('2010-10-11','Open','The World','Easy Mac','Cheeze-a-palooaz',25.0,4,8,2,
