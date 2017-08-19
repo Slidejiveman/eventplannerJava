@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import eventplannerPD.enums.EventStatus;
+import eventplannerPD.enums.TableSize;
 import eventplannerUT.Message;
 
 /**
@@ -278,18 +279,48 @@ public class Event implements Serializable {
      *        determine the number of tables needed.
      * @return The number of tables needed to accommodate the guest list with the required ratio of empty seats.
      */
-    public int calculateNumTables(double pse, EventTable EventTable, GuestList gl) {
-        return 0;
+    /*
+	 * The following method calculates the number of tables that the seating algorithm uses to seat people on tables.
+	 * This number is calculated based on the number of guests said to be attending the event, the number of people who 
+	 * can sit on a table, and the percentage of seats said to be left empty.
+	 * The calculation is performed as follows: 
+	 * Number of Tables = Math.Ceil((Number of Guests*(100+Percentage of Seats to be left Empty))/(100*Number of People per Table)) = 44 tables
+	 */
+    public int calculateNumTables() {
+		return (int) (Math.ceil(((100+this.getPercentSeatsEmpty())*this.getGuestList().getGuests().size())/(100*tableSizeToInt(TableSize.Two)))); //Should read table size from the database
     }
-
-    /**
+    
+    /*
+     * The following method translates an English table size to a number to be used in the calculation of the number of tables to use
+     */
+    public int tableSizeToInt(TableSize tableSize) {
+		
+    	switch(tableSize){
+    		case Eight:
+    			return 8;
+    		case Two:
+    			return 2;
+    		case Four:
+    			return 4;
+    		case Six:
+    			return 6;
+    		case Ten:
+    			return 10;
+    		case Twelve:
+    			return 12;
+    		default:
+    			return 0;
+    			
+    	}
+	}
+	/**
      * Calculates the number of seats that are needed for the guest list 
      * and the percentage of vacancies. This is required to accommodate 
      * guests that did not RSVP or brought extra people.
      * This method will multiply the number of seats by the number of tables.
      */
     public int calculateTotalSeats() {
-        return 0;
+    	return (int) (Math.ceil(((100+this.getPercentSeatsEmpty())*this.getGuestList().getGuests().size())/(100)));
     }
     
     /**

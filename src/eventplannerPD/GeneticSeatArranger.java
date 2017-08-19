@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import eventplannerDAO.GuestDAO;
 import eventplannerDAO.GuestListDAO;
+import eventplannerPD.enums.TableShape;
+import eventplannerPD.enums.TableSize;
 
 import java.util.Random;
 import java.util.TreeMap;
@@ -87,6 +89,27 @@ public class GeneticSeatArranger {
 			guest.setGuestsToAvoidList(GuestDAO.listGuestsToAvoid(guest.getId()));
 			guest.setGuestsToSitWithList(GuestDAO.listGuestsToSitWith(guest.getId()));
 		}
+		int tablesToUse = event.calculateNumTables();
+		int counter=0;
+		event.setTables(new ArrayList<EventTable>());
+		event.setSeatingAssigment(new SeatingArrangement());
+    	System.out.println("There are "+event.getTables().size()+" tables for the event");
+
+		System.out.println("Tables to use: "+tablesToUse);
+		while(counter<tablesToUse){
+			EventTable table = new EventTable();
+			table.setEvent(event);
+			table.setShape(TableShape.Circle);
+			table.setSize(TableSize.Two);
+			System.out.println("Created with size: "+table.getSize());
+			table.setNumber(counter+1);
+			table.setGuests(new ArrayList<Guest>());
+			event.getTables().add(table);
+			counter++;
+		}
+		
+    	System.out.println("There are "+event.getTables().size()+" tables for the event");
+
     	List<SeatingArrangement> arrangementsPopulation  = generateInitPopulation(event);  
     	List<SeatingArrangement> bestSeatingArrangements = produceBestArrangements(arrangementsPopulation);
     	System.out.println("\n\n"+"All best arrangements");
@@ -97,6 +120,8 @@ public class GeneticSeatArranger {
     		System.out.println("Fitness score: "+s.getArrangementScore()+"\n\n");
     	}
     	SeatingArrangement choosenBestArrangement = selectRandomBestArrangement(bestSeatingArrangements);
+    	
+    	System.out.println("There are "+event.getTables().size()+" tables for the event");
     	return choosenBestArrangement;
     }
 
@@ -110,12 +135,28 @@ public class GeneticSeatArranger {
 		for(int count=0;count<4;count++){
 			//System.out.println("Generating assignment");
 			SeatingArrangement seatingArrangement= new SeatingArrangement(0);
+			seatingArrangement.setTables(new ArrayList<EventTable>());
 			seatingArrangement.setEvent(event);
+			for(EventTable table: seatingArrangement.getEvent().getTables()){
+				table.setGuests(new ArrayList<Guest>());
+			}
 			Integer[]randomTableNums = generateRandomAssignments(event);
 			for(int guestsCount=0;guestsCount<guests.size();guestsCount++){
 				//System.out.println("Assigning a guest a table");
-				seatingArrangement.getSeatingAssignments().put(guests.get(guestsCount), tables.get((randomTableNums[guestsCount])-1));
+				EventTable assignedTable = tables.get((randomTableNums[guestsCount])-1);
+				seatingArrangement.getSeatingAssignments().put(guests.get(guestsCount),assignedTable );
+				//assignedTable.getGuests().add(guests.get(guestsCount));
 			}
+			for(Entry<Guest,EventTable> entry: seatingArrangement.getSeatingAssignments().entrySet()){
+				EventTable table = entry.getValue();
+				Guest guest = entry.getKey();
+				guest.setTable(table);
+				if(!table.getGuests().contains(guest))
+					table.getGuests().add(guest);
+				if(!seatingArrangement.getTables().contains(table))
+					seatingArrangement.getTables().add(table);
+			}
+	
 			arrangementsPopulation.add(seatingArrangement);
 		}
 		return arrangementsPopulation;
@@ -200,6 +241,9 @@ public class GeneticSeatArranger {
 			List<SeatingArrangement> mutatedChildren = new ArrayList<SeatingArrangement>();
 			for(SeatingArrangement sa1:arrangementsPopulation){
 				for(SeatingArrangement sa2:arrangementsPopulation){
+					sa1.setTables(new ArrayList<EventTable>());
+					sa2.setTables(new ArrayList<EventTable>());
+
 					if(!sa1.equals(sa2)){
 						children = produceChildren(sa1,sa2);
 						mutatedChildren = mutateChildren(children);
@@ -224,8 +268,16 @@ public class GeneticSeatArranger {
 		TreeMap<Guest,EventTable> secondPartforChild2= new TreeMap<Guest,EventTable>();
 		SeatingArrangement childArrangement1 = new SeatingArrangement(0);
 		SeatingArrangement childArrangement2 = new SeatingArrangement(0);
+		childArrangement1.setTables(new ArrayList<EventTable>());
 		childArrangement1.setEvent(sa1.getEvent());
+		childArrangement2.setTables(new ArrayList<EventTable>());
 		childArrangement2.setEvent(sa1.getEvent());
+		for(EventTable table: childArrangement1.getEvent().getTables()){
+			table.setGuests(new ArrayList<Guest>());
+		}
+		for(EventTable table: childArrangement2.getEvent().getTables()){
+			table.setGuests(new ArrayList<Guest>());
+		}
 		int middleIndex = (sa1.getSeatingAssignments().size())/2;
 		int middleTracker =0;
 		
@@ -234,8 +286,6 @@ public class GeneticSeatArranger {
 		for(Entry<Guest,EventTable> e: sa1.getSeatingAssignments().entrySet()){
 			if(middleTracker<=middleIndex){
 				childArrangement1.getSeatingAssignments().put(e.getKey(), e.getValue());
-				((Guest)childArrangement1.getSeatingAssignments().keySet().toArray()[middleTracker]).setTable(e.getValue());
-				
 			}else{
 				if(middleTracker<sa1.getSeatingAssignments().size()){
 					secondPartforChild2.put(e.getKey(), e.getValue());
@@ -249,9 +299,6 @@ public class GeneticSeatArranger {
 		for(Entry<Guest,EventTable> e: sa2.getSeatingAssignments().entrySet()){
 			if(middleTracker<=middleIndex){
 				childArrangement2.getSeatingAssignments().put(e.getKey(), e.getValue());
-				((Guest)childArrangement2.getSeatingAssignments().keySet().toArray()[middleTracker]).setTable(e.getValue());
-				e.getKey().setTable(e.getValue());
-
 			}else{
 				if(middleTracker<sa2.getSeatingAssignments().size()){
 					secondPartforChild1.put(e.getKey(), e.getValue());
@@ -265,8 +312,6 @@ public class GeneticSeatArranger {
 		for(Entry<Guest,EventTable> e: secondPartforChild2.entrySet()){
 			childArrangement2.getSeatingAssignments().put((Guest) sa2.
 					getSeatingAssignments().keySet().toArray()[count],e.getValue());
-			((Guest)childArrangement2.getSeatingAssignments().keySet().toArray()[count]).setTable(e.getValue());
-
 			count++;
 		}
 		
@@ -275,9 +320,31 @@ public class GeneticSeatArranger {
 		for(Entry<Guest,EventTable> e: secondPartforChild1.entrySet()){
 			childArrangement1.getSeatingAssignments().put((Guest) sa1.
 					getSeatingAssignments().keySet().toArray()[count2],e.getValue());
-			((Guest)childArrangement1.getSeatingAssignments().keySet().toArray()[count2]).setTable(e.getValue());
 			count2++;
 		}	
+		
+		for(Entry<Guest,EventTable> entry: childArrangement1.getSeatingAssignments().entrySet()){
+			EventTable table = entry.getValue();
+			Guest guest = entry.getKey();
+			guest.setTable(table);
+			if(!table.getGuests().contains(guest))
+				table.getGuests().add(guest);
+			if(!childArrangement1.getTables().contains(table))
+				childArrangement1.getTables().add(table);
+
+		}
+		
+		for(Entry<Guest,EventTable> entry: childArrangement2.getSeatingAssignments().entrySet()){
+			EventTable table = entry.getValue();
+			Guest guest = entry.getKey();
+			guest.setTable(table);
+			if(!table.getGuests().contains(guest))
+				table.getGuests().add(guest);
+			if(!childArrangement2.getTables().contains(table))
+				childArrangement2.getTables().add(table);
+
+		}
+		
 
 		children.add(childArrangement1);
 		children.add(childArrangement2);
@@ -320,40 +387,58 @@ public class GeneticSeatArranger {
 		/*swap the seats for the guest at the first quarter of the assignments
 		 *with the one at the third quarter of the assignments
 		 */
-		
-		/*swap the seats for the guest at the first quarter of the assignments
-		 *with the one at the third quarter of the assignments
-		 */
 		int index=0;
 		for(Entry<Guest,EventTable> assignmentFromChild: child.getSeatingAssignments().entrySet()){
-			EventTable tempTable1 = null;
-			EventTable tempTable2 = null;
+			EventTable tableA = null;
+			EventTable tableB = null;
 			if(index==0){
 				Random assignmentIndexPicker = new SecureRandom();
 				int indexOfAssignmentToSwapWith  = assignmentIndexPicker.nextInt(thirdQuarterIndexOfAssignments+1);
 				if(indexOfAssignmentToSwapWith<fourthQuarterIndexOfAssignments){
-					EventTable temp = new EventTable();
-					temp=assignmentFromChild.getValue();
-					assignmentFromChild.setValue((EventTable) child.
-							getSeatingAssignments().values().toArray()
-							[indexOfAssignmentToSwapWith]);
-					((Guest)child.getSeatingAssignments().keySet().toArray()[indexOfAssignmentToSwapWith]).setTable(temp);
+					tableA=assignmentFromChild.getValue();
+					EventTable tempTable = tableA;
+					Guest guestA =  assignmentFromChild.getKey();
+					Guest guestB = ((Guest)child.getSeatingAssignments().keySet().toArray()[indexOfAssignmentToSwapWith]);
+					tableB = guestB.getTable();
+
+					tableA.getGuests().remove(guestA);
+					guestA.setTable(tableB);
+					tableB.getGuests().add(guestA);
+					
+					tableB.getGuests().remove(guestB);
+					guestB.setTable(tempTable);
+					tempTable.getGuests().add(guestB);
 				}
 			}
 			else if(index==firstQuarterIndexOfAssignments){
-				tempTable1 = assignmentFromChild.getValue();
-				assignmentFromChild.setValue((EventTable) child.
-						getSeatingAssignments().values().toArray()
-						[thirdQuarterIndexOfAssignments]);
-				((Guest)child.getSeatingAssignments().keySet().toArray()[thirdQuarterIndexOfAssignments]).setTable(tempTable1);
+				tableA=assignmentFromChild.getValue();
+				EventTable tempTable = tableA;
+				Guest guestA =  assignmentFromChild.getKey();
+				Guest guestB = ((Guest)child.getSeatingAssignments().keySet().toArray()[thirdQuarterIndexOfAssignments]);
+				tableB = guestB.getTable();
+
+				tableA.getGuests().remove(guestA);
+				guestA.setTable(tableB);
+				tableB.getGuests().add(guestA);
 				
+				tableB.getGuests().remove(guestB);
+				guestB.setTable(tempTable);
+				tempTable.getGuests().add(guestB);
 			}
 			else if(index ==secondQuarterIndexOfAssignments){
-				tempTable2 = assignmentFromChild.getValue();
-				assignmentFromChild.setValue((EventTable)child.
-						getSeatingAssignments().values().toArray()
-						[fourthQuarterIndexOfAssignments]);
-				((Guest)child.getSeatingAssignments().keySet().toArray()[fourthQuarterIndexOfAssignments]).setTable(tempTable2);
+				tableA=assignmentFromChild.getValue();
+				EventTable tempTable = tableA;
+				Guest guestA =  assignmentFromChild.getKey();
+				Guest guestB =((Guest)child.getSeatingAssignments().keySet().toArray()[fourthQuarterIndexOfAssignments]);
+				tableB = guestB.getTable();
+				
+				tableA.getGuests().remove(guestA);
+				guestA.setTable(tableB);
+				tableB.getGuests().add(guestA);
+				
+				tableB.getGuests().remove(guestB);
+				guestB.setTable(tempTable);
+				tempTable.getGuests().add(guestB);
 			}
 			index++;
 		}
@@ -386,6 +471,22 @@ public class GeneticSeatArranger {
 		return bestArrangements;
 	}
 	
+	/*private static EventTable getTableWithSpace(SeatingArrangement s) {
+		for(EventTable t: s.getEvent().getTables()){
+			int guestsPerTable=s.getEvent().tableSizeToInt(t.getSize());
+			int peopleOnTablet = t.getGuests().size();
+					
+			System.out.println(peopleOnTablet+" were assigned to table "+t.getNumber());
+			System.out.println(guestsPerTable+" can fit on the table "+t.getNumber());
+
+			if (peopleOnTablet<guestsPerTable){
+				System.out.println("Table "+t.getNumber()+" has a room. ");
+				return t;
+			}
+		}
+		return null;
+	}*/
+
 	/*
 	 * This method randomly selects one of the generated best arrangements
 	 */
@@ -395,5 +496,4 @@ public class GeneticSeatArranger {
 		int randomArrangementIndex = arrangementPicker.nextInt(bestSeatingArrangements.size());
 		return bestSeatingArrangements.get(randomArrangementIndex);
 	}
-
 }

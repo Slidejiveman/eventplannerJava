@@ -20,20 +20,7 @@ public class AlgorithmTester {
 		System.out.println("Testing The Algorithm\n\n");
 		
 		List<Event>events = EventDAO.listEvents();
-		Event e = (Event) events.toArray()[1];
-		/*List<GuestList> guestlists = GuestListDAO.listGuestLists();
-		//For each event, produce a seating plan
-		//set guest list for the event.
-		for(GuestList guestlist: guestlists){
-			if (guestlist.getEvent().equals(e)){
-				e.setGuestList(guestlist);
-			}
-		}
-		for(Guest guest: e.getGuestList().getGuests()){
-			guest.setGuestsToAvoidList(GuestDAO.listGuestsToAvoid(guest.getId()));
-			guest.setGuestsToSitWithList(GuestDAO.listGuestsToSitWith(guest.getId()));
-		}
-		*/	
+		Event e = (Event) events.toArray()[0];	
 		System.out.println("Seating plan for event, "+e.getName());
 		//Generate Seating Arrangement
 		SeatingArrangement seats = GeneticSeatArranger.generateSeatingArrangement(e);
