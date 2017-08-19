@@ -244,12 +244,12 @@ public class Guest implements Serializable, Comparable<Guest>{
      * @return this guest updated with the given guest's values
      */
     public Boolean update(Guest guest) {
-    	this.setGuestlist(guest.getGuestlist());
-    	this.setGuestsToAvoid(guest.getGuestsToAvoid());
-    	this.setGuestsToSitWith(guest.getGuestsToSitWith());
+    	//this.setGuestlist(guest.getGuestlist());
+    	//this.setGuestsToAvoid(guest.getGuestsToAvoid());
+    	//this.setGuestsToSitWith(guest.getGuestsToSitWith());
     	this.setName(guest.getName());
     	this.setRelationshipDescriptor(guest.getRelationshipDescriptor());
-    	this.setTable(guest.getTable());
+    	//this.setTable(guest.getTable());
     	return true;
     }
     
