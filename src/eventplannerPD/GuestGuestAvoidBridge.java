@@ -11,8 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
+@XmlRootElement(name = "guesttoavoid")
 @Entity(name = "guesttoavoid")
 //@IdClass(GuestGuestAvoidBridgeId.class)
 public class GuestGuestAvoidBridge implements Serializable {
@@ -35,10 +37,12 @@ public class GuestGuestAvoidBridge implements Serializable {
 	@Column(name = "guest_avoid_id")
 	private int guestAvoidId;
 
+	@JsonIgnore
 	@ManyToOne
 	@PrimaryKeyJoinColumn(name = "guest_id", referencedColumnName = "guest_id")
 	private Guest guest;
 	
+	@JsonIgnore
 	@ManyToOne
 	@PrimaryKeyJoinColumn(name = "guest_avoid_id", referencedColumnName = "guest_id")
 	private Guest guestToAvoid;
@@ -57,7 +61,7 @@ public class GuestGuestAvoidBridge implements Serializable {
 	public int getTableId() {
 		return guestAvoidBridgeId;
 	}
-    
+	@XmlElement
 	public void setTableId(int tableId) {
 		this.guestAvoidBridgeId = tableId;
 	}
@@ -65,7 +69,7 @@ public class GuestGuestAvoidBridge implements Serializable {
 	public int getGuestId() {
 		return guestId;
 	}
-	
+	@XmlElement
 	public void setGuestId(int guestId) {
 		this.guestId = guestId;
 	}
@@ -73,23 +77,23 @@ public class GuestGuestAvoidBridge implements Serializable {
 	public int getGuestAvoidId() {
 		return guestAvoidId;
 	}
-	
+	@XmlElement
 	public void setGuestAvoidId(int guestAvoidId) {
 		this.guestAvoidId = guestAvoidId;
 	}
-
+	@JsonIgnore
 	public Guest getGuest() {
 		return guest;
 	}
-	
+	@JsonIgnore
 	public void setGuest(Guest guest) {
 		this.guest = guest;
 	}
-
+	@JsonIgnore
 	public Guest getGuestToAvoid() {
 		return guestToAvoid;
 	}
-	
+	@JsonIgnore
 	public void setGuestToAvoid(Guest guestToAvoid) {
 		this.guestToAvoid = guestToAvoid;
 	}

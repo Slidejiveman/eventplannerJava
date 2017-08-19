@@ -17,8 +17,13 @@ public class GuestToSitWithDAO {
 	}
 	
 	public static List<GuestGuestSitWithBridge> listGuestGuestSitWithBridge() {
-		TypedQuery<GuestGuestSitWithBridge> query = EM.getEntityManager().createQuery("SELECT guestSitWithBridge FROM guestSitWithBridge guestSitWithBridge", GuestGuestSitWithBridge.class);
+		TypedQuery<GuestGuestSitWithBridge> query = EM.getEntityManager().createQuery("SELECT guesttositwith FROM guesttositwith guesttositwith", GuestGuestSitWithBridge.class);
 		return query.getResultList();
+	}
+	
+	public static GuestGuestSitWithBridge findGuestGuestSitWithBridgeByEntities(String guestId, String sitWithId) {
+		TypedQuery<GuestGuestSitWithBridge> query = EM.getEntityManager().createQuery("SELECT guesttositwith FROM guesttositwith guesttositwith WHERE guesttositwith.guestId="+guestId+" AND guesttositwith.guestSitWithId="+sitWithId, GuestGuestSitWithBridge.class);
+	    return query.getSingleResult();
 	}
 	
 	public static GuestGuestSitWithBridge findGuestGuestSitWithBridgeById(int id) {

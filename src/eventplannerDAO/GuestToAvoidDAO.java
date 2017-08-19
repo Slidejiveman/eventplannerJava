@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 
 import eventplannerPD.GuestGuestAvoidBridge;
+import eventplannerPD.GuestGuestSitWithBridge;
 
 public class GuestToAvoidDAO {
 	public static void saveGuestGuestAvoidBridge(GuestGuestAvoidBridge guestAvoidBridge) {
@@ -23,6 +24,11 @@ public class GuestToAvoidDAO {
 	public static GuestGuestAvoidBridge findGuestGuestAvoidBridgeById(int id) {
 		GuestGuestAvoidBridge GuestGuestAvoidBridge = EM.getEntityManager().find(GuestGuestAvoidBridge.class, new Integer(id));
 		return GuestGuestAvoidBridge;
+	}
+	
+	public static GuestGuestAvoidBridge findGuestGuestAvoidBridgeByEntities(String guestId, String avoidId) {
+		TypedQuery<GuestGuestAvoidBridge> query = EM.getEntityManager().createQuery("SELECT guesttoavoid FROM guesttoavoid guesttoavoid WHERE guesttoavoid.guestId="+guestId+" AND guesttoavoid.guestAvoidId="+avoidId, GuestGuestAvoidBridge.class);
+	    return query.getSingleResult();
 	}
 	
 	public static void removeGuestGuestAvoidBridge(GuestGuestAvoidBridge guestAvoidBridge) {

@@ -24,7 +24,11 @@ import com.owlike.genson.Genson;
 
 import eventplannerDAO.EM;
 import eventplannerDAO.GuestDAO;
+import eventplannerDAO.GuestToAvoidDAO;
+import eventplannerDAO.GuestToSitWithDAO;
 import eventplannerPD.Guest;
+import eventplannerPD.GuestGuestAvoidBridge;
+import eventplannerPD.GuestGuestSitWithBridge;
 import eventplannerUT.Log;
 import eventplannerUT.Message;
 
@@ -76,7 +80,7 @@ public class GuestService {
 	}
 	
 	@GET
-	@Path("/gueststoavoid/{id}")
+	@Path("/guests/{id}/gueststoavoid")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Guest> getGuestsToAvoidForGuestId(@PathParam("id") String id) {
 		List<Guest> guestsToAvoid = GuestDAO.listGuestsToAvoid(Integer.parseInt(id));
@@ -84,11 +88,102 @@ public class GuestService {
 	}
 	
 	@GET
-	@Path("/gueststositwith/{id}")
+	@Path("/guests/{id}/gueststositwith")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Guest> getGuestsToSitWithForGuestId(@PathParam("id") String id) {
 		List<Guest> guestsToSitWith = GuestDAO.listGuestsToSitWith(Integer.parseInt(id));
 		return guestsToSitWith;
+	}
+	
+	/**
+	 * This is a PUT rather than a POST because it is easiest
+	 * to add a new bridge entity through a transaction like this.
+	 * The bridge entities don't like to be added directly.
+	 * @param guestId - the guest in question
+	 * @param sitWithId - the guest to sit with
+	 * @return Message indicating success or failure
+	 */
+	@PUT
+	@Path("/guests/{guestId}/gueststositwith/{sitWithId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Message> addGuestToSitWith(@PathParam("guestId") String guestId, @PathParam("sitWithId") String sitWithId) {
+		Guest guest = GuestDAO.findGuestById(Integer.parseInt(guestId));		
+		Guest sitWith = GuestDAO.findGuestById(Integer.parseInt(sitWithId));
+        if (guest == null || sitWith == null) {
+			messages.add(new Message("rest002", "Fail Operation", "Add"));
+			return messages;
+		}
+		GuestGuestSitWithBridge ggswb = new GuestGuestSitWithBridge(guest, sitWith);
+		EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
+		guestTransaction.begin();
+		guest.getGuestsToSitWith().add(ggswb);
+		guestTransaction.commit();
+		messages.add(new Message("rest001", "Success Operation", "Add"));
+		return messages;
+	}
+	
+	@PUT
+	@Path("/guests/{guestId}/gueststoavoid/{avoidId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Message> addGuestToAvoid(@PathParam("guestId") String guestId, @PathParam("avoidId") String avoidId) {
+		Guest guest = GuestDAO.findGuestById(Integer.parseInt(guestId));		
+		Guest avoid = GuestDAO.findGuestById(Integer.parseInt(avoidId));
+        if (guest == null || avoid == null) {
+			messages.add(new Message("rest002", "Fail Operation", "Add"));
+			return messages;
+		}
+		GuestGuestAvoidBridge ggab = new GuestGuestAvoidBridge(guest, avoid);
+		EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
+		guestTransaction.begin();
+		guest.getGuestsToAvoid().add(ggab);
+		guestTransaction.commit();
+		messages.add(new Message("rest001", "Success Operation", "Add"));
+		return messages;
+	}
+	
+	@PUT
+	@Path("/guests/{guestId}/deletegueststositwith/{sitWithId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Message> deleteGuestToSitWith(@PathParam("guestId") String guestId, @PathParam("sitWithId") String sitWithId) {
+		GuestGuestSitWithBridge ggswb = GuestToSitWithDAO.findGuestGuestSitWithBridgeByEntities(guestId, sitWithId);
+		Guest guest = GuestDAO.findGuestById(Integer.parseInt(guestId));
+		if (guest == null || ggswb == null) {
+			messages.add(new Message("rest002", "Fail Operation", "Delete"));
+			return messages;
+		}
+		EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
+		guestTransaction.begin();
+		guest.getGuestsToSitWith().remove(ggswb);
+		guestTransaction.commit();
+		messages.add(new Message("rest001", "Success Operation", "Delete"));
+		return messages;
+	}
+	
+	/**
+	 * This is a PUT method because the best way to delete a bridge entity
+	 * is to remove it in a transaction.
+	 * @param guestId - the guest
+	 * @param avoidId - the guest to avoid
+	 * @return A success message that indicates this block of code had no errors.
+	 */
+	@PUT
+	@Path("/guests/{guestId}/deletegueststoavoid/{avoidId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Message> deleteGuestToAvoid(@PathParam("guestId") String guestId, @PathParam("avoidId") String avoidId) {
+		GuestGuestAvoidBridge ggab = GuestToAvoidDAO.findGuestGuestAvoidBridgeByEntities(guestId, avoidId);
+		Guest guest = GuestDAO.findGuestById(Integer.parseInt(guestId));
+		if (guest == null || ggab == null) {
+			messages.add(new Message("rest002", "Fail Operation", "Delete"));
+			return messages;
+		}
+		EntityTransaction guestTransaction = EM.getEntityManager().getTransaction();
+		guestTransaction.begin();
+		guest.getGuestsToAvoid().remove(ggab);
+		guestTransaction.commit();
+		messages.add(new Message("rest001", "Success Operation", "Delete"));
+		return messages;
 	}
 	
 	@POST
@@ -179,6 +274,9 @@ public class GuestService {
 			return messages;
 		}
 	}
+	
+	
+	
 	@OPTIONS
 	@Path("/guests")
 	@Produces(MediaType.APPLICATION_JSON)
