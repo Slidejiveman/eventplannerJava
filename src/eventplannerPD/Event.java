@@ -129,8 +129,20 @@ public class Event implements Serializable {
      */
     @Column(name = "event_total_seats", nullable = false)
     private int totalSeats;
+    /**
+     * This is needed for the algorithm. A table can already know this, but event needs to know it too.
+     */
+    @Column(name = "event_seats_per_table", nullable = false)
+    private int seatsPerTable;
 
-    public int getId() {
+    public int getSeatsPerTable() {
+		return seatsPerTable;
+	}
+    @XmlElement
+	public void setSeatsPerTable(int seatsPerTable) {
+		this.seatsPerTable = seatsPerTable;
+	}
+	public int getId() {
         return this.id;
     }
     @XmlElement
@@ -375,6 +387,7 @@ public class Event implements Serializable {
     	this.setPercentSeatsEmpty(event.getPercentSeatsEmpty());
         this.setSeatingAssigment(event.getSeatingAssigment());
 //      this.setTables(event.getTables());
+        this.setSeatsPerTable(event.getSeatsPerTable());
     	this.setTotalSeats(event.getTotalSeats());
     	return true;
     }
