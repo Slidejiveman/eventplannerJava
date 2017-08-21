@@ -249,6 +249,7 @@ public class EventService {
 		if( guestlist != null) {
 			List<Guest> guestsToRemove = GuestDAO.listGuestsByGuestList(intId);
 			for (Guest g : guestsToRemove) {
+				g.setTable(null);
 				GuestDAO.removeGuest(g);
 			}
 		} else {

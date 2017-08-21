@@ -241,9 +241,10 @@ public class ReportService {
 			return; // If there are no tables, there is nothing else to do, so return.
 		}
 		
-		// If tables exist, loop through tables and print out guest information
-		// These are ordered by table number by nature of the looping structure
-		for (EventTable t : tables) {			
+		SortedSet<EventTable> sortedTables = new TreeSet<EventTable>();
+		sortedTables.addAll(tables);
+		
+		for (EventTable t : sortedTables) {			
 			for (Guest g : t.getGuests()) {
 				try {
 					System.out.println("Table No." + t.getNumber() + " " + g.getName());

@@ -249,7 +249,10 @@ public class Guest implements Serializable, Comparable<Guest>{
     	//this.setGuestsToSitWith(guest.getGuestsToSitWith());
     	this.setName(guest.getName());
     	this.setRelationshipDescriptor(guest.getRelationshipDescriptor());
-    	//this.setTable(guest.getTable());
+    	if (guest.getTable() != null) {
+    		this.setTable(guest.getTable());
+    	}
+    	
     	return true;
     }
     

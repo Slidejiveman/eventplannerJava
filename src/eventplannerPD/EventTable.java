@@ -28,7 +28,7 @@ import eventplannerPD.enums.TableSize;
  */
 @XmlRootElement(name = "eventtable")
 @Entity(name = "eventtable") // EventTable is a reserved word. Escape it.
-public class EventTable  implements Serializable {
+public class EventTable  implements Serializable, Comparable<EventTable> {
 
 	/**
 	 * Allows Serialization so that the item may be stored in the
@@ -170,5 +170,10 @@ public class EventTable  implements Serializable {
     	event = evt;
     	size = ts;
     }
+	@Override
+	public int compareTo(EventTable compareTable) {
+		
+		return this.getNumber() - compareTable.getNumber();
+	}
 
 }
